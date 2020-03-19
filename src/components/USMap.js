@@ -50,7 +50,6 @@ const USMap = () => {
       height={height}
     >
       <g className="geoMap_national">
-        {geojson.map(d => console.log(d))}
         {geojson.map((d) => 
           <path 
             key={d.properties.NAME}
