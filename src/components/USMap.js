@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
 import { set } from 'd3';
 
+import colors from '../util/colors';
+
 const USMap = () => {
 
   const [geojson, setGeoJson] = useState();
@@ -53,11 +55,10 @@ const USMap = () => {
           <path 
             key={d.properties.NAME}
             d={geoPath(d)}
-            className='state'
+            className='us_state'
             id={d.properties.NAME}
             strokeWidth={0.25}
             stroke='black'
-            fill='transparent'
           />
         )}
       </g>
