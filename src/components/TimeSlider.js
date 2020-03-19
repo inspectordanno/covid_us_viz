@@ -2,6 +2,7 @@ import React from 'react';
 import { Slider } from '@material-ui/core';
 import { min, max } from 'd3-array';
 import moment from 'moment';
+import { makeStyles } from '@material-ui/core/styles';
 
 const TimeSlider = ({ nationalData }) => {
 

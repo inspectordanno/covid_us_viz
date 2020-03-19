@@ -1,5 +1,6 @@
 @use "components/CovidApp";
 @use "components/USMap";
+@use 'components/Slider';
 
 html,body, #app {
   width: 100%;
