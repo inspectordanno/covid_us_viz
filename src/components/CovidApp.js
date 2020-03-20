@@ -28,10 +28,11 @@ const CovidApp = () => {
   //store selectors
   const day = useSelector(state => state.day);
 
-  return nationalData && UsStateData ?
+  return nationalData && UsStateData 
+  ?
   (
     <div className="CovidApp">
-      <USMap nationalData={nationalData} day={day} />
+      <USMap nationalData={nationalData} UsStateData={UsStateData} day={day} />
       <TimeSlider nationalData={nationalData} />
     </div>
   )

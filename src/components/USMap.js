@@ -5,7 +5,7 @@ import geojson from '../../dist/data/us_states.json';
 import colors from '../util/colors';
 import Circle from './Circle';
 
-const USMap = ({ nationalData, day, geoJson }) => {
+const USMap = ({ nationalData, UsStateData, day }) => {
 
   const width = 900;
   const height = 600;
