@@ -38,10 +38,6 @@ const USMap = () => {
   const geoPath = d3.geoPath()
     .projection(projection);
 
-  // if (svg && mapContainer.current) {
-  //   //d3 work here...
-  // }
-
   return geojson
   ?
   (

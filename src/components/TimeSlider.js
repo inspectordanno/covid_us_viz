@@ -4,7 +4,6 @@ import { min, max } from 'd3-array';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import { quantile } from 'simple-statistics';
-import round from 'lodash/round';
 
 import { setDay } from '../actions/actions';
 
@@ -35,25 +34,38 @@ const TimeSlider = ({ nationalData }) => {
     dispatch(setDay(value));
   }
 
+  //calculates the mark values (quantiles) for the slider
   const calculateQuantiles = (daysArray, lengthofReturnedArray) => {
-    const quantiles = [0];
-    const spaceBetweenQuantiles = 1 / lengthofReturnedArray; //rounds to hundreths
-    console.log('spaceBetweenQuantiles: ', spaceBetweenQuantiles);
+    const quantiles = [0]; //starting out with array of first quantile, 0
+    const spaceBetweenQuantiles = 1 / (lengthofReturnedArray - 1);
     let accumulator = 0;
 
+    //while accumulator is below one, add quantile to accumulator and pust that value to the quantile array
     while (accumulator < 1) {
-      accumulator += Math.round(spaceBetweenQuantiles * 1000) / 1000;
+      accumulator += Math.round(spaceBetweenQuantiles * 1000) / 1000; //rounds to thousandths place
       
       if (accumulator <= 1) {
         quantiles.push(accumulator);
       } 
     };
 
-    quantiles.sort();
-    console.log(quantiles)
+    quantiles.sort(); //sorts quantiles from least to greatest
+
+    const breaks = quantiles.map(currentQuantile => {
+      return quantile(daysArray, currentQuantile); //for each quantile, find the result in the days array
+    });
+
+    return breaks;
   }
 
-  calculateQuantiles(days, 5);
+  const quantileValues = calculateQuantiles(days, 5);
+
+  const marks = quantileValues.map(value => {
+    return {
+      value,
+      label: valueLabelFormat(value)
+    }
+  });
 
   return (
     <Slider 
@@ -62,6 +74,7 @@ const TimeSlider = ({ nationalData }) => {
       onChange={handleOnChange}
       valueLabelDisplay="auto"
       valueLabelFormat={valueLabelFormat}
+      marks={marks}
     />
   );
 }
