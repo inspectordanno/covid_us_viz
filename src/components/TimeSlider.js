@@ -35,9 +35,9 @@ const TimeSlider = ({ nationalData }) => {
   }
 
   //calculates the mark values (quantiles) for the slider
-  const calculateQuantiles = (daysArray, lengthofReturnedArray) => {
+  const calculateQuantiles = (daysArray, lengthOfBreaksArray) => {
     const quantiles = [0]; //starting out with array of first quantile, 0
-    const spaceBetweenQuantiles = 1 / (lengthofReturnedArray - 1);
+    const spaceBetweenQuantiles = 1 / (lengthOfBreaksArray - 1);
     let accumulator = 0;
 
     //while accumulator is below one, add quantile to accumulator and pust that value to the quantile array
