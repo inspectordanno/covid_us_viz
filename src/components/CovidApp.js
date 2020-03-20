@@ -1,38 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
-import moment from 'moment';
 
+import { fetchNationalData, fetchUsStateData } from '../util/dataFetches';
 import USMap from './USMap';
 import TimeSlider from './TimeSlider';
 
 const CovidApp = () => {
 
   const [nationalData, setNationalData] = useState();
+  const [UsStateData, setUsStateData] = useState();
 
-  //fetches national data
+  //fetches data on mount
   useEffect(() => {
-    const fetchNationalData = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get('https://covidtracking.com/api/us/daily');
-        const formattedDates = res.data.map((entry) => {
-          return {
-            ...entry,
-            date: moment(entry.date, 'YYYYMMDD')
-          }
-        });
-        setNationalData(formattedDates);
+        const nationalDataRes = await fetchNationalData();
+        const stateDataRes = await fetchUsStateData();
+        setNationalData(nationalDataRes);
+        setUsStateData(stateDataRes);
       } catch (e) {
         console.error(e);
-      }
+      } 
     }
-    fetchNationalData();
-  }, [])
+    fetchData();
+  }, []);
 
-  return nationalData ?
+  //store selectors
+  const day = useSelector(state => state.day);
+
+  return nationalData && UsStateData ?
   (
     <div className="CovidApp">
-      <USMap />
+      <USMap nationalData={nationalData} day={day} />
       <TimeSlider nationalData={nationalData} />
     </div>
   )

@@ -1,35 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
-import { set } from 'd3';
 
+import geojson from '../../dist/data/us_states.json';
 import colors from '../util/colors';
+import Circle from './Circle';
 
-const USMap = () => {
+const USMap = ({ nationalData, day, geoJson }) => {
 
-  const [geojson, setGeoJson] = useState();
-  const mapContainer = useRef(null);
   const width = 900;
   const height = 600;
-
-  //fetches geoJson
-  useEffect(() => {
-
-    // //synchronous
-    // const jsonRes = JSON.parse('./data/us_states.json');
-    // setGeoJson(jsonRes.features);
-
-    // asynchronous
-    const fetchSvg = async () => {
-      try {
-        const jsonRes = await d3.json('./data/us_states.json');
-        setGeoJson(jsonRes.features);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    fetchSvg();
-  }, []);
 
   const projection = d3.geoAlbersUsa()
     .translate([width / 2, height / 2])
@@ -38,15 +17,15 @@ const USMap = () => {
   const geoPath = d3.geoPath()
     .projection(projection);
 
-  return geojson
-  ?
-  (
+  const currentDayData = nationalData.find(entry => entry.date.dayOfYear() === day);
+
+  return (
     <svg className="USMap"
       width={width}
       height={height}
     >
       <g className="geoMap_national">
-        {geojson.map((d) => 
+        {geojson.features.map((d) => 
           <path 
             key={d.properties.NAME}
             d={geoPath(d)}
@@ -57,10 +36,16 @@ const USMap = () => {
           />
         )}
       </g>
+      <g className="geoMap_national__positives">
+          {
+
+          }
+      </g>
+      <g className="geoMap_national__tests">
+
+      </g>
     </svg>
   )
-  :
-  null;
 }
 
 export default USMap;
