@@ -3,6 +3,8 @@ import { Slider } from '@material-ui/core';
 import { min, max } from 'd3-array';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
+import { quantile } from 'simple-statistics';
+import round from 'lodash/round';
 
 import { setDay } from '../actions/actions';
 
@@ -32,6 +34,26 @@ const TimeSlider = ({ nationalData }) => {
   const handleOnChange = (event, value) => {
     dispatch(setDay(value));
   }
+
+  const calculateQuantiles = (daysArray, lengthofReturnedArray) => {
+    const quantiles = [0];
+    const spaceBetweenQuantiles = 1 / lengthofReturnedArray; //rounds to hundreths
+    console.log('spaceBetweenQuantiles: ', spaceBetweenQuantiles);
+    let accumulator = 0;
+
+    while (accumulator < 1) {
+      accumulator += Math.round(spaceBetweenQuantiles * 1000) / 1000;
+      
+      if (accumulator <= 1) {
+        quantiles.push(accumulator);
+      } 
+    };
+
+    quantiles.sort();
+    console.log(quantiles)
+  }
+
+  calculateQuantiles(days, 5);
 
   return (
     <Slider 
