@@ -17,7 +17,21 @@ const USMap = ({ nationalData, UsStateData, day }) => {
   const geoPath = d3.geoPath()
     .projection(projection);
 
+  console.log(UsStateData);
+
   const currentDayData = nationalData.find(entry => entry.date.dayOfYear() === day);
+
+  const scaleCircle = (dataValue) => {
+    const newestData = UsStateData[0];
+    const tests = newestData.map(entry => entry.total);
+    const testsMax = d3.max(tests); //the largest amount of tests than an entry (municipality) has
+
+    const scale = d3.scaleLinear()
+      .domain([0, testsMax])
+      .range([0, 10]);
+
+    return scale(dataValue);
+  }
 
   return (
     <svg className="USMap"
@@ -37,9 +51,17 @@ const USMap = ({ nationalData, UsStateData, day }) => {
         )}
       </g>
       <g className="geoMap_national__positives">
-          {
-
-          }
+          {geojson.features.map((d) => 
+            <circle
+              key={d.properties.NAME + '_tests'}
+              x={geoPath.centroid(d)[0]}
+              y={geoPath.centroid(d)[1]}
+              className='tests_circle'
+              id={d.properties.NAME + '_tests'}
+              fill={colors.theme_green}
+              r={}
+            />
+          )}
       </g>
       <g className="geoMap_national__tests">
 
