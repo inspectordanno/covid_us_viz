@@ -17,8 +17,8 @@ const USMap = ({ nationalData, UsStateData, day }) => {
   const geoPath = d3.geoPath()
     .projection(projection);
 
-  const currentDayData = UsStateData.find(entry => entry.date.dayOfYear() === day);
-  console.log(currentDayData)
+  const currentDayData = UsStateData.find(entry => entry.date.dayOfYear() === day).data;
+  console.log(currentDayData);
 
   const scaleCircle = (dataValue) => {
     const newestData = UsStateData[0];
@@ -31,6 +31,10 @@ const USMap = ({ nationalData, UsStateData, day }) => {
 
     return scale(dataValue);
   }
+
+  // const getStateCircle = (currentDayData) => {
+  //   const currentState = currentDayData.find(entry => entry.state === )
+  // }
 
   return currentDayData ?
   (
@@ -62,6 +66,7 @@ const USMap = ({ nationalData, UsStateData, day }) => {
               r={scaleCircle(currentDayData.total)}
             />
           )}
+          {geojson.features.map(d => console.log(d))}
       </g>
       <g className="geoMap_national__tests">
 

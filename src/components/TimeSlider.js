@@ -11,12 +11,6 @@ const TimeSlider = ({ nationalData }) => {
 
   const dispatch = useDispatch();
 
-  //on mount, gets first day and sends it to store
-  useEffect(() => {
-    const firstDay = nationalData[0].date.dayOfYear();
-    dispatch((setDay(firstDay)));
-  }, [])
-
   const days = nationalData.map(entry => {
     const day = entry.date.dayOfYear();
     return day;
