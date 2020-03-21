@@ -17,13 +17,12 @@ const USMap = ({ nationalData, UsStateData, day }) => {
   const geoPath = d3.geoPath()
     .projection(projection);
 
-  console.log(UsStateData);
-
-  const currentDayData = nationalData.find(entry => entry.date.dayOfYear() === day);
+  const currentDayData = UsStateData.find(entry => entry.date.dayOfYear() === day);
+  console.log(currentDayData)
 
   const scaleCircle = (dataValue) => {
     const newestData = UsStateData[0];
-    const tests = newestData.map(entry => entry.total);
+    const tests = newestData.data.map(entry => entry.total);
     const testsMax = d3.max(tests); //the largest amount of tests than an entry (municipality) has
 
     const scale = d3.scaleLinear()
@@ -33,7 +32,8 @@ const USMap = ({ nationalData, UsStateData, day }) => {
     return scale(dataValue);
   }
 
-  return (
+  return currentDayData ?
+  (
     <svg className="USMap"
       width={width}
       height={height}
@@ -59,7 +59,7 @@ const USMap = ({ nationalData, UsStateData, day }) => {
               className='tests_circle'
               id={d.properties.NAME + '_tests'}
               fill={colors.theme_green}
-              r={}
+              r={scaleCircle(currentDayData.total)}
             />
           )}
       </g>
@@ -68,6 +68,8 @@ const USMap = ({ nationalData, UsStateData, day }) => {
       </g>
     </svg>
   )
+  :
+  null;
 }
 
 export default USMap;

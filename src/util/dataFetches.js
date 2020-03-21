@@ -24,7 +24,7 @@ export const fetchNationalData = async () => {
       const groupedByDate = groups(res, d => d.date);
       const dateFormatted = groupedByDate.map(entry => {
         return {
-          date: moment(entry.date, 'YYYYMMDD'),
+          date: moment(entry[0], 'YYYYMMDD'),
           data: entry[1]
         }
       });
