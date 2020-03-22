@@ -3,9 +3,12 @@ import * as d3 from 'd3';
 
 import geojson from '../../dist/data/us_states.json';
 import colors from '../util/colors';
-import Circle from './Circle';
+import statesDictionary from '../util/statesDictionary';
 
 const USMap = ({ nationalData, UsStateData, day }) => {
+
+  //Puerto Rico is causing bugs, filtering out for now
+  geojson.features = geojson.features.filter(d => d.properties.NAME !== 'Puerto Rico');
 
   const width = 900;
   const height = 600;
@@ -17,9 +20,6 @@ const USMap = ({ nationalData, UsStateData, day }) => {
   const geoPath = d3.geoPath()
     .projection(projection);
 
-  const currentDayData = UsStateData.find(entry => entry.date.dayOfYear() === day).data;
-  console.log(currentDayData);
-
   const scaleCircle = (dataValue) => {
     const newestData = UsStateData[0];
     const tests = newestData.data.map(entry => entry.total);
@@ -27,17 +27,20 @@ const USMap = ({ nationalData, UsStateData, day }) => {
 
     const scale = d3.scaleLinear()
       .domain([0, testsMax])
-      .range([0, 10]);
+      .range([0, 25]);
 
     return scale(dataValue);
   }
 
-  // const getStateCircle = (currentDayData) => {
-  //   const currentState = currentDayData.find(entry => entry.state === )
-  // }
+  const getCircleRadius = (d) => {
+    const currentDayData = UsStateData.find(entry => entry.date.dayOfYear() === day).data;
+    const currentStateData = currentDayData.find(entry => statesDictionary[entry.state] === d.properties.NAME);
+    if (currentStateData) {
+      return scaleCircle(currentStateData.total);
+    }
+  }
 
-  return currentDayData ?
-  (
+  return (
     <svg className="USMap"
       width={width}
       height={height}
@@ -55,26 +58,29 @@ const USMap = ({ nationalData, UsStateData, day }) => {
         )}
       </g>
       <g className="geoMap_national__positives">
-          {geojson.features.map((d) => 
-            <circle
+          {geojson.features.map(d => {
+            
+            
+
+            return (
+              <circle
               key={d.properties.NAME + '_tests'}
-              x={geoPath.centroid(d)[0]}
-              y={geoPath.centroid(d)[1]}
+              cx={geoPath.centroid(d)[0]}
+              cy={geoPath.centroid(d)[1]}
               className='tests_circle'
               id={d.properties.NAME + '_tests'}
-              fill={colors.theme_green}
-              r={scaleCircle(currentDayData.total)}
-            />
+              fill={colors.theme_peach}
+              r={getCircleRadius(d)}
+              />
+            )
+          }  
           )}
-          {geojson.features.map(d => console.log(d))}
       </g>
       <g className="geoMap_national__tests">
 
       </g>
     </svg>
-  )
-  :
-  null;
+  );
 }
 
 export default USMap;
