@@ -57,11 +57,13 @@ const USMap = ({ nationalData, UsStateData, day }) => {
           />
         )}
       </g>
+      <g className="geoMap_county">
+        {
+          //put county map over the national map, so national borders are preserved. genius!
+        }
+      </g>
       <g className="geoMap_national__positives">
           {geojson.features.map(d => {
-            
-            
-
             return (
               <circle
               key={d.properties.NAME + '_tests'}
