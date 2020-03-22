@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setDay } from '../actions/actions';
-import { fetchNationalData, fetchUsStateData } from '../util/dataFetches';
+import { fetchNationalData, fetchStateData, fetchCountyData } from '../util/dataFetches';
 import USMap from './USMap';
 import TimeSlider from './TimeSlider';
 
 const CovidApp = () => {
 
   const [nationalData, setNationalData] = useState();
-  const [UsStateData, setUsStateData] = useState();
+  const [stateData, setStateData] = useState();
+  const [countyData, setCountyData] = useState();
   const dispatch = useDispatch();
 
   //fetches data on mount
@@ -17,9 +18,11 @@ const CovidApp = () => {
     const fetchData = async () => {
       try {
         const nationalDataRes = await fetchNationalData();
-        const stateDataRes = await fetchUsStateData();
+        const stateDataRes = await fetchStateData();
+        const countyDataRes = await fetchCountyData();
         setNationalData(nationalDataRes);
-        setUsStateData(stateDataRes);
+        setStateData(stateDataRes);
+        setCountyData(countyDataRes);
       } catch (e) {
         console.error(e);
       } 
@@ -38,11 +41,11 @@ const CovidApp = () => {
   //store selectors
   const day = useSelector(state => state.day);
 
-  return nationalData && UsStateData && day
+  return nationalData && stateData && day
   ?
   (
     <div className="CovidApp">
-      <USMap nationalData={nationalData} UsStateData={UsStateData} day={day} />
+      <USMap nationalData={nationalData} stateData={stateData} day={day} />
       <TimeSlider nationalData={nationalData} />
     </div>
   )

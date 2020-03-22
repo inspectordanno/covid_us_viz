@@ -5,7 +5,7 @@ import geojson from '../../dist/data/us_states.json';
 import colors from '../util/colors';
 import statesDictionary from '../util/statesDictionary';
 
-const USMap = ({ nationalData, UsStateData, day }) => {
+const USMap = ({ nationalData, stateData, day }) => {
 
   //Puerto Rico is causing bugs, filtering out for now
   geojson.features = geojson.features.filter(d => d.properties.NAME !== 'Puerto Rico');
@@ -21,7 +21,7 @@ const USMap = ({ nationalData, UsStateData, day }) => {
     .projection(projection);
 
   const scaleCircle = (dataValue) => {
-    const newestData = UsStateData[0];
+    const newestData = stateData[0];
     const tests = newestData.data.map(entry => entry.total);
     const testsMax = d3.max(tests); //the largest amount of tests than an entry (municipality) has
 
@@ -33,7 +33,7 @@ const USMap = ({ nationalData, UsStateData, day }) => {
   }
 
   const getCircleRadius = (d) => {
-    const currentDayData = UsStateData.find(entry => entry.date.dayOfYear() === day).data;
+    const currentDayData = stateData.find(entry => entry.date.dayOfYear() === day).data;
     const currentStateData = currentDayData.find(entry => statesDictionary[entry.state] === d.properties.NAME);
     if (currentStateData) {
       return scaleCircle(currentStateData.total);
