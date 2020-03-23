@@ -66,11 +66,10 @@ export const fetchNationalData = async () => {
               );
           }
         });
-        console.log(newDateObject);
         return newDateObject;
       });
-      console.log(timeSeriesData)
-      return timeSeriesData;
+      //only return dates that have data associated with them
+      return timeSeriesData.filter(d => d.data.length !== 0);
     } catch (e) {
       console.error(e);
     }

@@ -30,23 +30,23 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
-  //when national data is populated, gets first day and sends it to store
+  //when county data is populated, gets first day and sends it to store
   useEffect(() => {
     if (nationalData) {
-      const firstDay = nationalData[0].date.dayOfYear();
+      const firstDay = countyData[0].date.dayOfYear();
       dispatch((setDay(firstDay)));
     }
-  }, [nationalData])
+  }, [countyData])
 
   //store selectors
   const day = useSelector(state => state.day);
 
-  return nationalData && stateData && day
+  return nationalData && stateData && countyData && day
   ?
   (
     <div className="CovidApp">
-      <USMap nationalData={nationalData} stateData={stateData} day={day} />
-      <TimeSlider nationalData={nationalData} />
+      <USMap nationalData={nationalData} stateData={stateData} countyData={countyData} day={day} />
+      <TimeSlider countyData={countyData} />
     </div>
   )
   :

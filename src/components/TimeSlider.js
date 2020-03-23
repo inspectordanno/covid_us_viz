@@ -7,11 +7,11 @@ import { quantile } from 'simple-statistics';
 
 import { setDay } from '../actions/actions';
 
-const TimeSlider = ({ nationalData }) => {
+const TimeSlider = ({ countyData }) => {
 
   const dispatch = useDispatch();
 
-  const days = nationalData.map(entry => {
+  const days = countyData.map(entry => {
     const day = entry.date.dayOfYear();
     return day;
   });

@@ -1,14 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
 
-import geojson from '../../dist/data/us_states.json';
+import stateGeoJson from '../../dist/data/us_states.json';
+import countyGeoJson from '../../dist/data/us_counties.json';
 import colors from '../util/colors';
 import statesDictionary from '../util/statesDictionary';
 
-const USMap = ({ nationalData, stateData, day }) => {
+const USMap = ({ nationalData, stateData, countyData, day }) => {
 
   //Puerto Rico is causing bugs, filtering out for now
-  geojson.features = geojson.features.filter(d => d.properties.NAME !== 'Puerto Rico');
+  stateGeoJson.features = stateGeoJson.features.filter(d => d.properties.NAME !== 'Puerto Rico');
 
   const width = 900;
   const height = 600;
@@ -17,39 +18,35 @@ const USMap = ({ nationalData, stateData, day }) => {
     .translate([width / 2, height / 2])
     .scale(width * 1.25);
 
-  const geoPath = d3.geoPath()
+  const pathGenerator = d3.geoPath()
     .projection(projection);
 
   const scaleCircle = (dataValue) => {
-    const newestData = stateData[0];
-    const tests = newestData.data.map(entry => entry.total);
-    const testsMax = d3.max(tests); //the largest amount of tests than an entry (municipality) has
+    const newestData = countyData[countyData.length - 1].data
+    const cases = newestData.map(d => d.countyData.cases);
+    const casesMax = d3.max(cases); //the largest amount of tests than a county has
 
+    //log scale represents exponential growth
     const scale = d3.scaleLinear()
-      .domain([0, testsMax])
-      .range([0, 25]);
+      .domain([0, casesMax])
+      .range([1, 25]);
 
     return scale(dataValue);
   }
 
-  const getCircleRadius = (d) => {
-    const currentDayData = stateData.find(entry => entry.date.dayOfYear() === day).data;
-    const currentStateData = currentDayData.find(entry => statesDictionary[entry.state] === d.properties.NAME);
-    if (currentStateData) {
-      return scaleCircle(currentStateData.total);
-    }
-  }
+  const currentDayData = countyData.find(entry => entry.date.dayOfYear() === day).data;
+  console.log(currentDayData);
 
   return (
-    <svg className="USMap"
+    <svg className="UsMap"
       width={width}
       height={height}
     >
-      <g className="geoMap_national">
-        {geojson.features.map((d) => 
+      <g className="UsMap_states">
+        {stateGeoJson.features.map(d => 
           <path 
             key={d.properties.NAME}
-            d={geoPath(d)}
+            d={pathGenerator(d)}
             className='us_state'
             id={d.properties.NAME}
             strokeWidth={0.25}
@@ -57,28 +54,25 @@ const USMap = ({ nationalData, stateData, day }) => {
           />
         )}
       </g>
-      <g className="geoMap_county">
-        {
-          //put county map over the national map, so national borders are preserved. genius!
-        }
+      <g className="UsMap_cases">
+          {
+            currentDayData.map(d => {
+              if (d.countyData.cases) {
+                return (
+                <circle
+                  key={d.countyMetadata.featureId}
+                  className='cases'
+                  id={d.countyMetadata.county}
+                  fill={colors.theme_peach}
+                  r={scaleCircle(d.countyData.cases)}
+                  transform={`translate(${projection(d.countyMetadata.coordinates)})`}
+                />
+                );
+              }
+            })
+          }
       </g>
-      <g className="geoMap_national__positives">
-          {geojson.features.map(d => {
-            return (
-              <circle
-              key={d.properties.NAME + '_tests'}
-              cx={geoPath.centroid(d)[0]}
-              cy={geoPath.centroid(d)[1]}
-              className='tests_circle'
-              id={d.properties.NAME + '_tests'}
-              fill={colors.theme_peach}
-              r={getCircleRadius(d)}
-              />
-            )
-          }  
-          )}
-      </g>
-      <g className="geoMap_national__tests">
+      <g className="UsMap_state__tests">
 
       </g>
     </svg>
