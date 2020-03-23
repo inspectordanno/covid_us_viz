@@ -46,26 +46,30 @@ export const fetchNationalData = async () => {
       });
 
       const timeSeriesRes = await json('https://coronadatascraper.com/timeseries.json');
-      const timeSeriesData = []; //final array that will hold times series data
 
       //looping over date objects
-      Object.entries(timeSeriesRes).forEach(entry => {
+      const timeSeriesData = Object.entries(timeSeriesRes).map(entry => {
         const date = entry[0]; //date of date object
         const dateData = entry[1]; //data for each date object being looped over
-
+        //new data object which will be returned
+        const newDateObject = {
+          date: moment(date, 'YYYY-M-DD'),
+          data: []
+        } 
+        
         Object.keys(metaDataDict).forEach(countyKey => { 
           //loop through county keys
           //if key is in county meta data dictionary, return new object
           if (dateData[countyKey]) {
-            timeSeriesData.push({
-              date: moment(date, 'YYYY-M-DD'),
-              data: dateData[countyKey],
-              metaData: metaDataDict[countyKey]
-            });
+              newDateObject.data.push(
+                { countyData: dateData[countyKey], countyMetadata: metaDataDict[countyKey] }
+              );
           }
         });
+        console.log(newDateObject);
+        return newDateObject;
       });
-      console.log(timeSeriesData);
+      console.log(timeSeriesData)
       return timeSeriesData;
     } catch (e) {
       console.error(e);
