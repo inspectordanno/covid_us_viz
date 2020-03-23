@@ -35,7 +35,7 @@ const USMap = ({ nationalData, stateData, countyData, day }) => {
   }
 
   const currentDayData = countyData.find(entry => entry.date.dayOfYear() === day).data;
-  console.log(currentDayData);
+  console.log(currentDayData.find(d => d.countyMetadata.county === 'Los Angeles County'));
 
   return (
     <svg className="UsMap"
@@ -62,7 +62,7 @@ const USMap = ({ nationalData, stateData, countyData, day }) => {
                 <circle
                   key={d.countyMetadata.featureId}
                   className='cases'
-                  id={d.countyMetadata.county}
+                  id={`${d.countyMetadata.county} ${d.countyMetadata.state}`}
                   fill={colors.theme_peach}
                   r={scaleCircle(d.countyData.cases)}
                   transform={`translate(${projection(d.countyMetadata.coordinates)})`}
