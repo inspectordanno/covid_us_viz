@@ -1,4 +1,4 @@
-import { json } from 'd3-fetch';
+import { csv, json } from 'd3-fetch';
 import moment from 'moment';
 import { groups } from 'd3-array';
 
@@ -34,17 +34,22 @@ export const fetchNationalData = async () => {
     }
   }
 
+  // get location metadata
+  const fetchCountyMetadata = async () => {
+     try {
+      let locationsMetadata = await json('https://coronadatascraper.com/locations.json');
+      locationsMetadata.forEach((d,i) => d.locationKey = i);
+      const countyMetadata = locationsMetadata.filter(d => d.county && d.country === 'USA'); //only keeping U.S. counties
+      return countyMetadata;
+     } catch (e) {
+       console.error(e);
+     } 
+  }
+
   //fetch u.s. county data
   export const fetchCountyData = async () => {
     try {
-      // get location metadata
-      const locationsMetadata = await json('https://coronadatascraper.com/locations.json');
-      const countyMetadata = locationsMetadata.filter(d => d.county && d.country === 'USA'); //only keeping U.S. counties
-      const metaDataDict = {}; //object where is key is countyKey, object is county metadata
-      countyMetadata.forEach(d => {
-        metaDataDict[d.featureId] = d; //creates a countyKey for each county's metadata
-      });
-
+      const countyMetadata = await fetchCountyMetadata();
       const timeSeriesRes = await json('https://coronadatascraper.com/timeseries.json');
 
       //looping over date objects
@@ -56,13 +61,12 @@ export const fetchNationalData = async () => {
           date: moment(date, 'YYYY-M-DD'),
           data: []
         } 
-        
-        Object.keys(metaDataDict).forEach(countyKey => { 
+        countyMetadata.forEach(d => { 
           //loop through county keys
           //if key is in county meta data dictionary, return new object
-          if (dateData[countyKey]) {
+          if (dateData[d.locationKey]) {
               newDateObject.data.push(
-                { countyData: dateData[countyKey], countyMetadata: metaDataDict[countyKey] }
+                { countyData: dateData[d.locationKey], countyMetadata: d }
               );
           }
         });

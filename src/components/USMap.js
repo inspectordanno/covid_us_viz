@@ -11,8 +11,8 @@ const USMap = ({ nationalData, stateData, countyData, day }) => {
   //Puerto Rico is causing bugs, filtering out for now
   stateGeoJson.features = stateGeoJson.features.filter(d => d.properties.NAME !== 'Puerto Rico');
 
-  const width = 900;
-  const height = 600;
+  const width = 1200;
+  const height = 700;
 
   const projection = d3.geoAlbersUsa()
     .translate([width / 2, height / 2])
@@ -29,13 +29,12 @@ const USMap = ({ nationalData, stateData, countyData, day }) => {
     //log scale represents exponential growth
     const scale = d3.scaleLinear()
       .domain([0, casesMax])
-      .range([1, 25]);
+      .range([1, 100]);
 
     return scale(dataValue);
   }
 
   const currentDayData = countyData.find(entry => entry.date.dayOfYear() === day).data;
-  console.log(currentDayData.find(d => d.countyMetadata.county === 'Los Angeles County'));
 
   return (
     <svg className="UsMap"
@@ -57,15 +56,21 @@ const USMap = ({ nationalData, stateData, countyData, day }) => {
       <g className="UsMap_cases">
           {
             currentDayData.map(d => {
-              if (d.countyData.cases) {
+              //counties without coordinates
+              //geocode these?
+              if (d.countyData.cases && !d.countyMetadata.coordinates) {
+                console.log(d.countyMetadata);
+              }
+              //if there are cases and coordinates of county, draw circle
+              if (d.countyData.cases && d.countyMetadata.coordinates) {
                 return (
                 <circle
-                  key={d.countyMetadata.featureId}
+                  key={d.countyMetadata.locationKey}
                   className='cases'
                   id={`${d.countyMetadata.county} ${d.countyMetadata.state}`}
-                  fill={colors.theme_peach}
                   r={scaleCircle(d.countyData.cases)}
                   transform={`translate(${projection(d.countyMetadata.coordinates)})`}
+                  strokeWidth={1}
                 />
                 );
               }

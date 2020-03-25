@@ -1,13 +1,20 @@
-@use "colors";
+@use 'colors' as *;
+@use 'sass:color';
 
 .us_state {
-  fill: colors.$theme_blue;
+  fill: $theme_blue;
   transition: fill 0.5s ease;
 
   &:hover {
-    fill: colors.$theme_tan;
+    fill: $theme_tan;
     cursor: pointer;
   }
+}
+
+.cases {
+  fill: rgba($theme_peach, .12);
+  pointer-events: none;
+  stroke: color.scale($theme_peach, $lightness: -30%);
 }
 
 
