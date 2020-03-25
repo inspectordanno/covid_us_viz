@@ -59,7 +59,7 @@ const USMap = ({ nationalData, stateData, countyData, day }) => {
               //counties without coordinates
               //geocode these?
               if (d.countyData.cases && !d.countyMetadata.coordinates) {
-                console.log(d.countyMetadata);
+                console.log(d.countyMetadata.county, d.countyMetadata.state);
               }
               //if there are cases and coordinates of county, draw circle
               if (d.countyData.cases && d.countyMetadata.coordinates) {

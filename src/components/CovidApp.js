@@ -34,11 +34,11 @@ const CovidApp = () => {
 
   //when county data is populated, gets first day and sends it to store
   useEffect(() => {
-    if (nationalData) {
-      const firstDay = countyData[0].date.dayOfYear();
+    if (stateData) {
+      const firstDay = stateData[0].date.dayOfYear();
       dispatch((setDay(firstDay)));
     }
-  }, [countyData])
+  }, [stateData])
 
   //store selectors
   const day = useSelector(state => state.day);

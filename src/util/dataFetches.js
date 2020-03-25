@@ -69,11 +69,11 @@ export const fetchNationalData = async () => {
                 { countyData: dateData[d.locationKey], countyMetadata: d }
               );
           }
-        });
+        })
         return newDateObject;
-      });
-      //only return dates that have data associated with them
-      return timeSeriesData.filter(d => d.data.length !== 0);
+      })
+      .filter(d => d.data.length !== 0) //only return dates that have data associated with them
+      return timeSeriesData;
     } catch (e) {
       console.error(e);
     }
