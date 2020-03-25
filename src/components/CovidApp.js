@@ -34,11 +34,11 @@ const CovidApp = () => {
 
   //when county data is populated, gets first day and sends it to store
   useEffect(() => {
-    if (stateData) {
-      const firstDay = stateData[0].date.dayOfYear();
+    if (countyData) {
+      const firstDay = countyData[0].date.dayOfYear();
       dispatch((setDay(firstDay)));
     }
-  }, [stateData])
+  }, [countyData])
 
   //store selectors
   const day = useSelector(state => state.day);
@@ -47,8 +47,8 @@ const CovidApp = () => {
   ?
   (
     <div className="CovidApp">
-      <USMap nationalData={nationalData} stateData={stateData} countyData={countyData} day={day} />
       <TimeSlider countyData={countyData} />
+      <USMap nationalData={nationalData} stateData={stateData} countyData={countyData} day={day} />
     </div>
   )
   :

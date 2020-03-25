@@ -2,9 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
 
 import stateGeoJson from '../../dist/data/us_states.json';
-import countyGeoJson from '../../dist/data/us_counties.json';
-import colors from '../util/colors';
-import statesDictionary from '../util/statesDictionary';
 
 const USMap = ({ nationalData, stateData, countyData, day }) => {
 
@@ -34,7 +31,10 @@ const USMap = ({ nationalData, stateData, countyData, day }) => {
     return scale(dataValue);
   }
 
-  const currentDayData = countyData.find(entry => entry.date.dayOfYear() === day).data;
+  const currentDayData = countyData.find(entry => entry.date.dayOfYear() === day)
+    .data.filter(d => d.countyData.cases && d.countyMetadata.coordinates)
+     //filter if there are cases and coordinates of county
+     //what about counties that don't have coordinates...geocode them?
 
   return (
     <svg className="UsMap"
@@ -56,24 +56,16 @@ const USMap = ({ nationalData, stateData, countyData, day }) => {
       <g className="UsMap_cases">
           {
             currentDayData.map(d => {
-              //counties without coordinates
-              //geocode these?
-              if (d.countyData.cases && !d.countyMetadata.coordinates) {
-                console.log(d.countyMetadata.county, d.countyMetadata.state);
-              }
-              //if there are cases and coordinates of county, draw circle
-              if (d.countyData.cases && d.countyMetadata.coordinates) {
-                return (
-                <circle
-                  key={d.countyMetadata.locationKey}
-                  className='cases'
-                  id={`${d.countyMetadata.county} ${d.countyMetadata.state}`}
-                  r={scaleCircle(d.countyData.cases)}
-                  transform={`translate(${projection(d.countyMetadata.coordinates)})`}
-                  strokeWidth={1}
-                />
-                );
-              }
+              return (
+              <circle
+                key={d.countyMetadata.locationKey}
+                className='cases'
+                id={`${d.countyMetadata.county} ${d.countyMetadata.state}`}
+                r={scaleCircle(d.countyData.cases)}
+                transform={`translate(${projection(d.countyMetadata.coordinates)})`}
+                strokeWidth={1}
+              />
+              );
             })
           }
       </g>

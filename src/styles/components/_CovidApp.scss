@@ -4,7 +4,8 @@
   align-content: center;
   background-color: colors.$theme_green;
   display: grid;
+  grid-template-columns: auto auto;
   height: 100%;
-  justify-content: center;
+  justify-content: space-evenly;
   width: 100%;
 }

@@ -63,6 +63,8 @@ const TimeSlider = ({ countyData }) => {
 
   return (
     <Slider 
+      defaultValue={min(days)}
+      orientation="vertical"
       min={min(days)}
       max={max(days)}
       onChange={handleOnChange}
