@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import intersection from 'lodash/intersection';
+import { min } from 'd3-array';
 
 import { setDay } from '../actions/actions';
 import { fetchNationalData, fetchStateData, fetchCountyData } from '../util/dataFetches';
@@ -11,6 +13,7 @@ const CovidApp = () => {
   const [nationalData, setNationalData] = useState();
   const [stateData, setStateData] = useState();
   const [countyData, setCountyData] = useState();
+  const [days, setDays] = useState();
   const dispatch = useDispatch();
 
   //fetches data on mount
@@ -22,6 +25,7 @@ const CovidApp = () => {
         const countyDataRes = await fetchCountyData();
         // const countyDataCsvRes = await fetchCountyDataCsv();
         // console.log(countyDataCsvRes);
+        console.log(stateDataRes);
         setNationalData(nationalDataRes);
         setStateData(stateDataRes);
         setCountyData(countyDataRes);
@@ -32,22 +36,39 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
-  //when county data is populated, gets first day and sends it to store
+  //get days in common amongst data
   useEffect(() => {
-    if (countyData) {
-      const firstDay = countyData[0].date.dayOfYear();
+    if (stateData && countyData) {
+      //gets numeric days
+      const getDays = (municipalData) => {
+        return municipalData.map(entry => {
+          const day = entry.date.dayOfYear();
+          return day;
+        });
+      }
+
+      //find intersection of arrays so there are no gaps between state and county data
+      const daysInCommon = intersection(getDays(stateData), getDays(countyData));
+      
+      //get first day
+      const firstDay = min(daysInCommon);
+      
+      //set current day to first day
       dispatch((setDay(firstDay)));
+
+      //set days 
+      setDays(daysInCommon);
     }
-  }, [countyData])
+  }, [stateData, countyData])
 
   //store selectors
   const day = useSelector(state => state.day);
 
-  return nationalData && stateData && countyData && day
+  return nationalData && stateData && countyData && days && day
   ?
   (
     <div className="CovidApp">
-      <TimeSlider stateData={stateData} countyData={countyData} day={day} />
+      <TimeSlider days={days} />
       <USMap nationalData={nationalData} stateData={stateData} countyData={countyData} day={day} />
     </div>
   )

@@ -4,22 +4,10 @@ import { min, max } from 'd3-array';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import { quantile } from 'simple-statistics';
-import intersection from 'lodash/intersection';
 
 import { setDay } from '../actions/actions';
 
-const TimeSlider = ({ stateData, countyData }) => {
-
-  //gets numeric days
-  const getDays = (municipalData) => {
-    return municipalData.map(entry => {
-      const day = entry.date.dayOfYear();
-      return day;
-    });
-  }
-
-  //find intersection of arrays so there are no gaps between state and county data
-  const days = intersection(getDays(stateData), getDays(countyData));
+const TimeSlider = ({ days }) => {
 
   const dispatch = useDispatch();
   const [dayState, setDayState] = useState(min(days));
