@@ -47,7 +47,7 @@ const CovidApp = () => {
   ?
   (
     <div className="CovidApp">
-      <TimeSlider countyData={countyData} />
+      <TimeSlider countyData={countyData} day={day} />
       <USMap nationalData={nationalData} stateData={stateData} countyData={countyData} day={day} />
     </div>
   )

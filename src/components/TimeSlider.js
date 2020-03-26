@@ -1,15 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Slider } from '@material-ui/core';
 import { min, max } from 'd3-array';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import { quantile } from 'simple-statistics';
+import usePrevious from '../util/usePrevious';
 
 import { setDay } from '../actions/actions';
 
-const TimeSlider = ({ countyData }) => {
+const TimeSlider = ({ countyData, day }) => {
 
   const dispatch = useDispatch();
+  const [dayState, setDayState] = useState(day);
+  const [stopped, setStopped] = useState(false);
 
   const days = countyData.map(entry => {
     const day = entry.date.dayOfYear();
@@ -22,10 +25,6 @@ const TimeSlider = ({ countyData }) => {
       value = min(days);
     }
     return moment(value, 'DDD DDDD').format('MMM D');
-  }
-
-  const handleOnChange = (event, value) => {
-    dispatch(setDay(value));
   }
 
   //calculates the mark values (quantiles) for the slider
@@ -61,9 +60,36 @@ const TimeSlider = ({ countyData }) => {
     }
   });
 
+  //timer which animates the slider
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDayState(dayState => dayState + 1);
+      dispatch(setDay(dayState));
+    }, 100);
+    //when last day is reached, stop timer
+    //or
+    //when slider is stopped (clicked), stop timer
+    //this is running clearInterval multiple times but haven't found a fix around this at the moment, oh well
+    if (dayState === max(days) || stopped) {
+      console.log('stopped');
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  },[dayState, stopped])
+
+  const handleOnChange = (event, value) => {
+    //if slider has not been stopped, set stopped to true
+    if (!stopped) {
+      setStopped(true);
+    }
+    //set dayState to value of the slider instead of the timer setting it
+    setDayState(value);
+    dispatch(setDay(value));
+  }
+
   return (
     <Slider 
-      defaultValue={min(days)}
+      value={dayState}
       orientation="vertical"
       min={min(days)}
       max={max(days)}
