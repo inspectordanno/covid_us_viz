@@ -4,20 +4,26 @@ import { min, max } from 'd3-array';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import { quantile } from 'simple-statistics';
-import usePrevious from '../util/usePrevious';
+import intersection from 'lodash/intersection';
 
 import { setDay } from '../actions/actions';
 
-const TimeSlider = ({ countyData, day }) => {
+const TimeSlider = ({ stateData, countyData }) => {
+
+  //gets numeric days
+  const getDays = (municipalData) => {
+    return municipalData.map(entry => {
+      const day = entry.date.dayOfYear();
+      return day;
+    });
+  }
+
+  //find intersection of arrays so there are no gaps between state and county data
+  const days = intersection(getDays(stateData), getDays(countyData));
 
   const dispatch = useDispatch();
-  const [dayState, setDayState] = useState(day);
+  const [dayState, setDayState] = useState(min(days));
   const [stopped, setStopped] = useState(false);
-
-  const days = countyData.map(entry => {
-    const day = entry.date.dayOfYear();
-    return day;
-  });
 
   const valueLabelFormat = (value) => {
     //fixes bug where first value of slider is NaN until slider is clicked
