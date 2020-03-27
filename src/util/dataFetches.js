@@ -2,6 +2,8 @@ import { csv, json } from 'd3-fetch';
 import moment from 'moment';
 import { groups } from 'd3-array';
 
+import countyDict from '../../dist/data/county_dict.json';
+
 export const fetchNationalData = async () => {
   try {
     const res = await json('https://covidtracking.com/api/us/daily');
@@ -9,7 +11,7 @@ export const fetchNationalData = async () => {
     return res.map((entry) => {
       return {
         ...entry,
-        date: moment(entry.date, 'YYYYMMDD')
+        date: moment(entry.date, 'YYYYMMDD').dayOfYear()
       }
     });
   } catch (e) {
@@ -24,7 +26,7 @@ export const fetchNationalData = async () => {
       const groupedByDate = groups(res, d => d.date);
       const dateFormatted = groupedByDate.map(entry => {
         return {
-          date: moment(entry[0], 'YYYYMMDD'),
+          date: moment(entry[0], 'YYYYMMDD').dayOfYear(),
           data: entry[1]
         }
       });
@@ -58,7 +60,7 @@ export const fetchNationalData = async () => {
         const dateData = entry[1]; //data for each date object being looped over
         //new data object which will be returned
         const newDateObject = {
-          date: moment(date, 'YYYY-M-DD'),
+          date: moment(date, 'YYYY-M-DD').dayOfYear(),
           data: []
         } 
         countyMetadata.forEach(d => { 
@@ -76,6 +78,33 @@ export const fetchNationalData = async () => {
       return timeSeriesData;
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  export const fetchCountyNyt = async () => {
+    const url = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv';
+    try {
+      const countyRes = await csv(url, (d) => {
+        const formatted = {
+          ...d,
+          date: moment(d.date, 'YYYY-MM-DD').dayOfYear(),
+          cases: +d.cases,
+          deaths: +d.deaths,
+          coordinates: countyDict[d.fips]
+        };
+
+        if (d.county === 'New York City')
+
+        return {
+          ...d,
+          date: moment(d.date, 'YYYY-MM-DD').dayOfYear(),
+          cases: +d.cases,
+          deaths: +d.deaths,
+          coordinates: countyDict[d.fips]
+        }
+      });
+    } catch (e) {
+
     }
   }
 

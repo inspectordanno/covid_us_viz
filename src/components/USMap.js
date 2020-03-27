@@ -33,13 +33,13 @@ const USMap = ({ nationalData, stateData, countyData, day }) => {
     return scale(dataValue);
   }
 
-  const currentCountyData = countyData.find(entry => entry.date.dayOfYear() === day)
+  const currentCountyData = countyData.find(entry => entry.date === day)
     .data.filter(d => d.countyData.cases && d.countyMetadata.coordinates)
      //filter if there are cases and coordinates of county
      //what about counties that don't have coordinates...geocode them?
 
   const getStatePositives = (stateName) => {
-    const foundState = stateData.find(entry => entry.date.dayOfYear() === day)
+    const foundState = stateData.find(entry => entry.date === day)
       .data.find(entry => entry.state === abbrDict[stateName]);
 
     //if state exists in that days data, return amount of positve cases
