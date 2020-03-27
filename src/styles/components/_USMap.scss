@@ -11,7 +11,15 @@
   }
 }
 
-.cases {
+.us_state__label {
+
+}
+
+.us_state__value {
+  
+}
+
+.cases_circle {
   fill: rgba($theme_peach, .12);
   pointer-events: none;
   stroke: color.scale($theme_peach, $lightness: -30%);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, Fragment } from 'react';
 import * as d3 from 'd3';
 
+import colors from '../util/colors';
 import stateGeoJson from '../../dist/data/us_states.json';
 import { abbrDict, apStyleDict } from '../util/stateDictionary';
 
@@ -37,8 +38,14 @@ const USMap = ({ nationalData, stateData, countyData, day }) => {
      //filter if there are cases and coordinates of county
      //what about counties that don't have coordinates...geocode them?
 
-  const currentStateData = stateData.find(entry => entry.date.dayOfYear() === day)
-  console.log(day);
+  const getStatePositives = (stateName) => {
+    const foundState = stateData.find(entry => entry.date.dayOfYear() === day)
+      .data.find(entry => entry.state === abbrDict[stateName]);
+
+    //if state exists in that days data, return amount of positve cases
+    //if it doesn't exist, return 0
+    return foundState ? foundState.positive : 0;
+  }
 
   return (
     <svg className="UsMap"
@@ -47,46 +54,56 @@ const USMap = ({ nationalData, stateData, countyData, day }) => {
     >
       <g className="UsMap_states">
         {stateGeoJson.features.map(d =>
-          <Fragment>
-            <path 
-              key={d.properties.NAME}
-              d={pathGenerator(d)}
-              className='us_state'
-              id={d.properties.NAME}
-              strokeWidth={0.25}
-              stroke='black'
-            />
-            <text
-              key={`${d.properties.NAME} label`}
-              className='us_state_label'
-              x={pathGenerator().centroid(d)[0]}
-              y={pathGenerator().centroid(d)[1]}
-              textAnchor="middle"
-            >
-              <tspan>
-                `${apStyleDict[d.properties.NAME]}`
-              </tspan>
-              <tspan dy="10">
-                `${currentStateData.find(state => state.state === abbrDict[d.properties.NAME]).positive}`
-              </tspan>
-            </text>
-          </Fragment>
-          )
-        }
+          <path 
+            key={d.properties.NAME}
+            d={pathGenerator(d)}
+            className='us_state'
+            id={d.properties.NAME}
+            strokeWidth={0.25}
+            stroke='black'
+          />
+        )}
       </g>
       <g className="UsMap_cases">
-          {
-            currentCountyData.map(d => 
+          {currentCountyData.map(d => 
               <circle
                 key={d.countyMetadata.locationKey}
-                className='cases'
+                className='cases_circle'
                 id={`${d.countyMetadata.county} ${d.countyMetadata.state}`}
                 r={scaleCircle(d.countyData.cases)}
                 transform={`translate(${projection(d.countyMetadata.coordinates)})`}
                 strokeWidth={1}
               />
-            )
-          }
+          )}
+      </g>
+      <g className="UsMap_labels">
+        {stateGeoJson.features.map(d => {
+          const stateName = d.properties.NAME;
+          return (
+          <text
+              key={`${stateName} label`}
+              className="us_state__label"
+              x={pathGenerator.centroid(d)[0]}
+              y={pathGenerator.centroid(d)[1]}
+            >
+            <tspan 
+              className="us_state__name"
+              textAnchor='middle'
+              >
+              {apStyleDict[stateName]}
+            </tspan>
+            <tspan 
+              className="us_state__value"
+              dx="-25"
+              dy="20"
+              textAnchor='middle'
+              >
+              {getStatePositives(stateName)}
+            </tspan>
+          </text>
+          );
+        })
+        }
       </g>
     </svg>
   );

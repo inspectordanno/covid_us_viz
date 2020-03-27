@@ -25,7 +25,6 @@ const CovidApp = () => {
         const countyDataRes = await fetchCountyData();
         // const countyDataCsvRes = await fetchCountyDataCsv();
         // console.log(countyDataCsvRes);
-        console.log(stateDataRes);
         setNationalData(nationalDataRes);
         setStateData(stateDataRes);
         setCountyData(countyDataRes);
