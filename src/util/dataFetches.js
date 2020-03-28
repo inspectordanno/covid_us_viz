@@ -93,18 +93,26 @@ export const fetchNationalData = async () => {
           coordinates: countyDict[d.fips]
         };
 
-        if (d.county === 'New York City')
+        const returnCoordinates = (coords) => {
+          return {
+            ...formatted,
+            coordinates: coords
+          }
+        }
 
-        return {
-          ...d,
-          date: moment(d.date, 'YYYY-MM-DD').dayOfYear(),
-          cases: +d.cases,
-          deaths: +d.deaths,
-          coordinates: countyDict[d.fips]
+        if (d.county === 'New York City') {
+          returnCoordinates([74.006, 40.713]);
+        } else if (d.state === 'Rhode Island') {
+          returnCoordinates([71.477, 41.580]);
+        } else if (d.county === 'Do√±a Ana') {
+          returnCoordinates(countyDict['35013']);
+        } else  {
+          return formatted;
         }
       });
+      return countyRes;
     } catch (e) {
-
+      console.error(e);
     }
   }
 
