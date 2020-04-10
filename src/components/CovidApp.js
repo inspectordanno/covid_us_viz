@@ -4,7 +4,7 @@ import intersection from 'lodash/intersection';
 import { min } from 'd3-array';
 
 import { setDay } from '../actions/actions';
-import { fetchNationalData, fetchStateData, fetchCountyData, fetchCountyNyt } from '../util/dataFetches';
+import { fetchNationalData, fetchStateData, fetchCountyData, fetchCountyNyt, fetchStateNyt } from '../util/dataFetches';
 import USMap from './USMap';
 import TimeSlider from './TimeSlider';
 
@@ -24,7 +24,9 @@ const CovidApp = () => {
         const stateDataRes = await fetchStateData();
         const countyDataRes = await fetchCountyData();
         const countyNytRes = await fetchCountyNyt();
+        const stateNytRes = await fetchStateNyt();
         console.log(countyNytRes);
+        console.log(stateNytRes);
         setNationalData(nationalDataRes);
         setStateData(stateDataRes);
         setCountyData(countyDataRes);
