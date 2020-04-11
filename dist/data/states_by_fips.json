@@ -222,5 +222,9 @@
     "56": {
         "abbreviation": "WY",
         "name": "Wyoming"
+    },
+    "72": {
+        "abbreviation": "PR",
+        "name": "Puerto Rico"
     }
 }

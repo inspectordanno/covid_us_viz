@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchCountyNyt, fetchStateNyt } from '../util/dataFetches';
 import USMap from './USMap';
+import Info from './Info';
 
 const CovidApp = () => {
   const [stateData, setStateData] = useState();
@@ -28,6 +29,7 @@ const CovidApp = () => {
   (
     <div className="CovidApp">
       <USMap stateData={stateData} countyData={countyData}/>
+      <Info />
     </div>
   )
   :

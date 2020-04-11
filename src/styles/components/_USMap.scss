@@ -1,7 +1,15 @@
 @use 'colors' as *;
 @use 'sass:color';
 
+.usmap {
+  margin-top: 10vh;
+}
+
 .us_state {
+  fill: transparent;
+}
+
+.us_county {
   fill: lightgray;
 }
 
