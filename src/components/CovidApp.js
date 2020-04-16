@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchCountyNyt, fetchStateNyt } from '../util/dataFetches';
 import USMap from './USMap';
-import Info from './Info';
+import DataPoints from './DataPoints';
 
 const CovidApp = () => {
   const [stateData, setStateData] = useState();
@@ -24,12 +24,15 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
+  const width = window.innerWidth * .8;
+  const height = window.innerHeight;
+
   return stateData && countyData
   ?
   (
     <div className="CovidApp">
-      <USMap stateData={stateData} countyData={countyData}/>
-      <Info />
+      <USMap stateData={stateData} countyData={countyData} width={width} height={height}/>
+      <DataPoints width={width} height={height} />
     </div>
   )
   :

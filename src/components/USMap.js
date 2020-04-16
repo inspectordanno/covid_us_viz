@@ -7,29 +7,14 @@ import countyGeoJson from '../../dist/data/us_counties.json';
 import stateFips from '../../dist/data/states_by_fips.json';
 import { abbrDict, apStyleDict } from '../util/stateDictionary';
 
-const USMap = ({ nationalData, stateData, countyData }) => {
-
-  const svgRef = useRef();
-
-  const width = 1000;
-  const height = 700;
-
+const USMap = ({ nationalData, stateData, countyData, width, height }) => {
+  
   const projection = d3.geoAlbersUsa()
-    .translate([width / 2, height / 2])
+    .translate([width * .5, height * .55])
     .scale(width * 1.25);
 
   const pathGenerator = d3.geoPath()
     .projection(projection);
-
-  useEffect(() => {
-    //trims whitespace from svg
-    if (svgRef) {
-      const svg = document.querySelector('.usmap');
-      const box = svg.getBBox();
-      const viewBox = [box.x, box.y, box.width, box.height].join(' ');
-      svg.setAttribute('viewBox', viewBox);
-    }
-  }, []);
 
   return true
   ?
@@ -37,9 +22,8 @@ const USMap = ({ nationalData, stateData, countyData }) => {
     <svg className="usmap"
       width={width}
       height={height}
-      ref={svgRef}
     >
-      <g className="usmap_counties">
+      <g className="usmap_counties" >
         {countyGeoJson.features.map(d =>
           <path 
             key={d.properties.GEO_ID}
@@ -51,7 +35,7 @@ const USMap = ({ nationalData, stateData, countyData }) => {
           />
         )}
       </g>
-      <g className="usmap_states">
+      <g className="usmap_states" >
         {stateGeoJson.features.map(d =>
           <path 
             key={d.properties.GEO_ID}
