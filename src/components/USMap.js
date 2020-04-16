@@ -1,31 +1,37 @@
 import React, { useEffect, useState, useRef, Fragment } from 'react';
+import { useDispatch } from 'react-redux';
 import * as d3 from 'd3';
+
 import colors from '../util/colors';
 import stateGeoJson from '../../dist/data/us_states.json';
 import countyGeoJson from '../../dist/data/us_counties.json';
 import stateFips from '../../dist/data/states_by_fips.json';
 import { abbrDict, apStyleDict } from '../util/stateDictionary';
+import { setSkyBbox } from '../actions/actions';
 
-const UsMap = ({ nationalData, stateData, countyData, width, height }) => {
+const UsMap = ({ stateData, countyData }) => {
 
   const countiesContainer = useRef();
   const svgContainer = useRef();
+  const dispatch = useDispatch();
+
+  const width = window.innerWidth * .8;
+  const height = window.innerHeight;
 
    //gets bounding box 
    useEffect(() => {
-    if (svgContainer.current && countiesContainer.current) {
-
-      const svgBoundingBox = svgContainer.current
-        .getBoundingClientRect();
-
       const countiesBoundingBox = countiesContainer.current
         .getBoundingClientRect();
 
-      console.log("svgBoundingBox: ", svgBoundingBox);
-      console.log("countiesBoundingBox: ", countiesBoundingBox);
-    }
+      const skyBoundingBox = {
+        top: 0,
+        right: window.innerWidth,
+        bottom: countiesBoundingBox.top,
+        left: 0
+      }
     
-  }, [svgContainer.current, countiesContainer.current])
+      dispatch(setSkyBbox(skyBoundingBox));    
+  }, [])
   
   const projection = d3.geoAlbersUsa()
     .translate([width * .5, height * .55])

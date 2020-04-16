@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { fetchCountyNyt, fetchStateNyt } from '../util/dataFetches';
 import UsMap from './UsMap';
 import DataPoints from './DataPoints';
@@ -6,9 +7,6 @@ import DataPoints from './DataPoints';
 const CovidApp = () => {
   const [stateData, setStateData] = useState();
   const [countyData, setCountyData] = useState();
-
-  const width = window.innerWidth * .8;
-  const height = window.innerHeight;
 
   //fetches data on mount
   useEffect(() => {
@@ -25,14 +23,14 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
+  const skyBbox = useSelector(d => d.skyBbox);
+
   return stateData && countyData
   ?
   (
     <div className="CovidApp">
-      <div className="map_container">
-        <UsMap stateData={stateData} countyData={countyData} width={width} height={height}/>
-        <DataPoints width={width} height={height} />
-      </div>
+      <UsMap stateData={stateData} countyData={countyData} />
+      <DataPoints skyBbox={skyBbox} />
     </div>
   )
   :

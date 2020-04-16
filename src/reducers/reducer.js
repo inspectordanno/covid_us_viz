@@ -9,6 +9,11 @@ export default (state = reducerDefaultState, action) => {
         ...state,
         day: action.day
       }
+    case 'SET_SKY_BBOX':
+      return {
+        ...state,
+        skyBbox: action.bbox
+      }
     default: 
       return state;
   }
