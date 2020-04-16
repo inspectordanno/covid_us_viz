@@ -11,10 +11,12 @@ const DataPoints = ({ skyBbox }) => {
   //creating [x, y] position of every single point in the "sky"
   const populateSkyPoints = (skyBbox) => {
     const skyPointPositions = [];
-    //center of circle are 2r away from each other - increasing loop by 2r
-    //x position
+    //center of circles [x, y] are (2 * radius) away from each other
+    //Thus, each loop iteration increase is 2r
+
+    //calculates x position of every point
     for (let x = skyBbox.left; x < skyBbox.right; x += pointRadius * 2) {
-      //y position
+      //calculates y position of every point
       for (let y = skyBbox.top; y < skyBbox.bottom; y += pointRadius * 2) {
         skyPointPositions.push([x, y]);
       }
