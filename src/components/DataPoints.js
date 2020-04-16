@@ -15,9 +15,11 @@ const DataPoints = ({ skyBbox }) => {
     //Thus, each loop iteration increase is 2r
 
     //calculates x position of every point
-    for (let x = skyBbox.left; x < skyBbox.right; x += pointRadius * 2) {
+    //first point is +radius away from the left, last point is -radius away from the right
+    for (let x = skyBbox.left + pointRadius; x < skyBbox.right - pointRadius; x += pointRadius * 2) {
       //calculates y position of every point
-      for (let y = skyBbox.top; y < skyBbox.bottom; y += pointRadius * 2) {
+      //first point is +radius away from the top, last point is -radius away from the bottom
+      for (let y = skyBbox.top + pointRadius; y < skyBbox.bottom - pointRadius; y += pointRadius * 2) {
         skyPointPositions.push([x, y]);
       }
     }
