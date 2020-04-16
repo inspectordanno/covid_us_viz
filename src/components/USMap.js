@@ -23,11 +23,12 @@ const UsMap = ({ stateData, countyData }) => {
       const countiesBoundingBox = countiesContainer.current
         .getBoundingClientRect();
 
+      //represents the bounding box of the "sky"
       const skyBoundingBox = {
-        top: 0,
-        right: window.innerWidth,
-        bottom: countiesBoundingBox.top,
-        left: 0
+        top: 0, //top of the screen
+        right: window.innerWidth, //right of the screen
+        bottom: countiesBoundingBox.top, //bottom of the "sky" aka the top of the U.S.
+        left: 0 //left of the screen
       }
     
       dispatch(setSkyBbox(skyBoundingBox));    
