@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { fetchCountyNyt, fetchStateNyt } from '../util/dataFetches';
-import USMap from './USMap';
+import UsMap from './UsMap';
 import DataPoints from './DataPoints';
 
 const CovidApp = () => {
   const [stateData, setStateData] = useState();
   const [countyData, setCountyData] = useState();
-  const dispatch = useDispatch();
+
+  const width = window.innerWidth * .8;
+  const height = window.innerHeight;
 
   //fetches data on mount
   useEffect(() => {
@@ -24,15 +25,14 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
-  const width = window.innerWidth * .8;
-  const height = window.innerHeight;
-
   return stateData && countyData
   ?
   (
     <div className="CovidApp">
-      <USMap stateData={stateData} countyData={countyData} width={width} height={height}/>
-      <DataPoints width={width} height={height} />
+      <div className="map_container">
+        <UsMap stateData={stateData} countyData={countyData} width={width} height={height}/>
+        <DataPoints width={width} height={height} />
+      </div>
     </div>
   )
   :
