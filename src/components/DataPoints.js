@@ -6,16 +6,20 @@ const DataPoints = ({ skyBbox }) => {
   const canvasContainer = useRef();
   const [skyPoints, setSkyPoints] = useState();
 
+  const pointRadius = 5;
+
   //creating [x, y] position of every single point in the "sky"
   const populateSkyPoints = (skyBbox) => {
     const skyPointPositions = [];
+    //center of circle are 2r away from each other - increasing loop by 2r
     //x position
-    for (let x = skyBbox.left; x < skyBbox.right; x++) {
+    for (let x = skyBbox.left; x < skyBbox.right; x += pointRadius * 2) {
       //y position
-      for (let y = skyBbox.top; y < skyBbox.bottom; y++) {
+      for (let y = skyBbox.top; y < skyBbox.bottom; y += pointRadius * 2) {
         skyPointPositions.push([x, y]);
       }
     }
+    console.log(skyPointPositions);
     setSkyPoints(skyPointPositions);
   }
 
