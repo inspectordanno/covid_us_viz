@@ -44,12 +44,12 @@ const UsMap = ({ stateData, countyData }) => {
   return true
   ?
   (
-    <svg className="usmap"
+    <svg className="UsMap"
       width={width}
       height={height}
       ref={svgContainer}
     >
-      <g className="usmap_counties" ref={countiesContainer}>
+      <g className="UsMap_counties" ref={countiesContainer}>
         {countyGeoJson.features.map(d =>
           <path 
             key={d.properties.GEO_ID}
@@ -61,7 +61,7 @@ const UsMap = ({ stateData, countyData }) => {
           />
         )}
       </g>
-      <g className="usmap_states" >
+      <g className="UsMap_states" >
         {stateGeoJson.features.map(d =>
           <path 
             key={d.properties.GEO_ID}

@@ -27,8 +27,6 @@ const DataPoints = ({ countyData, skyBbox }) => {
     setSkyPoints(skyPointPositions);
   }
 
-  console.log(countyData);
-
   const drawPoints = (countyData, day) => {
     
   }
