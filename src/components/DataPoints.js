@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useEffect } from 'react';
 
-const DataPoints = ({ skyBbox }) => {
+const DataPoints = ({ countyData, skyBbox }) => {
 
   const canvasContainer = useRef();
   const [skyPoints, setSkyPoints] = useState();
@@ -27,6 +27,12 @@ const DataPoints = ({ skyBbox }) => {
     setSkyPoints(skyPointPositions);
   }
 
+  console.log(countyData);
+
+  const drawPoints = (countyData, day) => {
+    
+  }
+
   //populates skyPoints
   useEffect(() => {
     if (skyBbox) {
@@ -41,7 +47,7 @@ const DataPoints = ({ skyBbox }) => {
 
   },[canvasContainer.current])
 
-  return skyBbox && skyPoints
+  return skyPoints
   ?
   (
     <canvas

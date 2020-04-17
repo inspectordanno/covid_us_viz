@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { fetchCountyNyt, fetchStateNyt } from '../util/dataFetches';
+import { fetchStateNyt, fetchCountyNyt } from '../util/dataFetches';
 import UsMap from './UsMap';
 import DataPoints from './DataPoints';
 
 const CovidApp = () => {
-  const [stateData, setStateData] = useState();
-  const [countyData, setCountyData] = useState();
+  const [covidData, setCovidData] = useState();
 
   //fetches data on mount
   useEffect(() => {
@@ -14,8 +13,7 @@ const CovidApp = () => {
       try {
         const stateRes = await fetchStateNyt();
         const countyRes = await fetchCountyNyt();
-        setStateData(stateRes);
-        setCountyData(countyRes);
+        setCovidData({ state: stateRes, county: countyRes });
       } catch (e) {
         console.error(e);
       } 
@@ -25,12 +23,12 @@ const CovidApp = () => {
 
   const skyBbox = useSelector(d => d.skyBbox);
 
-  return stateData && countyData
+  return covidData
   ?
   (
     <div className="CovidApp">
-      <UsMap stateData={stateData} countyData={countyData} />
-      <DataPoints skyBbox={skyBbox} />
+      <UsMap stateData={covidData.state} countyData={covidData.county} />
+      <DataPoints countyData={covidData.county} skyBbox={skyBbox} />
     </div>
   )
   :
