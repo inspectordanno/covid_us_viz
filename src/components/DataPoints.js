@@ -1,9 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, Fragment } from 'react';
+import * as d3 from 'd3';
 import { useEffect } from 'react';
 
-const DataPoints = ({ countyData, skyBbox }) => {
+import { projection } from './UsMap';
 
-  const canvasContainer = useRef();
+const DataPoints = ({ countyData, day, skyBbox }) => {
+
+  const canvasRef = useRef();
   const [skyPoints, setSkyPoints] = useState();
 
   const pointRadius = 5;
@@ -27,10 +30,6 @@ const DataPoints = ({ countyData, skyBbox }) => {
     setSkyPoints(skyPointPositions);
   }
 
-  const drawPoints = (countyData, day) => {
-    
-  }
-
   //populates skyPoints
   useEffect(() => {
     if (skyBbox) {
@@ -39,21 +38,26 @@ const DataPoints = ({ countyData, skyBbox }) => {
   }, [skyBbox])
 
   useEffect(() => {
-    if (canvasContainer.current) {
-      //canvas work here
+    if (canvasRef.current) {
+      const currentDayData = countryData.get(day);
+      const canvas = d3.select(canvasRef.current);
+      const context = canvas.node().getContext('2d');
+      const customBase = document.createElement('custom');
+      const custom = d3.select(customBase);
+
+      //continue d3 canvas stuff here
     }
 
-  },[canvasContainer.current])
+  },[canvasRef.current])
 
   return skyPoints
   ?
   (
     <canvas
-      className='DataPoints'
-      width={window.innerWidth}
-      height={window.innerHeight} 
-      ref={canvasContainer} >
-    </canvas>
+    className='DataPoints'
+    width={window.innerWidth}
+    height={window.innerHeight} 
+    />
   )
   :
   null;

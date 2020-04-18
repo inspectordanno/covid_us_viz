@@ -1,19 +1,21 @@
 import { csv, json } from 'd3-fetch';
 import moment from 'moment';
-import { groups } from 'd3-array';
+import { group, groups } from 'd3-array';
 
 import countyDict from '../../dist/data/county_dict.json';
 
 //groups data by date and formats date
 const groupAndFormat = (dataRes) => {
-  const groupedByDate = groups(dataRes, d => d.date);
-  const dateFormatted = groupedByDate.map(entry => {
-    return {
-      date: moment(entry[0], 'YYYYMMDD').dayOfYear(),
-      data: entry[1]
-    }
+  const groupedByDate = group(dataRes, d => d.date); //returns es6 map
+
+  //es6 map
+  //sets new formatted key with value
+  const groupedFormatted = new Map();
+  groupedByDate.forEach((value, key) => {
+    const date = moment(key, 'YYYY-MM-DD').dayOfYear();
+    groupedFormatted.set(date, value)
   });
-  return dateFormatted;
+  return groupedFormatted;
 }
 
 export const fetchStateNyt = async () => {

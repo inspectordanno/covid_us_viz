@@ -6,17 +6,15 @@ import colors from '../util/colors';
 import stateGeoJson from '../../dist/data/us_states.json';
 import countyGeoJson from '../../dist/data/us_counties.json';
 import stateFips from '../../dist/data/states_by_fips.json';
+import albersProjection from '../util/albersProjection';
 import { abbrDict, apStyleDict } from '../util/stateDictionary';
 import { setSkyBbox } from '../actions/actions';
 
-const UsMap = ({ stateData, countyData }) => {
+const UsMap = ({ stateData, countyData, width, height }) => {
 
   const countiesContainer = useRef();
   const svgContainer = useRef();
   const dispatch = useDispatch();
-
-  const width = window.innerWidth * .8;
-  const height = window.innerHeight;
 
    //gets bounding box 
    useEffect(() => {
@@ -34,9 +32,7 @@ const UsMap = ({ stateData, countyData }) => {
       dispatch(setSkyBbox(skyBoundingBox));    
   }, [])
   
-  const projection = d3.geoAlbersUsa()
-    .translate([width * .5, height * .55])
-    .scale(width * 1.25);
+  const projection = albersProjection(width, height);
 
   const pathGenerator = d3.geoPath()
     .projection(projection);
