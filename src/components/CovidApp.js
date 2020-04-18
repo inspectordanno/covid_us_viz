@@ -28,12 +28,14 @@ const CovidApp = () => {
 
   const skyBbox = useSelector(d => d.skyBbox);
 
+  const day = '2020-02-01';
+
   return covidData
   ?
   (
     <div className="CovidApp">
       <UsMap stateData={covidData.state} countyData={covidData.county} width={width} height={height} />
-      <DataPoints countyData={covidData.county} skyBbox={skyBbox} width={width} height={height} />
+      <DataPoints countyData={covidData.county} skyBbox={skyBbox} width={width} height={height} day={day} />
     </div>
   )
   :
