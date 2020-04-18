@@ -5,24 +5,23 @@ import { group, groups } from 'd3-array';
 import countyDict from '../../dist/data/county_dict.json';
 
 //groups data by date and formats date
-const groupAndFormat = (dataRes) => {
+const groupData = (dataRes) => {
   const groupedByDate = group(dataRes, d => d.date); //returns es6 map
 
   //es6 map
   //sets new formatted key with value
-  const groupedFormatted = new Map();
+  const grouped = new Map();
   groupedByDate.forEach((value, key) => {
-    const date = moment(key, 'YYYY-MM-DD').dayOfYear();
-    groupedFormatted.set(date, value)
+    grouped.set(key, value)
   });
-  return groupedFormatted;
+  return grouped;
 }
 
 export const fetchStateNyt = async () => {
   try {
     const url = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv';
     const stateRes = await csv(url);
-    return groupAndFormat(stateRes);
+    return groupData(stateRes);
   } catch (e) {
     console.error(e);
   }
@@ -57,7 +56,7 @@ export const fetchCountyNyt = async () => {
         return formatted;
       }
     });
-    return groupAndFormat(countyRes);
+    return groupData(countyRes);
   } catch (e) {
     console.error(e);
   }
