@@ -1,27 +1,14 @@
 import { csv, json } from 'd3-fetch';
 import moment from 'moment';
-import { group, groups } from 'd3-array';
+import { group } from 'd3-array';
 
 import countyDict from '../../dist/data/county_dict.json';
-
-//groups data by date and formats date
-const groupData = (dataRes) => {
-  const groupedByDate = group(dataRes, d => d.date); //returns es6 map
-
-  //es6 map
-  //sets new formatted key with value
-  const grouped = new Map();
-  groupedByDate.forEach((value, key) => {
-    grouped.set(key, value)
-  });
-  return grouped;
-}
 
 export const fetchStateNyt = async () => {
   try {
     const url = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv';
     const stateRes = await csv(url);
-    return groupData(stateRes);
+    return group(stateRes, d => d.date); //returns es6 map
   } catch (e) {
     console.error(e);
   }
@@ -56,7 +43,7 @@ export const fetchCountyNyt = async () => {
         return formatted;
       }
     });
-    return groupData(countyRes);
+    return group(countyRes, d => d.date); //returns es6 map
   } catch (e) {
     console.error(e);
   }
