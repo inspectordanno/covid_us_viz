@@ -1,6 +1,6 @@
 import { csv, json } from 'd3-fetch';
-import moment from 'moment';
 import { group } from 'd3-array';
+import moment from 'moment';
 
 import countyDict from '../../dist/data/county_dict.json';
 
