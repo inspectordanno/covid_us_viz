@@ -1,12 +1,10 @@
-import React, { useState, useRef, Fragment } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { useEffect } from 'react';
 import shuffle from 'lodash/shuffle';
 
-import { projection } from './UsMap';
-import { transition } from 'd3';
+import albersProjection from '../util/albersProjection';
 
-const DataPoints = ({ countyData, day, skyBbox }) => {
+const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
 
   const canvasRef = useRef();
   const [skyPoints, setSkyPoints] = useState();
@@ -34,7 +32,7 @@ const DataPoints = ({ countyData, day, skyBbox }) => {
   }
 
   
-  const joinStartPositions = (currentDayData) => {
+  const joinStartPositions = (currentDayData, skyPoints) => {
     //shuffles the start positions array and assigns a start position for every covid datapoint
     const shuffledStartPositions = shuffle(skyPoints);
     return currentDayData.map((d, i) => {
@@ -67,37 +65,74 @@ const DataPoints = ({ countyData, day, skyBbox }) => {
 
   useEffect(() => {
     if (canvasRef.current && skyPoints) {
-      const currentDayData = countryData.get(day);
+      const currentDayData = countyData.get(day);
       const canvas = d3.select(canvasRef.current);
       const context = canvas.node().getContext('2d');
       const customBase = document.createElement('custom');
       const custom = d3.select(customBase);
-      const joinedDayData = joinStartPositions(currentDayData);
+      const completeDayData = joinStartPositions(currentDayData, skyPoints);
 
-      const dataBind = (joinedDayData) => {
+      const duration = 2000;
+      const delay = 50;
 
-        custom.selectAll('custom.dataPoint')
-          .data(joinedDayData, (d,i) => `${d.date} ${i}`) //key is date plus index in the array
+      const dataBind = (completeDayData) => {
+        custom.selectAll('.covid_point')
+          .data(completeDayData, (d,i) => `${d.date} ${i}`) //key is date plus index in the array
           .join('circle')
+          .attr('class', 'covid_point')
           .attr('x', d => d.startX)
           .attr('y', d => d.startY)
+          .attr('r', pointRadius)
           .transition()
-          .attr('x', d => projection(d.coordinates)[0])
-          .attr('y', d => projection(d.coordinates)[1]);
-    
-          //continue canvas work here
+          .duration(duration)
+          .delay((d, i) => i * delay)
+          .attr('x', d => albersProjection(d.coordinates)[0])
+          .attr('y', d => albersProjection(d.coordinates)[1]);
       }
+
+      const draw = () => {
+        //clear canvas
+        context.clearRect(0, 0, width, height);
+
+        custom.selectAll('.covid_point')
+          .each(function() {
+            const node = d3.select(this);
+            const cx = node.attr('x');
+            const cy = node.attr('y');
+            const r = node.attr('r');
+
+            //drawing a circle
+            //context.arc(x-center, y-center, radius, startAngle, endAngle, counterclockwise)
+            context.fillStyle = 'black';
+            context.beginPath();
+            context.arc(cx, cy, r, 0, 2 * Math.PI, true);
+            context.fill();
+            context.closePath();
+          });
+      }
+
+      //first call
+      dataBind(completeDayData);
+
+      //subsequent calls
+      const t = d3.timer((elapsed => {
+         draw();
+         if (elapsed > duration + 50) {
+           t.stop();
+         }
+      }));
     }
 
   },[canvasRef.current, skyPoints])
 
-  return skyPoints
+  return skyPoints && width && height
   ?
   (
     <canvas
     className='DataPoints'
-    width={window.innerWidth}
-    height={window.innerHeight} 
+    width={width}
+    height={height} 
+    ref={canvasRef}
     />
   )
   :
