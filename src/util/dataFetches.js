@@ -35,15 +35,24 @@ export const fetchCountyNyt = async () => {
 
       if (d.county === 'New York City') {
         returnCoordinates([74.006, 40.713]);
+      } else if (d.county === 'Kansas City' && d.state === 'Missouri') {
+        returnCoordinates([94.579, 39.100])
       } else if (d.state === 'Rhode Island' && !d.fips) {
         returnCoordinates([71.477, 41.580]);
       } else if (d.county === 'Do√±a Ana') {
         returnCoordinates(countyDict['35013']);
-      } else  {
+      } else if (d.county === 'Plymouth' && d.state === 'Massachusetts') {
+        returnCoordinates([70.717, 41.912]);
+      } 
+      else  {
         return formatted;
       }
     });
-    // countyRes.forEach(())
+    const noCoords = countyRes.filter(d => !d.coordinates);
+    const notUnknown = noCoords.filter(d => d.county !== 'Unknown');
+    const unknown = noCoords.filter(d => d.county === 'Unknown'); 
+    console.log('not unknown: ', notUnknown);
+    console.log("unknown: ", unknown);
     return group(countyRes, d => d.date); //returns es6 map
   } catch (e) {
     console.error(e);
