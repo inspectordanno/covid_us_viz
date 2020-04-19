@@ -9,7 +9,8 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
   const canvasRef = useRef();
   const [skyPoints, setSkyPoints] = useState();
 
-  const pointRadius = 5;
+  const pointRadius = 3;
+  console.log(skyBbox);
 
   //creating [x, y] position of every single point in the "sky"
   //aka the starting positions for the datapoints
@@ -72,8 +73,9 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
       const custom = d3.select(customBase);
       const completeDayData = joinStartPositions(currentDayData, skyPoints);
 
-      const duration = 2000;
+      const duration = 500;
       const delay = 50;
+      const projection = albersProjection(width, height);
 
       const dataBind = (completeDayData) => {
         custom.selectAll('.covid_point')
@@ -86,8 +88,8 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
           .transition()
           .duration(duration)
           .delay((d, i) => i * delay)
-          .attr('x', d => albersProjection(d.coordinates)[0])
-          .attr('y', d => albersProjection(d.coordinates)[1]);
+          .attr('x', d => projection(d.coordinates)[0])
+          .attr('y', d => projection(d.coordinates)[1])
       }
 
       const draw = () => {
@@ -117,7 +119,7 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
       //subsequent calls
       const t = d3.timer((elapsed => {
          draw();
-         if (elapsed > duration + 50) {
+         if (elapsed > (duration * delay) + 50) {
            t.stop();
          }
       }));

@@ -24,7 +24,7 @@ const UsMap = ({ stateData, countyData, width, height }) => {
       //represents the bounding box of the "sky"
       const skyBoundingBox = {
         top: 0, //top of the screen
-        right: window.innerWidth, //right of the screen
+        right: width, //right of the screen
         bottom: countiesBoundingBox.top, //bottom of the "sky" aka the top of the U.S.
         left: 0 //left of the screen
       }

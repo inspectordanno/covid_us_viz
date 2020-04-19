@@ -7,8 +7,8 @@ import DataPoints from './DataPoints';
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
 
-  const width = window.innerWidth * .8;
-  const height = window.innerHeight;
+  const width = screen.width * .8;
+  const height = screen.height * .88;
 
   //fetches data on mount
   useEffect(() => {
@@ -28,14 +28,22 @@ const CovidApp = () => {
 
   const skyBbox = useSelector(d => d.skyBbox);
 
-  const day = '2020-02-01';
+  const day = '2020-03-01';
 
   return covidData
   ?
   (
     <div className="CovidApp">
-      <UsMap stateData={covidData.state} countyData={covidData.county} width={width} height={height} />
-      <DataPoints countyData={covidData.county} skyBbox={skyBbox} width={width} height={height} day={day} />
+      <UsMap 
+        stateData={covidData.state} 
+        countyData={covidData.county} 
+        width={width} height={height} />
+      <DataPoints 
+        countyData={covidData.county} 
+        skyBbox={skyBbox} 
+        width={width} 
+        height={height} 
+        day={day} />
     </div>
   )
   :
