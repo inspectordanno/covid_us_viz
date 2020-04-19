@@ -43,6 +43,7 @@ export const fetchCountyNyt = async () => {
         return formatted;
       }
     });
+    // countyRes.forEach(())
     return group(countyRes, d => d.date); //returns es6 map
   } catch (e) {
     console.error(e);
