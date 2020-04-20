@@ -11,8 +11,15 @@ const calculateNew = (d, i, arr, measure) => {
     //if the first entry for the location, new cases are simply the number of cases
     return d[measure];
   } else {
-    //current day's cases minus yesterday's cases
-    return d[measure] - arr[i - 1][measure];
+    //current day's figure minus previous day's figure
+    const differenceFromPrevious = d[measure] - arr[i - 1][measure];
+    //if there are more or the same, return new cases/deaths
+    if (Math.sign(differenceFromPrevious) !== -1) {
+      return differenceFromPrevious;
+      //if there are less cases/deaths than the day before, return 0 new cases/deaths
+    } else if (Math.sign(differenceFromPrevious) === -1) {
+      return 0;
+    }
   }
 }
 
