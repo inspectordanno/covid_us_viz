@@ -22,12 +22,12 @@ const createNewEntriesArray = (newEntriesArray, oldEntriesMap) => {
     value.forEach((d, i) => {
       const newCases = calculateNew(d, i, value, 'totalCases');
       const newDeaths = calculateNew(d, i, value, 'totalDeaths');
-      const newCaseEntry = {
+      const newEntry = {
         ...d,
         newCases,
         newDeaths,
       };
-      newEntriesArray.push(newCaseEntry);
+      newEntriesArray.push(newEntry);
     });
   });
 }
