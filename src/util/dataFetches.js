@@ -16,7 +16,7 @@ const calculateNew = (d, i, arr, measure) => {
   }
 }
 
-//push newEntries to a new entries array
+//add newCases and newDeaths and push to a new array
 const createNewEntriesArray = (newEntriesArray, oldEntriesMap) => {
   oldEntriesMap.forEach((value, key) => {
     value.forEach((d, i) => {
