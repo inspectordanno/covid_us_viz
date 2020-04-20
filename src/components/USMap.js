@@ -52,7 +52,7 @@ const UsMap = ({ stateData, countyData, width, height }) => {
             d={pathGenerator(d)}
             className='us_county'
             id={`${d.properties.NAME}, ${stateFips[d.properties.STATE].abbreviation}`}
-            strokeWidth={0.25}
+            strokeWidth={stateFips[d.properties.STATE].name === 'Puerto Rico' ? 0 : 0.25}
             stroke='black'
           />
         )}

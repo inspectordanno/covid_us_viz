@@ -39,10 +39,8 @@ export const fetchCountyNyt = async () => {
         returnCoordinates([94.579, 39.100])
       } else if (d.state === 'Rhode Island' && !d.fips) {
         returnCoordinates([71.477, 41.580]);
-      } else if (d.county === 'Do√±a Ana') {
-        returnCoordinates(countyDict['35013']);
-      } else if (d.county === 'Plymouth' && d.state === 'Massachusetts') {
-        returnCoordinates([70.717, 41.912]);
+      } else if (d.state === 'Puerto Rico') {
+        returnCoordinates([66.430, 18.222]);
       } 
       else  {
         return formatted;
