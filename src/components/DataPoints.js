@@ -10,7 +10,6 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
   const [skyPoints, setSkyPoints] = useState();
 
   const pointRadius = 3;
-  console.log(skyBbox);
 
   //creating [x, y] position of every single point in the "sky"
   //aka the starting positions for the datapoints
@@ -28,7 +27,6 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
         skyPointPositions.push([x, y]);
       }
     }
-    console.log(skyPointPositions);
     setSkyPoints(skyPointPositions);
   }
 
