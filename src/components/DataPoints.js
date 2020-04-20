@@ -8,6 +8,7 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
 
   const canvasRef = useRef();
   const [skyPoints, setSkyPoints] = useState();
+  const [dateIndex, setDateIndex] = useState(0);
 
   const pointRadius = 3;
 
@@ -64,20 +65,42 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
 
   useEffect(() => {
     if (canvasRef.current && skyPoints) {
-      const currentDayData = countyData.get(day);
+      const currentDayData = countyData[dateIndex][1];
       const canvas = d3.select(canvasRef.current);
       const context = canvas.node().getContext('2d');
       const customBase = document.createElement('custom');
       const custom = d3.select(customBase);
-      const completeDayData = joinStartPositions(currentDayData, skyPoints);
+
+
+      const calculateNewData = (measure) => {
+        const newData = [];
+
+        currentDayData.forEach(d => {
+          //repeat for every new case/death
+          let timesToRepeat = d[measure];
+          while (timesToRepeat) {
+            newData.push({
+              date: d.date,
+              fips: d.fips,
+              coordinates: d.coordinates
+            });
+            timesToRepeat -= 1;
+          }
+        });
+
+        return newData;
+      }
+
+      const todayNewData = calculateNewData('newCases');
+      const todayNewDataComplete = joinStartPositions(currentDayData, skyPoints);
 
       const duration = 500;
       const delay = 50;
       const projection = albersProjection(width, height);
 
-      const dataBind = (completeDayData) => {
+      const dataBind = (todayNewDataComplete) => {
         custom.selectAll('.covid_point')
-          .data(completeDayData, (d,i) => `${d.date} ${i}`) //key is date plus index in the array
+          .data(todayNewDataComplete, (d,i) => `${d.date} ${i}`) //key is date plus index in the array
           .join('circle')
           .attr('class', 'covid_point')
           .attr('x', d => d.startX)
@@ -88,6 +111,14 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
           .delay((d, i) => i * delay)
           .attr('x', d => projection(d.coordinates)[0])
           .attr('y', d => projection(d.coordinates)[1])
+        .end().then(() => {
+          //if today isn't the last day, set the next day to be tomorrow
+          if (dateIndex !== countyData.length - 1) {
+            setDateIndex(dateIndex + 1);
+          }
+        }).catch(error => {
+          console.error(error);
+        })
       }
 
       const draw = () => {
@@ -103,7 +134,7 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
 
             //drawing a circle
             //context.arc(x-center, y-center, radius, startAngle, endAngle, counterclockwise)
-            context.fillStyle = 'black';
+            context.fillStyle = 'transparent';
             context.beginPath();
             context.arc(cx, cy, r, 0, 2 * Math.PI, true);
             context.fill();
@@ -123,7 +154,7 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
       }));
     }
 
-  },[canvasRef.current, skyPoints])
+  },[canvasRef.current, skyPoints, dateIndex])
 
   return skyPoints && width && height
   ?

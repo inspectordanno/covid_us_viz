@@ -1,6 +1,5 @@
-import { csv, json } from 'd3-fetch';
-import { group } from 'd3-array';
-import moment from 'moment';
+import { csv } from 'd3-fetch';
+import { group, groups } from 'd3-array';
 
 import countyDict from '../../dist/data/county_dict.json';
 
@@ -57,7 +56,7 @@ export const fetchStateNyt = async () => {
     const newEntriesArray = [];
     createNewEntriesArray(newEntriesArray, groupByState);
 
-    return group(newEntriesArray, d => d.date); //returns es6 map
+    return groups(newEntriesArray, d => d.date); //returns es6 map
   } catch (e) {
     console.error(e);
   }
@@ -105,7 +104,7 @@ export const fetchCountyNyt = async () => {
     const newEntriesArray = [];
     createNewEntriesArray(newEntriesArray, groupByPlace);
 
-    return group(newEntriesArray, d => d.date); //returns es6 map
+    return groups(newEntriesArray, d => d.date); //returns es6 map
   } catch (e) {
     console.error(e);
   }
