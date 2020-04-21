@@ -14,6 +14,11 @@ export default (state = reducerDefaultState, action) => {
         ...state,
         skyBbox: action.bbox
       }
+    case 'INCREASE_NEW_MEASURE':
+      return {
+        ...state,
+        measure
+      }
     default: 
       return state;
   }
