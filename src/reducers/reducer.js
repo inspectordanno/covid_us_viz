@@ -4,10 +4,10 @@ const reducerDefaultState = {
 
 export default (state = reducerDefaultState, action) => {
   switch (action.type) {
-    case 'SET_DAY':
+    case 'SET_DATE':
       return {
         ...state,
-        day: action.day
+        date: action.date
       }
     case 'SET_SKY_BBOX':
       return {

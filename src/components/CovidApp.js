@@ -24,7 +24,8 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
-  const skyBbox = useSelector(d => d.skyBbox);
+  const countyFrequences = useSelector(state => state.countyFrequences);
+  const skyBbox = useSelector(state => state.skyBbox);
 
   return covidData
   ?

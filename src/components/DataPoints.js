@@ -3,10 +3,10 @@ import { useDispatch } from "react-redux";
 import * as d3 from "d3";
 // import shuffle from "lodash/shuffle";
 
-import { updateCountyFrequencyThunk } from '../actions/actions';
+import { setDate, updateCountyFrequencyThunk } from '../actions/actions';
 import albersProjection from "../util/albersProjection";
 
-const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
+const DataPoints = ({ countyData, skyBbox, width, height }) => {
   const canvasRef = useRef();
   const dispatch = useDispatch();
   const [startPositions, setStartPositions] = useState();
@@ -65,6 +65,11 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
       };
     });
   };
+
+  //send first date to store on mount
+  useEffect(() => {
+    dispatch(setDate(countyData[0][0]));
+  }, [])
 
   //populates startPositions
   useEffect(() => {
@@ -125,6 +130,7 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
           .then(() => {
             //if today isn't the last day, set the next day to be tomorrow
             if (dateIndex !== countyData.length - 1) {
+              dispatch(setDate(countyData[dateIndex + 1][0]));
               setDateIndex(dateIndex + 1);
             }
           })
@@ -157,6 +163,7 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
       //otherwise, dayIndex is increased with transition().end
       if (todayNewData.length === 0 && dateIndex !== countyData.length - 1) {
         d3.timeout(() => {
+          dispatch(setDate(countyData[dateIndex + 1][0]));
           setDateIndex(dateIndex + 1);
         }, duration);
       } else {
@@ -166,7 +173,7 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
         //constantly repeating draw function
         const t = d3.timer(draw);
 
-        //delete this to run full animation
+        //comment this out to stop animation
         // if (dateIndex > 0) {
         //   t.stop();
         // }
