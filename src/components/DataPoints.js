@@ -120,11 +120,14 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
           .attr("class", "covid_point")
           .attr("x", d => d.startX)
           .attr("y", d => d.startY)
+          .attr('opacity', '1')
           .transition()
           .duration(duration)
           .delay((d, i) => i * delay)
           .attr("x", d => projection(d.coordinates)[0])
           .attr("y", d => projection(d.coordinates)[1])
+          .transition()
+          .attr('opacity', 0)
           .on('end', d => dispatch(updateCountyFrequencyThunk(d.coordinates)))
           .end()
           .then(() => {
@@ -147,6 +150,7 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
           const node = d3.select(this);
           const cx = node.attr("x");
           const cy = node.attr("y");
+          const opacity = node.attr('opacity');
           const r = pointRadius;
 
           //drawing a circle
@@ -154,6 +158,7 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
           context.fillStyle = "black";
           context.beginPath();
           context.arc(cx, cy, r, 0, 2 * Math.PI, true);
+          context.globalAlpha = opacity;
           context.fill();
           context.closePath();
         });
