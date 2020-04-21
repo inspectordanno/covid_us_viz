@@ -8,24 +8,20 @@ export const setSkyBbox = (bbox) => ({
   bbox
 })
 
-const updateMeasure = (measure) => ({
-  type: 'UPDATE_MEASURE',
-  fips,
-  measure
+const updateCountyFrequency = (countyFrequencies) => ({
+  type: 'UPDATE_COUNTY_FREQUENCY',
+  countyFrequencies
 })
 
-export const updateMeasureThunk = (coordinates, measure) => {
+export const updateCountyFrequencyThunk = (coordinates) => {
   return (dispatch, getState) => {
-    //get measure object from state
-    const { measure } = getState();
+    //get countyFrequency object from state
+    const { countyFrequencies } = getState();
 
-    //if fips is in thunk, increase. otherwise, set equal to 1
-    measure[coordinates] ? measure[coordinates] += 1 : measure[coordinates] = 1;
+    //if coordinates array is in thunk, increase. otherwise, set equal to 1
+    countyFrequencies[coordinates] ? countyFrequencies[coordinates] += 1 : countyFrequencies[coordinates] = 1;
 
-    dispatch(updateMeasure());
-
-    //continue working on thunk!
+    //update reducer
+    dispatch(updateCountyFrequency(countyFrequencies));
   }
-}
-
-const increaseNewMeasureThunk 
+};

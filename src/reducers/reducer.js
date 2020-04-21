@@ -1,5 +1,5 @@
 const reducerDefaultState = {
-
+  countyFrequencies : {}
 }
 
 export default (state = reducerDefaultState, action) => {
@@ -14,10 +14,10 @@ export default (state = reducerDefaultState, action) => {
         ...state,
         skyBbox: action.bbox
       }
-    case 'INCREASE_NEW_MEASURE':
+    case 'UPDATE_COUNTY_FREQUENCY':
       return {
         ...state,
-        measure
+        countyFrequencies: action.countyFrequencies
       }
     default: 
       return state;

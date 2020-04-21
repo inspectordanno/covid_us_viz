@@ -26,8 +26,6 @@ const CovidApp = () => {
 
   const skyBbox = useSelector(d => d.skyBbox);
 
-  const day = '2020-03-01';
-
   return covidData
   ?
   (
@@ -40,8 +38,7 @@ const CovidApp = () => {
         countyData={covidData.county} 
         skyBbox={skyBbox} 
         width={width} 
-        height={height} 
-        day={day} />
+        height={height} />
     </div>
   )
   :

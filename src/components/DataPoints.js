@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
 import * as d3 from "d3";
-import shuffle from "lodash/shuffle";
+// import shuffle from "lodash/shuffle";
 
+import { updateCountyFrequencyThunk } from '../actions/actions';
 import albersProjection from "../util/albersProjection";
 
 const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
   const canvasRef = useRef();
+  const dispatch = useDispatch();
   const [startPositions, setStartPositions] = useState();
   const [dateIndex, setDateIndex] = useState(0);
 
@@ -110,14 +113,14 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
           .data(data, (d, i) => `${d.date} ${i}`) //key is date plus index in the array
           .join("circle")
           .attr("class", "covid_point")
-          .attr("x", (d) => d.startX)
-          .attr("y", (d) => d.startY)
+          .attr("x", d => d.startX)
+          .attr("y", d => d.startY)
           .transition()
           .duration(duration)
           .delay((d, i) => i * delay)
-          .attr("x", (d) => projection(d.coordinates)[0])
-          .attr("y", (d) => projection(d.coordinates)[1])
-          // .on('end', d => console.log(d))
+          .attr("x", d => projection(d.coordinates)[0])
+          .attr("y", d => projection(d.coordinates)[1])
+          .on('end', d => dispatch(updateCountyFrequencyThunk(d.coordinates)))
           .end()
           .then(() => {
             //if today isn't the last day, set the next day to be tomorrow
@@ -164,9 +167,9 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
         const t = d3.timer(draw);
 
         //delete this to run full animation
-        if (dateIndex > 0) {
-          t.stop();
-        }
+        // if (dateIndex > 0) {
+        //   t.stop();
+        // }
 
         //cleanup function that stops timer on every rerender
         return () => t.stop();
