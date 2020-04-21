@@ -7,7 +7,7 @@ import albersProjection from "../util/albersProjection";
 const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
   const canvasRef = useRef();
   const [startPositions, setStartPositions] = useState();
-  const [dateIndex, setDateIndex] = useState(59);
+  const [dateIndex, setDateIndex] = useState(0);
 
   const pointRadius = 3;
 
@@ -54,7 +54,6 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
       //second go around 7 % 6 === 1
       //third go around 13 % 6 === 1
       const startPosIndex = i % startPositions.length;
-      console.log(startPosIndex);
 
       return {
         ...d,
@@ -118,6 +117,7 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
           .delay((d, i) => i * delay)
           .attr("x", (d) => projection(d.coordinates)[0])
           .attr("y", (d) => projection(d.coordinates)[1])
+          // .on('end', d => console.log(d))
           .end()
           .then(() => {
             //if today isn't the last day, set the next day to be tomorrow
@@ -163,15 +163,16 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
         //constantly repeating draw function
         const t = d3.timer(draw);
 
+        //delete this to run full animation
+        if (dateIndex > 0) {
+          t.stop();
+        }
+
         //cleanup function that stops timer on every rerender
         return () => t.stop();
       }
     }
   }, [canvasRef.current, startPositions, dateIndex]);
-
-  useEffect(() => {
-    console.log(dateIndex);
-  }, [dateIndex]);
 
   return startPositions && width && height ? (
     <canvas
