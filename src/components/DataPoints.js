@@ -6,15 +6,15 @@ import albersProjection from "../util/albersProjection";
 
 const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
   const canvasRef = useRef();
-  const [skyPoints, setSkyPoints] = useState();
-  const [dateIndex, setDateIndex] = useState(0);
+  const [startPositions, setStartPositions] = useState();
+  const [dateIndex, setDateIndex] = useState(59);
 
   const pointRadius = 3;
 
   //creating [x, y] position of every single point in the "sky"
   //aka the starting positions for the datapoints
-  const populateSkyPoints = (skyBbox) => {
-    const skyPointPositions = [];
+  const populateStartPositions = (skyBbox) => {
+    const startPosArr = [];
     //center of circles [x, y] are (2 * radius) away from each other
     //Thus, each loop iteration increase is 2r
 
@@ -32,16 +32,17 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
         y < skyBbox.bottom - pointRadius;
         y += pointRadius * 2
       ) {
-        skyPointPositions.push([x, y]);
+        startPosArr.push([x, y]);
       }
     }
-    setSkyPoints(skyPointPositions);
+    setStartPositions(startPosArr);
   };
 
-  const joinStartPositions = (currentDayData, skyPoints) => {
+  const joinStartPositions = (currentDayData, startPositions) => {
     //shuffles the start positions array and assigns a start position for every covid datapoint
-    const shuffledStartPositions = shuffle(skyPoints);
-    // const shuffledStartPositions = skyPoints;
+
+    // startPositions = shuffle(startPositions); //uncomment for random start positions
+
     return currentDayData.map((d, i) => {
       //we use the modulus to get which start position should be associated with the covid datapoint
       //if there are less covid points than start points, i is returned
@@ -52,25 +53,26 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
       //first go around 1 % 6 === 1
       //second go around 7 % 6 === 1
       //third go around 13 % 6 === 1
-      const startPosIndex = i % shuffledStartPositions.length;
+      const startPosIndex = i % startPositions.length;
+      console.log(startPosIndex);
 
       return {
         ...d,
-        startX: shuffledStartPositions[startPosIndex][0],
-        startY: shuffledStartPositions[startPosIndex][1],
+        startX: startPositions[startPosIndex][0],
+        startY: startPositions[startPosIndex][1],
       };
     });
   };
 
-  //populates skyPoints
+  //populates startPositions
   useEffect(() => {
     if (skyBbox) {
-      populateSkyPoints(skyBbox);
+      populateStartPositions(skyBbox);
     }
   }, [skyBbox]);
 
   useEffect(() => {
-    if (canvasRef.current && skyPoints) {
+    if (canvasRef.current && startPositions) {
       const currentDayData = countyData[dateIndex][1];
       const canvas = d3.select(canvasRef.current);
       const context = canvas.node().getContext("2d");
@@ -96,8 +98,8 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
         return newData;
       };
 
-      const todayNewData = calculateNewData("newCases"); //choose newCases or newDeaths
-      const todayNewStartPos = joinStartPositions(todayNewData, skyPoints);
+      const todayNewData = calculateNewData("newCases"); //choose 'newCases' or 'newDeaths'
+      const todayNewStartPos = joinStartPositions(todayNewData, startPositions);
 
       const duration = 500;
       const delay = 5;
@@ -120,7 +122,6 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
           .then(() => {
             //if today isn't the last day, set the next day to be tomorrow
             if (dateIndex !== countyData.length - 1) {
-              console.log(dateIndex);
               setDateIndex(dateIndex + 1);
             }
           })
@@ -166,9 +167,13 @@ const DataPoints = ({ countyData, day, skyBbox, width, height }) => {
         return () => t.stop();
       }
     }
-  }, [canvasRef.current, skyPoints, dateIndex]);
+  }, [canvasRef.current, startPositions, dateIndex]);
 
-  return skyPoints && width && height ? (
+  useEffect(() => {
+    console.log(dateIndex);
+  }, [dateIndex]);
+
+  return startPositions && width && height ? (
     <canvas
       className="DataPoints"
       width={width}
