@@ -10,7 +10,7 @@ import albersProjection from '../util/albersProjection';
 import { abbrDict, apStyleDict } from '../util/stateDictionary';
 import { setSkyBbox } from '../actions/actions';
 
-const UsMap = ({ stateData, countyData, width, height }) => {
+const UsMap = ({ stateData, countyData, countyFrequencies, width, height }) => {
 
   const countiesContainer = useRef();
   const svgContainer = useRef();
@@ -37,6 +37,18 @@ const UsMap = ({ stateData, countyData, width, height }) => {
   const pathGenerator = d3.geoPath()
     .projection(projection);
 
+  //gets max number of totalCases or totalDeaths on most recent day
+  //this will probably always default to NYC's total cases
+  const getMaxTotal = (measure) => {
+    const valuesfromLastDay = countyData[countyData.length - 1].map(d => d[measure]);
+    return d3.max(valuesfromLastDay);
+  }
+
+  const countyScale = d3.scaleSequentialLog(
+    [0, getMaxTotal('totalDeaths')], //domain
+    d3.interpolateGreys //range interpolator
+  );
+  
   return true
   ?
   (

@@ -128,7 +128,7 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
           .attr("y", d => projection(d.coordinates)[1])
           .transition()
           .attr('opacity', 0)
-          .on('end', d => dispatch(updateCountyFrequencyThunk(d.coordinates)))
+          .on('end', d => dispatch(updateCountyFrequencyThunk(d.fips)))
           .end()
           .then(() => {
             //if today isn't the last day, set the next day to be tomorrow

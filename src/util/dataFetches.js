@@ -84,13 +84,11 @@ export const fetchCountyNyt = async () => {
       }
 
       if (d.county === 'New York City') {
-        returnCoordinates([74.006, 40.713]);
+        return returnCoordinates([74.006, 40.713]);
       } else if (d.county === 'Kansas City' && d.state === 'Missouri') {
-        returnCoordinates([94.579, 39.100])
-      } else if (d.state === 'Rhode Island' && !d.fips) {
-        returnCoordinates([71.477, 41.580]);
+        return returnCoordinates([94.579, 39.100])
       } else if (d.state === 'Puerto Rico') {
-        returnCoordinates([66.430, 18.222]);
+        return returnCoordinates([66.430, 18.222]);
       } 
       else  {
         return formatted;
@@ -99,6 +97,8 @@ export const fetchCountyNyt = async () => {
 
     //filter by cases that have coordinates (this ignores "unknown counties" - change this?)
     const coords = countyRes.filter(d => d.coordinates); 
+    const noFips = coords.filter(d => !d.fips);
+    console.log(noFips);
 
     const groupByPlace = group(coords, d => d.coordinates);
     const newEntriesArray = [];

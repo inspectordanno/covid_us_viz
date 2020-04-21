@@ -16,6 +16,7 @@ const CovidApp = () => {
       try {
         const stateRes = await fetchStateNyt();
         const countyRes = await fetchCountyNyt();
+        console.log(countyRes);
         setCovidData({ state: stateRes, county: countyRes });
       } catch (e) {
         console.error(e);
@@ -24,7 +25,7 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
-  const countyFrequences = useSelector(state => state.countyFrequences);
+  const countyFrequencies = useSelector(state => state.countyFrequencies);
   const skyBbox = useSelector(state => state.skyBbox);
 
   return covidData
@@ -34,7 +35,9 @@ const CovidApp = () => {
       <UsMap 
         stateData={covidData.state} 
         countyData={covidData.county} 
-        width={width} height={height} />
+        countyFrequencies={countyFrequencies}
+        width={width} 
+        height={height} />
       <DataPoints 
         countyData={covidData.county} 
         skyBbox={skyBbox} 

@@ -13,13 +13,13 @@ const updateCountyFrequency = (countyFrequencies) => ({
   countyFrequencies
 })
 
-export const updateCountyFrequencyThunk = (coordinates) => {
+export const updateCountyFrequencyThunk = (fips) => {
   return (dispatch, getState) => {
     //get countyFrequency object from state
     const { countyFrequencies } = getState();
 
     //if coordinates array is in thunk, increase. otherwise, set equal to 1
-    countyFrequencies[coordinates] ? countyFrequencies[coordinates] += 1 : countyFrequencies[coordinates] = 1;
+    countyFrequencies[fips] ? countyFrequencies[fips] += 1 : countyFrequencies[fips] = 1;
 
     //update reducer
     dispatch(updateCountyFrequency(countyFrequencies));
