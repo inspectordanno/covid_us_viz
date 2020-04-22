@@ -2,13 +2,11 @@ import React, { useEffect, useState, useRef, Fragment } from 'react';
 import { useDispatch } from 'react-redux';
 import * as d3 from 'd3';
 
-import colors from '../util/colors';
 import stateGeoJson from '../../dist/data/us_states.json';
 import countyGeoJson from '../../dist/data/us_counties.json';
 import stateFips from '../../dist/data/states_by_fips.json';
 import albersProjection from '../util/albersProjection';
-import { abbrDict, apStyleDict } from '../util/stateDictionary';
-import { setSkyBbox } from '../actions/actions';
+import { dispatchBbox } from '../actions/actions';
 
 const UsMap = ({ stateData, countyData, countyFrequencies, width, height }) => {
 
@@ -22,14 +20,14 @@ const UsMap = ({ stateData, countyData, countyFrequencies, width, height }) => {
         .getBoundingClientRect();
 
       //represents the bounding box of the "sky"
-      const skyBoundingBox = {
+      const bbox = {
         top: 0, //top of the screen
         right: width, //right of the screen
         bottom: countiesBoundingBox.top, //bottom of the "sky" aka the top of the U.S.
         left: 0 //left of the screen
       }
     
-      dispatch(setSkyBbox(skyBoundingBox));    
+      dispatch(dispatchBbox(bbox));    
   }, [])
   
   const projection = albersProjection(width, height);

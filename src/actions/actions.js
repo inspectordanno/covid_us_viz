@@ -1,9 +1,9 @@
-export const setDate = (date) => ({
-  type: 'SET_DATE',
-  date
+export const dispatchDateIndex = (dateIndex) => ({
+  type: 'UPDATE_DATE_INDEX',
+  dateIndex
 })
 
-export const setSkyBbox = (bbox) => ({
-  type: 'SET_SKY_BBOX',
+export const dispatchBbox = (bbox) => ({
+  type: 'SET_BBOX',
   bbox
 })

@@ -3,10 +3,10 @@ import { useDispatch } from "react-redux";
 import * as d3 from "d3";
 // import shuffle from "lodash/shuffle";
 
-import { setDate } from '../actions/actions';
+import { dispatchDateIndex } from '../actions/actions';
 import albersProjection from "../util/albersProjection";
 
-const DataPoints = ({ countyData, skyBbox, width, height }) => {
+const DataPoints = ({ countyData, bbox, width, height }) => {
   const canvasRef = useRef();
   const dispatch = useDispatch();
   const [startPositions, setStartPositions] = useState();
@@ -18,7 +18,7 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
 
   //creating [x, y] position of every single point in the "sky"
   //aka the starting positions for the datapoints
-  const populateStartPositions = (skyBbox) => {
+  const populateStartPositions = (bbox) => {
     const startPosArr = [];
     //center of circles [x, y] are (2 * radius) away from each other
     //Thus, each loop iteration increase is 2r
@@ -26,15 +26,15 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
     //calculates x position of every point
     //first point is +radius away from the left, last point is -radius away from the right
     for (
-      let x = skyBbox.left + pointRadius;
-      x < skyBbox.right - pointRadius;
+      let x = bbox.left + pointRadius;
+      x < bbox.right - pointRadius;
       x += pointRadius * 2
     ) {
       //calculates y position of every point
       //first point is +radius away from the top, last point is -radius away from the bottom
       for (
-        let y = skyBbox.top + pointRadius;
-        y < skyBbox.bottom - pointRadius;
+        let y = bbox.top + pointRadius;
+        y < bbox.bottom - pointRadius;
         y += pointRadius * 2
       ) {
         startPosArr.push([x, y]);
@@ -68,17 +68,12 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
     });
   };
 
-  //send first date to store on mount
-  useEffect(() => {
-    dispatch(setDate(countyData[0][0]));
-  }, [])
-
   //populates startPositions
   useEffect(() => {
-    if (skyBbox) {
-      populateStartPositions(skyBbox);
+    if (bbox) {
+      populateStartPositions(bbox);
     }
-  }, [skyBbox]);
+  }, [bbox]);
 
   useEffect(() => {
     if (canvasRef.current && startPositions) {
@@ -133,7 +128,7 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
           .then(() => {
             //if today isn't the last day, set the next day to be tomorrow
             if (dateIndex !== countyData.length - 1) {
-              dispatch(setDate(countyData[dateIndex + 1][0]));
+              dispatch(dispatchDateIndex(dateIndex + 1));
               setDateIndex(dateIndex + 1);
             }
           })
@@ -168,7 +163,7 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
       //otherwise, dayIndex is increased with transition().end
       if (todayNewData.length === 0 && dateIndex !== countyData.length - 1) {
         d3.timeout(() => {
-          dispatch(setDate(countyData[dateIndex + 1][0]));
+          dispatch(dispatchDateIndex(dateIndex + 1));
           setDateIndex(dateIndex + 1);
         }, duration);
       } else {

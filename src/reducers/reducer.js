@@ -1,18 +1,18 @@
 const reducerDefaultState = {
-  countyFrequencies : {}
+  dateIndex: 0
 }
 
 export default (state = reducerDefaultState, action) => {
   switch (action.type) {
-    case 'SET_DATE':
+    case 'UPDATE_DATE_INDEX':
       return {
         ...state,
-        date: action.date
+        dateIndex: action.dateIndex
       }
-    case 'SET_SKY_BBOX':
+    case 'SET_BBOX':
       return {
         ...state,
-        skyBbox: action.bbox
+        bbox: action.bbox
       }
     default: 
       return state;

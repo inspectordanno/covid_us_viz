@@ -26,7 +26,7 @@ const CovidApp = () => {
   }, []);
 
 
-  const skyBbox = useSelector(state => state.skyBbox);
+  const bbox = useSelector(state => state.bbox);
 
   return covidData
   ?
@@ -39,7 +39,7 @@ const CovidApp = () => {
         height={height} />
       <DataPoints 
         countyData={covidData.county} 
-        skyBbox={skyBbox} 
+        bbox={bbox} 
         width={width} 
         height={height} />
     </div>
