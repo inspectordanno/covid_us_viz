@@ -14,11 +14,6 @@ export default (state = reducerDefaultState, action) => {
         ...state,
         skyBbox: action.bbox
       }
-    case 'UPDATE_COUNTY_FREQUENCY':
-      return {
-        ...state,
-        countyFrequencies: action.countyFrequencies
-      }
     default: 
       return state;
   }

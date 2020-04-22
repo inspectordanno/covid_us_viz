@@ -7,8 +7,8 @@ import DataPoints from './DataPoints';
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
 
-  const width = screen.width * .75;
-  const height = screen.height * .95;
+  const width = window.innerWidth * .75;
+  const height = window.innerHeight;
 
   //fetches data on mount
   useEffect(() => {
@@ -25,7 +25,7 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
-  const countyFrequencies = useSelector(state => state.countyFrequencies);
+
   const skyBbox = useSelector(state => state.skyBbox);
 
   return covidData
@@ -35,7 +35,6 @@ const CovidApp = () => {
       <UsMap 
         stateData={covidData.state} 
         countyData={covidData.county} 
-        countyFrequencies={countyFrequencies}
         width={width} 
         height={height} />
       <DataPoints 

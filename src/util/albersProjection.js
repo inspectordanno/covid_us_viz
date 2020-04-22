@@ -5,7 +5,7 @@ import * as d3 from "d3";
 
 const albersProjection = (width, height) => {
   return geoAlbersUsaPr()
-    .translate([width * 0.5, height * 0.55])
+    .translate([width * 0.5, height * 0.6])
     .scale(width * 1.25);
 }
 

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import * as d3 from "d3";
 // import shuffle from "lodash/shuffle";
 
-import { setDate, updateCountyFrequencyThunk } from '../actions/actions';
+import { setDate } from '../actions/actions';
 import albersProjection from "../util/albersProjection";
 
 const DataPoints = ({ countyData, skyBbox, width, height }) => {
@@ -129,7 +129,6 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
           .attr("y", d => projection(d.coordinates)[1])
           .transition()
           .attr('opacity', 0)
-          .on('end', d => dispatch(updateCountyFrequencyThunk(d.fips)))
           .end()
           .then(() => {
             //if today isn't the last day, set the next day to be tomorrow
