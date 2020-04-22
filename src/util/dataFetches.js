@@ -2,6 +2,7 @@ import { csv } from 'd3-fetch';
 import { group, groups } from 'd3-array';
 
 import countyDict from '../../dist/data/county_dict.json';
+import fipsExceptions from '../util/fipsExceptions';
 
 //this function calculates the number of new cases/deaths for each place
 //d is datum, is index of datum in values array, measure is either "totalCases" or "totalDeaths"
@@ -75,20 +76,22 @@ export const fetchCountyNyt = async () => {
       };
       const { cases, deaths, ...formatted } = entry;
 
-      //return custom coordinates
-      const returnCoordinates = (coordinates) => {
+      //return custom coordinates and fips code
+      const returnCoordinates = (coordinates, fipsException ) => {
         return {
           ...formatted,
+          fips: fipsException,
           coordinates
         }
       }
-
+  
+      //localities with no fips code but are included in data
       if (d.county === 'New York City') {
-        return returnCoordinates([74.006, 40.713]);
+        return returnCoordinates([-74.006, 40.713], fipsExceptions.nyc);
       } else if (d.county === 'Kansas City' && d.state === 'Missouri') {
-        return returnCoordinates([94.579, 39.100])
+        return returnCoordinates([-94.579, 39.100], fipsExceptions.kc)
       } else if (d.state === 'Puerto Rico') {
-        return returnCoordinates([66.430, 18.222]);
+        return returnCoordinates([-66.430, 18.222], fipsExceptions.pr);
       } 
       else  {
         return formatted;

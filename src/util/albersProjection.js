@@ -81,7 +81,7 @@ function geoAlbersUsaPr() {
     puertoRicoPoint = puertoRico
         .translate([x + 0.350 * k, y + 0.224 * k])
         .clipExtent([[x + 0.320 * k, y + 0.204 * k], [x + 0.380 * k, y + 0.234 * k]])
-        .stream(pointStream).point;
+        .stream(pointStream);
 
     return reset();
   };

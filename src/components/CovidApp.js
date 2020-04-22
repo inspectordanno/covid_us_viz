@@ -7,8 +7,8 @@ import DataPoints from './DataPoints';
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
 
-  const width = screen.width * .8;
-  const height = screen.height * .88;
+  const width = screen.width * .75;
+  const height = screen.height * .95;
 
   //fetches data on mount
   useEffect(() => {

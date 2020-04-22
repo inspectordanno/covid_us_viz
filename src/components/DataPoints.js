@@ -12,7 +12,9 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
   const [startPositions, setStartPositions] = useState();
   const [dateIndex, setDateIndex] = useState(0);
 
-  const pointRadius = 3;
+  const pointRadius = 2;
+  const duration = 500;
+  const delay = 5;
 
   //creating [x, y] position of every single point in the "sky"
   //aka the starting positions for the datapoints
@@ -108,8 +110,6 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
       const todayNewData = calculateNewData("newCases"); //choose 'newCases' or 'newDeaths'
       const todayNewStartPos = joinStartPositions(todayNewData, startPositions);
 
-      const duration = 500;
-      const delay = 5;
       const projection = albersProjection(width, height);
 
       const dataBind = (data) => {
@@ -124,6 +124,7 @@ const DataPoints = ({ countyData, skyBbox, width, height }) => {
           .transition()
           .duration(duration)
           .delay((d, i) => i * delay)
+          .each(d => console.log(d))
           .attr("x", d => projection(d.coordinates)[0])
           .attr("y", d => projection(d.coordinates)[1])
           .transition()
