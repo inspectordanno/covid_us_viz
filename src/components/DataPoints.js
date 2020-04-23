@@ -11,8 +11,6 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
   const dateIndex = useRef(0);
   const dispatch = useDispatch();
   const [startPositions, setStartPositions] = useState();
-  // const [dateIndex, setDateIndex] = useState(0);
-  const [frequencyTracker, setFrequencyTracker] = useState({});
 
   const pointRadius = 2;
   const duration = 500;
@@ -45,12 +43,12 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
     setStartPositions(startPosArr);
   };
 
-  const joinStartPositions = (currentDayData, startPositions) => {
+  const joinStartPositions = (todayData, startPositions) => {
     //shuffles the start positions array and assigns a start position for every covid datapoint
 
     // startPositions = shuffle(startPositions); //uncomment for random start positions
 
-    return currentDayData.map((d, i) => {
+    return todayData.map((d, i) => {
       //we use the modulus to get which start position should be associated with the covid datapoint
       //if there are less covid points than start points, i is returned
       //if there are more more covid points than start points, it is as if we are "looping" through the
@@ -79,7 +77,7 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
 
   useEffect(() => {
     if (canvasRef.current && startPositions) {
-      const currentDayData = countyData[dateIndex.current][1];
+      const todayData = countyData[dateIndex.current][1];
       const canvas = d3.select(canvasRef.current);
       const context = canvas.node().getContext("2d");
       const customBase = document.createElement("custom");
@@ -88,7 +86,7 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
       const calculateNewData = (measure) => {
         const newData = [];
 
-        currentDayData.forEach((d) => {
+        todayData.forEach((d) => {
           //repeat for every new case/death
           let timesToRepeat = d[measure];
 
@@ -113,8 +111,6 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
 
       const projection = albersProjection(width, height);
 
-      const tempTracker = { ...frequencyTracker };
-
       const dataBind = (data) => {
         custom
           .selectAll(".covid_point")
@@ -131,23 +127,11 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
           .attr("y", d => projection(d.coordinates)[1])
           .transition()
           .attr('opacity', 0)
-          .on('end', (d) => {
-            //experimenting with power of ten
-            // const powerTen = [1, 10, 100, 1000, 10000, 100000];
-            // powerTen.forEach(power => {
-            //   if (d.nthPoint === power) {
-            //     tempTracker[d.fips] = power;
-            //   }
-            // });
-            tempTracker[d.fips] = d.nthPoint;
-          })
           .end()
           .then(() => {
             //if today isn't the last day, set the next day to be tomorrow
             if (dateIndex !== countyData.length - 1) {
               dispatch(dispatchDateIndex(dateIndex.current + 1));
-              setFrequencyTracker(tempTracker);
-              //setDateIndex(dateIndex + 1);
               dateIndex.current += 1;
             }
           })
@@ -183,7 +167,6 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
       if (todayNewData.length === 0 && dateIndex !== countyData.length - 1) {
         d3.timeout(() => {
           dispatch(dispatchDateIndex(dateIndex.current + 1));
-          // setDateIndex(dateIndex + 1);
           dateIndex.current += 1;
         }, duration);
       } else {

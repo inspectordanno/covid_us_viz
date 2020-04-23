@@ -22,22 +22,15 @@ const UsMap = ({ stateData, countyData, dateIndex, width, height }) => {
     counts.forEach(d => {
       countsObj[d.fips] = d[measure]; 
     });
-
-    console.log(dateIndex);
-    console.log(countyData[dateIndex][0]);
-    console.log(countsObj);
+    return countsObj;
   }
 
-  getFrequencyCount(dateIndex, 'totalCases');
-
-  const yesterdayFrequencyCount = () => {
+  const getYesterdayFrequencyCount = (measure) => {
     //no yesterday if first day
-    if (dateIndex === 0) {
-      return countyData[0];
-    } else {
-      return 
-    }
+    return dateIndex === 0 ? getFrequencyCount(dateIndex, measure) : getFrequencyCount(dateIndex - 1, measure);
   }
+
+  const yesterdayFreqCount = getYesterdayFrequencyCount('totalCases');
 
    //gets bounding box 
    useEffect(() => {
