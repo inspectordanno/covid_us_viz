@@ -131,6 +131,7 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
           .transition()
           .attr('opacity', 0)
           .on('end', (d) => {
+            //experimenting with power of ten
             // const powerTen = [1, 10, 100, 1000, 10000, 100000];
             // powerTen.forEach(power => {
             //   if (d.nthPoint === power) {
