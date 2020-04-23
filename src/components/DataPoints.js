@@ -11,6 +11,7 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
   const dispatch = useDispatch();
   const [startPositions, setStartPositions] = useState();
   const [dateIndex, setDateIndex] = useState(0);
+  const [frequencyTracker, setFrequencyTracker] = useState({});
 
   const pointRadius = 2;
   const duration = 500;
@@ -89,11 +90,15 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
         currentDayData.forEach((d) => {
           //repeat for every new case/death
           let timesToRepeat = d[measure];
+
+          const totalMeasure = measure === 'newCases' ? 'totalCases' : 'totalDeaths';
+
           while (timesToRepeat) {
             newData.push({
               date: d.date,
               fips: d.fips,
               coordinates: d.coordinates,
+              nthPoint: d[totalMeasure] - timesToRepeat + 1,
             });
             timesToRepeat -= 1;
           }
@@ -107,6 +112,8 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
 
       const projection = albersProjection(width, height);
 
+      const tempTracker = { ...frequencyTracker };
+
       const dataBind = (data) => {
         custom
           .selectAll(".covid_point")
@@ -119,16 +126,25 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
           .transition()
           .duration(duration)
           .delay((d, i) => i * delay)
-          .each(d => console.log(d))
           .attr("x", d => projection(d.coordinates)[0])
           .attr("y", d => projection(d.coordinates)[1])
           .transition()
           .attr('opacity', 0)
+          .on('end', (d) => {
+            // const powerTen = [1, 10, 100, 1000, 10000, 100000];
+            // powerTen.forEach(power => {
+            //   if (d.nthPoint === power) {
+            //     tempTracker[d.fips] = power;
+            //   }
+            // });
+            tempTracker[d.fips] = d.nthPoint;
+          })
           .end()
           .then(() => {
             //if today isn't the last day, set the next day to be tomorrow
             if (dateIndex !== countyData.length - 1) {
               dispatch(dispatchDateIndex(dateIndex + 1));
+              setFrequencyTracker(tempTracker);
               setDateIndex(dateIndex + 1);
             }
           })
@@ -183,6 +199,10 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
       }
     }
   }, [canvasRef.current, startPositions, dateIndex]);
+
+  useEffect(() => {
+    console.log(frequencyTracker);
+  }, [frequencyTracker])
 
   return startPositions && width && height ? (
     <canvas

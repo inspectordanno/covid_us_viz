@@ -7,3 +7,8 @@ export const dispatchBbox = (bbox) => ({
   type: 'SET_BBOX',
   bbox
 })
+
+export const dispatchLastPoint = (lastPoint) => ({
+  type: 'LAST_POINT',
+  lastPoint
+})

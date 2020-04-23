@@ -27,6 +27,7 @@ const CovidApp = () => {
 
 
   const bbox = useSelector(state => state.bbox);
+  const lastPoint = useSelector(state => state.lastPoint);
 
   return covidData
   ?
@@ -35,6 +36,7 @@ const CovidApp = () => {
       <UsMap 
         stateData={covidData.state} 
         countyData={covidData.county} 
+        lastPoint={lastPoint}
         width={width} 
         height={height} />
       <DataPoints 
