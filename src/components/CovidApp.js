@@ -6,7 +6,6 @@ import DataPoints from './DataPoints';
 
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
-
   const width = window.innerWidth * .75;
   const height = window.innerHeight;
 
@@ -16,7 +15,6 @@ const CovidApp = () => {
       try {
         const stateRes = await fetchStateNyt();
         const countyRes = await fetchCountyNyt();
-        console.log(countyRes);
         setCovidData({ state: stateRes, county: countyRes });
       } catch (e) {
         console.error(e);
@@ -25,9 +23,8 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
-
   const bbox = useSelector(state => state.bbox);
-  const lastPoint = useSelector(state => state.lastPoint);
+  const dateIndex = useSelector(state => state.dateIndex);
 
   return covidData
   ?
@@ -36,7 +33,7 @@ const CovidApp = () => {
       <UsMap 
         stateData={covidData.state} 
         countyData={covidData.county} 
-        lastPoint={lastPoint}
+        dateIndex={dateIndex}
         width={width} 
         height={height} />
       <DataPoints 

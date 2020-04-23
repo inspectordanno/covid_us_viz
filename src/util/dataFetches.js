@@ -101,7 +101,7 @@ export const fetchCountyNyt = async () => {
     //filter by cases that have coordinates (this ignores "unknown counties" - change this?)
     const coords = countyRes.filter(d => d.coordinates); 
     const noFips = coords.filter(d => !d.fips);
-    console.log(noFips);
+    //console.log(noFips);
 
     const groupByPlace = group(coords, d => d.coordinates);
     const newEntriesArray = [];

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, Fragment } from 'react';
 import { useDispatch } from 'react-redux';
 import * as d3 from 'd3';
+import { group } from 'd3-array';
 
 import stateGeoJson from '../../dist/data/us_states.json';
 import countyGeoJson from '../../dist/data/us_counties.json';
@@ -8,11 +9,35 @@ import stateFips from '../../dist/data/states_by_fips.json';
 import albersProjection from '../util/albersProjection';
 import { dispatchBbox } from '../actions/actions';
 
-const UsMap = ({ stateData, countyData, countyFrequencies, width, height }) => {
+const UsMap = ({ stateData, countyData, dateIndex, width, height }) => {
 
   const countiesContainer = useRef();
   const svgContainer = useRef();
   const dispatch = useDispatch();
+
+  const getFrequencyCount = (dateIndex, measure) => {
+    const countsObj = {};
+    const counts = countyData[dateIndex][1];
+    
+    counts.forEach(d => {
+      countsObj[d.fips] = d[measure]; 
+    });
+
+    console.log(dateIndex);
+    console.log(countyData[dateIndex][0]);
+    console.log(countsObj);
+  }
+
+  getFrequencyCount(dateIndex, 'totalCases');
+
+  const yesterdayFrequencyCount = () => {
+    //no yesterday if first day
+    if (dateIndex === 0) {
+      return countyData[0];
+    } else {
+      return 
+    }
+  }
 
    //gets bounding box 
    useEffect(() => {

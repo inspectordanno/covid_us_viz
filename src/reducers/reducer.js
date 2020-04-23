@@ -14,11 +14,6 @@ export default (state = reducerDefaultState, action) => {
         ...state,
         bbox: action.bbox
       }
-    case 'LAST_POINT':
-      return {
-        ...state,
-        lastPoint: action.lastPoint
-      }
     default: 
       return state;
   }

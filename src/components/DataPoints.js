@@ -8,9 +8,10 @@ import albersProjection from "../util/albersProjection";
 
 const DataPoints = ({ countyData, bbox, width, height }) => {
   const canvasRef = useRef();
+  const dateIndex = useRef(0);
   const dispatch = useDispatch();
   const [startPositions, setStartPositions] = useState();
-  const [dateIndex, setDateIndex] = useState(0);
+  // const [dateIndex, setDateIndex] = useState(0);
   const [frequencyTracker, setFrequencyTracker] = useState({});
 
   const pointRadius = 2;
@@ -78,7 +79,7 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
 
   useEffect(() => {
     if (canvasRef.current && startPositions) {
-      const currentDayData = countyData[dateIndex][1];
+      const currentDayData = countyData[dateIndex.current][1];
       const canvas = d3.select(canvasRef.current);
       const context = canvas.node().getContext("2d");
       const customBase = document.createElement("custom");
@@ -144,9 +145,10 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
           .then(() => {
             //if today isn't the last day, set the next day to be tomorrow
             if (dateIndex !== countyData.length - 1) {
-              dispatch(dispatchDateIndex(dateIndex + 1));
+              dispatch(dispatchDateIndex(dateIndex.current + 1));
               setFrequencyTracker(tempTracker);
-              setDateIndex(dateIndex + 1);
+              //setDateIndex(dateIndex + 1);
+              dateIndex.current += 1;
             }
           })
           .catch((error) => {
@@ -180,8 +182,9 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
       //otherwise, dayIndex is increased with transition().end
       if (todayNewData.length === 0 && dateIndex !== countyData.length - 1) {
         d3.timeout(() => {
-          dispatch(dispatchDateIndex(dateIndex + 1));
-          setDateIndex(dateIndex + 1);
+          dispatch(dispatchDateIndex(dateIndex.current + 1));
+          // setDateIndex(dateIndex + 1);
+          dateIndex.current += 1;
         }, duration);
       } else {
         //bind data
@@ -199,11 +202,7 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
         return () => t.stop();
       }
     }
-  }, [canvasRef.current, startPositions, dateIndex]);
-
-  useEffect(() => {
-    console.log(frequencyTracker);
-  }, [frequencyTracker])
+  }, [canvasRef.current, startPositions, dateIndex.current]);
 
   return startPositions && width && height ? (
     <canvas
