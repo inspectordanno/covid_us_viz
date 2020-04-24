@@ -6,7 +6,8 @@ import DataPoints from './DataPoints';
 
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
-  const width = window.innerWidth * .75;
+  const [dateIndex, setDateIndex] = useState(0);
+  const width = window.innerWidth;
   const height = window.innerHeight;
 
   //fetches data on mount
@@ -24,9 +25,6 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
-  const bbox = useSelector(state => state.bbox);
-  const dateIndex = useSelector(state => state.dateIndex);
-
   return covidData
   ?
   (
@@ -39,7 +37,8 @@ const CovidApp = () => {
         height={height} />
       <DataPoints 
         countyData={covidData.county} 
-        bbox={bbox} 
+        dateIndex={dateIndex}
+        setDateIndex={setDateIndex}
         width={width} 
         height={height} />
     </div>

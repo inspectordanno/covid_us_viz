@@ -31,22 +31,6 @@ const UsMap = ({ stateData, countyData, dateIndex, width, height }) => {
   }
 
   const yesterdayFreqCount = getYesterdayFrequencyCount('totalCases');
-
-   //gets bounding box 
-   useEffect(() => {
-      const countiesBoundingBox = countiesContainer.current
-        .getBoundingClientRect();
-
-      //represents the bounding box of the "sky"
-      const bbox = {
-        top: 0, //top of the screen
-        right: width, //right of the screen
-        bottom: countiesBoundingBox.top, //bottom of the "sky" aka the top of the U.S.
-        left: 0 //left of the screen
-      }
-    
-      dispatch(dispatchBbox(bbox));    
-  }, [])
   
   const projection = albersProjection(width, height);
 
