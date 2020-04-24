@@ -14,7 +14,7 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
 
   const pointRadius = 2;
   const duration = 500;
-  const delay = 5;
+  const delay = 2.5;
 
   //creating [x, y] position of every single point in the "sky"
   //aka the starting positions for the datapoints
@@ -111,6 +111,14 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
 
       const projection = albersProjection(width, height);
 
+      const calculateDelay = (i, length) => {
+        if (i > length / 2 ) {
+          return (length - i) * delay;
+        } else if (i <= length  / 2) {
+          return i * delay;
+        } 
+      }
+
       const dataBind = (data) => {
         custom
           .selectAll(".covid_point")
@@ -122,7 +130,7 @@ const DataPoints = ({ countyData, bbox, width, height }) => {
           .attr('opacity', '1')
           .transition()
           .duration(duration)
-          .delay((d, i) => i * delay)
+          .delay((d, i) => calculateDelay(i, data.length))
           .attr("x", d => projection(d.coordinates)[0])
           .attr("y", d => projection(d.coordinates)[1])
           .transition()
