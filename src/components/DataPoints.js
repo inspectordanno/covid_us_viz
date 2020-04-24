@@ -6,6 +6,7 @@ import { Random } from "random-js";
 
 import { dispatchDateIndex } from "../actions/actions";
 import albersProjection from "../util/albersProjection";
+import renderWebGl from '../webgl/webgl';
 
 const DataPoints = ({ countyData, dateIndex, setDateIndex, width, height }) => {
   const canvasRef = useRef();
