@@ -1,39 +1,68 @@
 //shaders
 const glsl = (x) => x;
 
-export const vertex = glsl`
-  attribute vec2 a_position;
+export const frag = glsl`
+  //set the precision
+  precision mediump float;
 
-  uniform vec2 u_resolution;
-  uniform vec2 u_translation;
+  // this value is populated by the vertex shader
+  varying vec3 fragColor; 
 
+  // gl_FragColor is a special variable that holds the color
+  // of a pixel
   void main() {
-
-    //add in the translation
-    vec2 position = a_position + u_translation;
-
-    // convert the circle points from pixels to 0.0 to 1.0
-    vec2 zeroToOne = position / u_resolution;
-
-    // convert from 0->1 to 0->2
-    vec2 zeroToTwo = zeroToOne * 2.0;
-
-    // convert from 0->2 to -1->+1 (clipspace)
-    vec2 clipSpace = zeroToTwo - 1.0;
-
-    gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+    gl_FragColor = vec4(fragColor, 1);
   }
 `;
 
-export const fragment = glsl`
-  // fragment shaders don't have a default precision so we need
-  // to pick one. mediump is a good default. It means "medium precision"
-  precision mediump float;
+export const vert = glsl`
+  // per vertex attributes
+  attribute vec2 positionStart;
+  attribute vec2 positionEnd;
+  attribute vec4 colorStart;
+  attribute vec4 colorEnd;
 
-  uniform vec4 u_color;
- 
-  // gl_FragColor is a special variable in a fragment shader
+  // variables to send to the fragment shader
+  varying vec4 fragColor;
+
+  // values that are the same for all vertices
+  uniform float pointWidth;
+  uniform float stageWidth;
+  uniform float stageHeight;
+  uniform float elapsed;
+  uniform float duration;
+
+  // helper function to transform from pixel space to normalized
+  // device coordinates (NDC). In NDC (0,0) is the middle,
+  // (-1, 1) is the top left and (1, -1) is the bottom right.
+  vec2 normalizeCoords(vec2 position) {
+    // read in the positions into x and y vars
+    float x = position[0];
+    float y = position[1];
+
+    return vec2(
+      2.0 * ((x / stageWidth) - 0.5),
+      // invert y to treat [0,0] as bottom left in pixel space
+      -(2.0 * ((y / stageHeight) - 0.5)));
+  }
+
   void main() {
-    gl_FragColor = u_color;
+    // update the size of a point based on the prop pointWidth
+    gl_PointSize = pointWidth;
+
+    // send color to the fragment shader
+    fragColor = color;
+
+    // number between 0 and 1 indicating how far through the
+    // animation this vertex is.
+    float t = min(1.0, elapsed / duration);
+
+    // interpolate position
+    vec2 position = mix(positionStart, positionEnd, t);
+
+    // scale to normalized device coordinates
+    // gl_Position is a special variable that holds the position
+    // of a vertex
+    gl_Position = vec4(normalizeCoords(position), 0.0, 1.0);
   }
 `;
