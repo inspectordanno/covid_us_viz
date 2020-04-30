@@ -58,15 +58,12 @@ const DataPoints = ({ countyData, dateIndex, setDateIndex, width, height }) => {
 
   //creating regl instance with canvas ref
   useEffect(() => {
-    const asyncDrawPoint = async () => {
-      if (canvasRef.current) {
-        const gl = canvasRef.current.getContext('webgl');
-        mainRegl(gl, dateIndex, todayNewData, width, height);
-        console.log('done');
-        // dispatch(dispatchDateIndex(dateIndex + 1));
-      }
+    if (canvasRef.current) {
+      const gl = canvasRef.current.getContext('webgl');
+      mainRegl(gl, dateIndex, todayNewData, width, height, () => {
+        console.log('poop');
+      })
     }
-    asyncDrawPoint();
   }, [canvasRef.current, dateIndex])
 
   return (

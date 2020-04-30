@@ -1,12 +1,13 @@
+import { useEffect } from 'react';
 import REGL from 'regl';
 import { useDispatch } from 'react-redux';
 
-import { frag, vert } from '../webgl/shaders';
+import { frag, vert } from './shaders';
 import { dispatchDateIndex } from '../actions/actions';
 
 //credit:
 //https://bl.ocks.org/pbeshai/5309144c8a5faa3dfec5401cc850c7b5
-const mainRegl = (gl, dateIndex, points, width, height) => {
+const mainRegl = (gl, dateIndex, points, width, height, callback) => {
   const regl = REGL(gl);
 
   const pointWidth = 2;
@@ -90,9 +91,9 @@ const mainRegl = (gl, dateIndex, points, width, height) => {
         color: [0, 0, 0, 0],
         depth: 1,
       });
+      callback();
     }
   });  
-}
-
+};
 
 export default mainRegl;
