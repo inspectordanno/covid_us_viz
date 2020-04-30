@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useDispatch } from 'react-redux';
 import * as d3 from "d3";
 
 import mainRegl from '../webgl/regl';
@@ -8,6 +9,7 @@ import albersProjection from "../util/albersProjection";
 const DataPoints = ({ countyData, dateIndex, setDateIndex, width, height }) => {
   const [prevPoints, setPrevPoints] = useState([]);
   const canvasRef = useRef();
+  const dispatch = useDispatch();
 
   const todayData = countyData[dateIndex][1];
   const projection = albersProjection(width, height);
@@ -50,15 +52,22 @@ const DataPoints = ({ countyData, dateIndex, setDateIndex, width, height }) => {
   const todayNewData = calculateNewData("newCases"); //choose 'newCases' or 'newDeaths'
   const cumData = [...prevPoints, ...todayNewData];
 
-  console.log(todayNewData);
+  const pointsAnimated = new Promise((resolve, reject) => {
+
+  })
 
   //creating regl instance with canvas ref
   useEffect(() => {
-    if (canvasRef.current) {
-      const gl = canvasRef.current.getContext('webgl');
-      mainRegl(gl, dateIndex, todayNewData, width, height);
+    const asyncDrawPoint = async () => {
+      if (canvasRef.current) {
+        const gl = canvasRef.current.getContext('webgl');
+        mainRegl(gl, dateIndex, todayNewData, width, height);
+        console.log('done');
+        // dispatch(dispatchDateIndex(dateIndex + 1));
+      }
     }
-  }, [canvasRef.current])
+    asyncDrawPoint();
+  }, [canvasRef.current, dateIndex])
 
   return (
     <canvas

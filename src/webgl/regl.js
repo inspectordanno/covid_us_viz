@@ -1,12 +1,17 @@
-import React from 'react';
 import REGL from 'regl';
 import { useDispatch } from 'react-redux';
 
 import { frag, vert } from '../webgl/shaders';
 import { dispatchDateIndex } from '../actions/actions';
 
+//credit:
+//https://bl.ocks.org/pbeshai/5309144c8a5faa3dfec5401cc850c7b5
 const mainRegl = (gl, dateIndex, points, width, height) => {
   const regl = REGL(gl);
+
+  const pointWidth = 2;
+  // duration of the animation ignoring delays
+  const duration = 1500; // 1500ms = 1.5s
 
   const createDrawPoints = (points) => {
     const drawPoints = regl({
@@ -69,9 +74,11 @@ const mainRegl = (gl, dateIndex, points, width, height) => {
     // draw the points using our created regl func
     // note that the arguments are available via `regl.prop`
     drawPoints({
-      pointWidth: 2,
+      pointWidth,
       stageWidth: width,
       stageHeight: height,
+      duration,
+      startTime
     });
 
     // if we have exceeded the maximum duration, move on to the next animation
@@ -83,7 +90,6 @@ const mainRegl = (gl, dateIndex, points, width, height) => {
         color: [0, 0, 0, 0],
         depth: 1,
       });
-      // dispatch(dispatchDateIndex(dateIndex + 1));
     }
   });  
 }

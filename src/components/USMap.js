@@ -49,9 +49,7 @@ const UsMap = ({ stateData, countyData, dateIndex, width, height }) => {
     d3.interpolateGreys //range interpolator
   );
   
-  return true
-  ?
-  (
+  return (
     <svg className="UsMap"
       width={width}
       height={height}
@@ -82,9 +80,7 @@ const UsMap = ({ stateData, countyData, dateIndex, width, height }) => {
         )}
       </g>
     </svg>
-  )
-  :
-  null;
+  );
 }
 
 export default UsMap;
