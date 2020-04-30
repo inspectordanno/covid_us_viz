@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as d3 from "d3";
 
-
+import mainRegl from '../webgl/regl';
 import { dispatchDateIndex } from "../actions/actions";
 import albersProjection from "../util/albersProjection";
 
@@ -13,8 +13,8 @@ const DataPoints = ({ countyData, dateIndex, setDateIndex, width, height }) => {
   const projection = albersProjection(width, height);
 
   const calculateStartPoints = () => {
-    const x = d3.randomInt(0, width + 1);
-    const y = d3.randomInt(0, height + 1);
+    const x = d3.randomUniform(0, width + 1)();
+    const y = d3.randomUniform(0, height + 1)();
     return [x, y];
   };
 
@@ -50,6 +50,15 @@ const DataPoints = ({ countyData, dateIndex, setDateIndex, width, height }) => {
   const todayNewData = calculateNewData("newCases"); //choose 'newCases' or 'newDeaths'
   const cumData = [...prevPoints, ...todayNewData];
 
+  console.log(todayNewData);
+
+  //creating regl instance with canvas ref
+  useEffect(() => {
+    if (canvasRef.current) {
+      const gl = canvasRef.current.getContext('webgl');
+      mainRegl(gl, dateIndex, todayNewData);
+    }
+  }, [canvasRef.current])
 
   return (
     <canvas

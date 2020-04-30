@@ -1,11 +1,13 @@
-import regl from "regl";
-import { useDispatch } from '../'
+import React from 'react';
+import { useDispatch } from 'react-redux';
+
 import { frag, vert } from '../webgl/shaders';
 import { dispatchDateIndex } from '../actions/actions';
 
-const pointWidth = 2;
+const mainRegl = (gl, dateIndex, points) => {
+  const regl = require('regl')(gl);
+  console.log(regl);
 
-const mainRegl = (err, regl, dateIndex) => {
   const createDrawPoints = (points) => {
     const drawPoints = regl({
       frag,
@@ -68,7 +70,7 @@ const mainRegl = (err, regl, dateIndex) => {
     // draw the points using our created regl func
     // note that the arguments are available via `regl.prop`
     drawPoints({
-      pointWidth,
+      pointWidth: 2,
       stageWidth: width,
       stageHeight: height,
     });
@@ -82,7 +84,7 @@ const mainRegl = (err, regl, dateIndex) => {
         color: [0, 0, 0, 0],
         depth: 1,
       });
-      dispatchDateIndex(dateIndex + 1);
+      // dispatch(dispatchDateIndex(dateIndex + 1));
     }
   });  
 }
