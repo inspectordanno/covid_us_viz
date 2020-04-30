@@ -56,7 +56,7 @@ const DataPoints = ({ countyData, dateIndex, setDateIndex, width, height }) => {
   useEffect(() => {
     if (canvasRef.current) {
       const gl = canvasRef.current.getContext('webgl');
-      mainRegl(gl, dateIndex, todayNewData);
+      mainRegl(gl, dateIndex, todayNewData, width, height);
     }
   }, [canvasRef.current])
 

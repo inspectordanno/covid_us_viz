@@ -16,7 +16,6 @@ const CovidApp = () => {
       try {
         const stateRes = await fetchStateNyt();
         const countyRes = await fetchCountyNyt();
-        console.log(countyRes);
         setCovidData({ state: stateRes, county: countyRes });
       } catch (e) {
         console.error(e);

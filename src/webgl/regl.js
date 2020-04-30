@@ -1,12 +1,12 @@
 import React from 'react';
+import REGL from 'regl';
 import { useDispatch } from 'react-redux';
 
 import { frag, vert } from '../webgl/shaders';
 import { dispatchDateIndex } from '../actions/actions';
 
-const mainRegl = (gl, dateIndex, points) => {
-  const regl = require('regl')(gl);
-  console.log(regl);
+const mainRegl = (gl, dateIndex, points, width, height) => {
+  const regl = REGL(gl);
 
   const createDrawPoints = (points) => {
     const drawPoints = regl({
@@ -18,7 +18,6 @@ const mainRegl = (gl, dateIndex, points) => {
         // just the relevant value for a given point.
         positionStart: points.map((d) => [d.startX, d.startY]),
         positionEnd: points.map(d => [d.endX, d.endY]),
-        color: points.map((d) => d.color),
       },
     
       uniforms: {
