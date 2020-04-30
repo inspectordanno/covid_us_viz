@@ -1,25 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
 import * as d3 from "d3";
-import { Random } from "random-js";
-import initWebgl from "../webgl/init";
-import renderWebgl from "../webgl/render";
-// import shuffle from "lodash/shuffle";
+
 
 import { dispatchDateIndex } from "../actions/actions";
 import albersProjection from "../util/albersProjection";
 
 const DataPoints = ({ countyData, dateIndex, setDateIndex, width, height }) => {
-  const canvasRef = useRef();
   const [prevPoints, setPrevPoints] = useState([]);
+  const canvasRef = useRef();
 
   const todayData = countyData[dateIndex][1];
-  const pointWidth = 4;
   const projection = albersProjection(width, height);
 
   const calculateStartPoints = () => {
-    const x = d3.randomNormal(0, width + 1);
-    const y = d3.randomNormal(0, height + 1);
+    const x = d3.randomInt(0, width + 1);
+    const y = d3.randomInt(0, height + 1);
     return [x, y];
   };
 
@@ -55,10 +50,6 @@ const DataPoints = ({ countyData, dateIndex, setDateIndex, width, height }) => {
   const todayNewData = calculateNewData("newCases"); //choose 'newCases' or 'newDeaths'
   const cumData = [...prevPoints, ...todayNewData];
 
-  useEffect(() => {
-   
-
-  }, [dateIndex, canvasRef.current]);
 
   return (
     <canvas
