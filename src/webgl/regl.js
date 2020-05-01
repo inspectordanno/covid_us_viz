@@ -8,12 +8,12 @@ import { dispatch } from 'd3';
 
 //credit:
 //https://bl.ocks.org/pbeshai/5309144c8a5faa3dfec5401cc850c7b5
-const mainRegl = (gl, dateIndex, points, width, height) => {
+const mainRegl = (gl, points, width, height) => {
   const regl = REGL(gl);
 
   const pointWidth = 2;
   // duration of the animation ignoring delays
-  const duration = 1500; // 1500ms = 1.5s
+  const duration = 1000;
 
   const createDrawPoints = (points) => {
     const drawPoints = regl({
@@ -60,7 +60,7 @@ const mainRegl = (gl, dateIndex, points, width, height) => {
   //start draw loop
   let startTime = null;
 
-  //return promise which loops frame loop until it resolves
+  //return promise which loops frame loop until it stops, then resolves
   return new Promise((resolve, reject) => {
     const frameLoop = regl.frame(({ time }) => {
       // keep track of start time so we can get time elapsed
@@ -95,7 +95,8 @@ const mainRegl = (gl, dateIndex, points, width, height) => {
           color: [0, 0, 0, 0],
           depth: 1,
         });
-        resolve();
+        console.log('from mainRegl()')
+        resolve(); //resolve promise
       }
     });  
 

@@ -6,7 +6,6 @@ import DataPoints from './DataPoints';
 
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
-  const [dateIndex, setDateIndex] = useState(0);
   const width = window.innerWidth;
   const height = window.innerHeight;
 
@@ -24,7 +23,9 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
-  return covidData
+  const dateIndex = useSelector(state => state.dateIndex);
+
+  return covidData && Number.isInteger(dateIndex)
   ?
   (
     <div className="CovidApp">
@@ -37,7 +38,6 @@ const CovidApp = () => {
       <DataPoints 
         countyData={covidData.county} 
         dateIndex={dateIndex}
-        setDateIndex={setDateIndex}
         width={width} 
         height={height} />
     </div>

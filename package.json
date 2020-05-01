@@ -13,6 +13,7 @@
   "dependencies": {
     "d3": "^5.15.0",
     "d3-array": "^2.4.0",
+    "d3-random": "^2.1.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",

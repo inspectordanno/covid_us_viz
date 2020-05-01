@@ -1,41 +1,46 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from 'react-redux';
 import * as d3 from "d3";
+import { randomInt } from 'd3-random';
 
 import mainRegl from '../webgl/regl';
 import { dispatchDateIndex } from "../actions/actions";
 import albersProjection from "../util/albersProjection";
 
-const DataPoints = ({ countyData, dateIndex, setDateIndex, width, height }) => {
-  const [prevPoints, setPrevPoints] = useState([]);
+const DataPoints = ({ countyData, dateIndex, width, height }) => {
+  console.log(width, height);
   const canvasRef = useRef();
   const dispatch = useDispatch();
 
-  const todayData = countyData[dateIndex][1];
   const projection = albersProjection(width, height);
 
   const calculateStartPoints = () => {
-    const x = d3.randomUniform(0, width + 1)();
-    const y = d3.randomUniform(0, height + 1)();
+    const x = randomInt(0, width + 1)();
+    const y = randomInt(0, height + 1)();
     return [x, y];
   };
 
-  const calculateNewData = (measure) => {
-    const newData = [];
+  //generates a point for each datum on a specific day
+  const generatePointData = (measure, dateIndex) => {
+    const pointData = []; //pointData will be pushed to this array
+    const dayData = countyData[dateIndex][1];
 
-    todayData.forEach((d) => {
-      //repeat for every new case/death
-      let timesToRepeat = d[measure];
+    dayData.forEach((d) => {
+      //repeat for every county's new case/death count
+      let timesToRepeat = d[measure]; //measure should be either "newCases" or "newDeaths"
 
       const totalMeasure =
-        measure === "newCases" ? "totalCases" : "totalDeaths";
+        measure === "newCases" ? "totalCases" : "totalDeaths"; //setting the the analogous total measure
 
-      const startPoints = calculateStartPoints();
       const endPoints = projection(d.coordinates);
 
       while (timesToRepeat) {
-        newData.push({
+        //randomize start points for each point
+        const startPoints = calculateStartPoints();
+
+        pointData.push({
           date: d.date,
+          dateIndex,
           fips: d.fips,
           nthPoint: d[totalMeasure] - timesToRepeat + 1,
           startX: startPoints[0],
@@ -46,19 +51,39 @@ const DataPoints = ({ countyData, dateIndex, setDateIndex, width, height }) => {
         timesToRepeat -= 1;
       }
     });
-    return newData;
+    return pointData;
   };
 
-  const todayNewData = calculateNewData("newCases"); //choose 'newCases' or 'newDeaths'
-  const cumData = [...prevPoints, ...todayNewData];
+  const generateCumPointData = (measure, lastDateIndex) => {
+    //d3.range(lastDateIndex + 1) produces an array of all the date indexes
+    //for each date index, generate point data and push to cum
+    const cumPointData = [];
+    d3.range(lastDateIndex + 1).forEach(dateIndex => {
+      const dayPointData = generatePointData(measure, dateIndex);
+      cumPointData.push(dayPointData);
+    });
+    return cumPointData;
+  };
+
+  const todayData = generatePointData("newCases", dateIndex); //choose 'newCases' or 'newDeaths'
+  console.log(todayData.length);
+  //const cumData = generateCumPointData("newCases", dateIndex);
 
   //creating regl instance with canvas ref
   useEffect(() => {
-    if (canvasRef.current) {
+    console.log('useEffect ran');
+    if (canvasRef.current && todayData.length) {
       const gl = canvasRef.current.getContext('webgl');
-      mainRegl(gl, dateIndex, todayNewData, width, height).then(() => {
-        console.log('fart');
-      })
+      mainRegl(gl, todayData, width, height)
+        .then(() => {
+          console.log('new data for today');
+          dispatch(dispatchDateIndex(dateIndex + 1));
+        });
+    } else if (canvasRef.current && !todayData.length) {
+      console.log('no new data for today');
+      d3.timeout(() => {
+        dispatch(dispatchDateIndex(dateIndex + 1));
+      }, 1000)
     }
   }, [canvasRef.current, dateIndex])
 
