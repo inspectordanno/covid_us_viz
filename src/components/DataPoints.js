@@ -52,16 +52,12 @@ const DataPoints = ({ countyData, dateIndex, setDateIndex, width, height }) => {
   const todayNewData = calculateNewData("newCases"); //choose 'newCases' or 'newDeaths'
   const cumData = [...prevPoints, ...todayNewData];
 
-  const pointsAnimated = new Promise((resolve, reject) => {
-
-  })
-
   //creating regl instance with canvas ref
   useEffect(() => {
     if (canvasRef.current) {
       const gl = canvasRef.current.getContext('webgl');
-      mainRegl(gl, dateIndex, todayNewData, width, height, () => {
-        console.log('poop');
+      mainRegl(gl, dateIndex, todayNewData, width, height).then(() => {
+        console.log('fart');
       })
     }
   }, [canvasRef.current, dateIndex])

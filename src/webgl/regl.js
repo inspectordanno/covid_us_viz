@@ -4,10 +4,11 @@ import { useDispatch } from 'react-redux';
 
 import { frag, vert } from './shaders';
 import { dispatchDateIndex } from '../actions/actions';
+import { dispatch } from 'd3';
 
 //credit:
 //https://bl.ocks.org/pbeshai/5309144c8a5faa3dfec5401cc850c7b5
-const mainRegl = (gl, dateIndex, points, width, height, callback) => {
+const mainRegl = (gl, dateIndex, points, width, height) => {
   const regl = REGL(gl);
 
   const pointWidth = 2;
@@ -58,42 +59,49 @@ const mainRegl = (gl, dateIndex, points, width, height, callback) => {
 
   //start draw loop
   let startTime = null;
-  const frameLoop = regl.frame(({ time }) => {
-    // keep track of start time so we can get time elapsed
-    // this is important since time doesn't reset when starting new animations
-    if (startTime === null) {
-      startTime = time;
-    }
 
-    //clear buffer
-    regl.clear({
-      //background color (white)
-      color: [0, 0, 0, 0],
-      depth: 1,
-    });
+  //return promise which loops frame loop until it resolves
+  return new Promise((resolve, reject) => {
+    const frameLoop = regl.frame(({ time }) => {
+      // keep track of start time so we can get time elapsed
+      // this is important since time doesn't reset when starting new animations
+      if (startTime === null) {
+        startTime = time;
+      }
   
-    // draw the points using our created regl func
-    // note that the arguments are available via `regl.prop`
-    drawPoints({
-      pointWidth,
-      stageWidth: width,
-      stageHeight: height,
-      duration,
-      startTime
-    });
-
-    // if we have exceeded the maximum duration, move on to the next animation
-    if (time - startTime > duration / 1000) {
-      frameLoop.cancel();
       //clear buffer
       regl.clear({
         //background color (white)
         color: [0, 0, 0, 0],
         depth: 1,
       });
-      callback();
-    }
-  });  
+    
+      // draw the points using our created regl func
+      // note that the arguments are available via `regl.prop`
+      drawPoints({
+        pointWidth,
+        stageWidth: width,
+        stageHeight: height,
+        duration,
+        startTime
+      });
+  
+      // if we have exceeded the maximum duration, move on to the next animation
+      if (time - startTime > duration / 1000) {
+        frameLoop.cancel();
+        //clear buffer
+        regl.clear({
+          //background color (white)
+          color: [0, 0, 0, 0],
+          depth: 1,
+        });
+        resolve();
+      }
+    });  
+
+
+    
+  })
 };
 
 export default mainRegl;
