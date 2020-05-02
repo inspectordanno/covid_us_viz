@@ -8,10 +8,9 @@ import { dispatch } from 'd3';
 
 //credit:
 //https://bl.ocks.org/pbeshai/5309144c8a5faa3dfec5401cc850c7b5
-const mainRegl = (gl, points, width, height) => {
+const mainRegl = (gl, points, pointWidth, width, height) => {
   const regl = REGL(gl);
 
-  const pointWidth = 2;
   // duration of the animation ignoring delays
   const duration = 1000;
 
@@ -23,8 +22,8 @@ const mainRegl = (gl, points, width, height) => {
         // each of these gets mapped to a single entry for each of
         // the points. this means the vertex shader will receive
         // just the relevant value for a given point.
-        positionStart: points.map((d) => [d.startX, d.startY]),
-        positionEnd: points.map(d => [d.endX, d.endY]),
+        positionStart: points.map(d => [d.startX, d.startY]),
+        positionEnd: points.map(d => [d.endX, d.endY])
       },
     
       uniforms: {
@@ -52,6 +51,7 @@ const mainRegl = (gl, points, width, height) => {
       // specify that each vertex is a point (not part of a mesh)
       primitive: "points", 
     });
+
     return drawPoints;
   }
 
@@ -86,7 +86,7 @@ const mainRegl = (gl, points, width, height) => {
         startTime
       });
   
-      // if we have exceeded the maximum duration, move on to the next animation
+      // if we have exceeded the maximum duration, stop
       if (time - startTime > duration / 1000) {
         frameLoop.cancel();
         //clear buffer
@@ -98,11 +98,8 @@ const mainRegl = (gl, points, width, height) => {
         console.log('from mainRegl()')
         resolve(); //resolve promise
       }
-    });  
-
-
-    
-  })
+    }); 
+  });
 };
 
 export default mainRegl;

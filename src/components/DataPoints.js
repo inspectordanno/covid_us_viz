@@ -7,8 +7,7 @@ import mainRegl from '../webgl/regl';
 import { dispatchDateIndex } from "../actions/actions";
 import albersProjection from "../util/albersProjection";
 
-const DataPoints = ({ countyData, dateIndex, width, height }) => {
-  console.log(width, height);
+const DataPoints = ({ countyData, dateIndex, pointWidth, width, height }) => {
   const canvasRef = useRef();
   const dispatch = useDispatch();
 
@@ -66,21 +65,17 @@ const DataPoints = ({ countyData, dateIndex, width, height }) => {
   };
 
   const todayData = generatePointData("newCases", dateIndex); //choose 'newCases' or 'newDeaths'
-  console.log(todayData.length);
   //const cumData = generateCumPointData("newCases", dateIndex);
-
+  
   //creating regl instance with canvas ref
   useEffect(() => {
-    console.log('useEffect ran');
-    if (canvasRef.current && todayData.length) {
+    if (canvasRef.current && todayData.length && dateIndex < countyData.length) {
       const gl = canvasRef.current.getContext('webgl');
-      mainRegl(gl, todayData, width, height)
+      mainRegl(gl, todayData, pointWidth, width, height)
         .then(() => {
-          console.log('new data for today');
           dispatch(dispatchDateIndex(dateIndex + 1));
         });
-    } else if (canvasRef.current && !todayData.length) {
-      console.log('no new data for today');
+    } else if (canvasRef.current && !todayData.length && dateIndex < countyData.length) {
       d3.timeout(() => {
         dispatch(dispatchDateIndex(dateIndex + 1));
       }, 1000)

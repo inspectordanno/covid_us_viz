@@ -8,6 +8,7 @@ const CovidApp = () => {
   const [covidData, setCovidData] = useState();
   const width = window.innerWidth;
   const height = window.innerHeight;
+  const pointWidth = 2;
 
   //fetches data on mount
   useEffect(() => {
@@ -33,11 +34,13 @@ const CovidApp = () => {
         stateData={covidData.state} 
         countyData={covidData.county} 
         dateIndex={dateIndex}
+        pointWidth={pointWidth}
         width={width} 
         height={height} />
       <DataPoints 
         countyData={covidData.county} 
         dateIndex={dateIndex}
+        pointWidth={pointWidth}
         width={width} 
         height={height} />
     </div>
