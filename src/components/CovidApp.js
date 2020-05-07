@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { timeout } from 'd3-timer';
+
 import { fetchStateNyt, fetchCountyNyt } from '../util/dataFetches';
+import { dispatchDateIndex } from '../actions/actions';
 import UsMap from './UsMap';
 import DataPoints from './DataPoints';
 
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
+  const dispatch = useDispatch();
   const width = window.innerWidth;
   const height = window.innerHeight;
   const pointWidth = 2;
+
+
+  const dateIndex = useSelector(state => state.dateIndex);
+  const measure = 'newCases'; //newCases or newDeaths
 
   //fetches data on mount
   useEffect(() => {
@@ -24,7 +32,17 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
-  const dateIndex = useSelector(state => state.dateIndex);
+  useEffect(() => {
+    if (covidData) {
+      const numDays = covidData.state.size;
+
+      if (dateIndex < numDays - 1) {
+        timeout(() => {
+          dispatch(dispatchDateIndex(dateIndex + 1))
+        }, 500)
+      }
+    }
+  },[dateIndex, covidData])
 
   return covidData && Number.isInteger(dateIndex)
   ?
@@ -34,13 +52,14 @@ const CovidApp = () => {
         stateData={covidData.state} 
         countyData={covidData.county} 
         dateIndex={dateIndex}
-        pointWidth={pointWidth}
+        measure={measure}
         width={width} 
         height={height} />
       {/* <DataPoints 
         countyData={covidData.county} 
         dateIndex={dateIndex}
         pointWidth={pointWidth}
+        measure={measure}
         width={width} 
         height={height} /> */}
     </div>

@@ -7,7 +7,7 @@ import mainRegl from '../webgl/regl';
 import { dispatchDateIndex } from "../actions/actions";
 import albersProjection from "../util/albersProjection";
 
-const DataPoints = ({ countyData, dateIndex, pointWidth, width, height }) => {
+const DataPoints = ({ countyData, dateIndex, pointWidth, measure, width, height }) => {
   const canvasRef = useRef();
   const dispatch = useDispatch();
 
@@ -63,7 +63,7 @@ const DataPoints = ({ countyData, dateIndex, pointWidth, width, height }) => {
     return cumPointData;
   };
 
-  const todayData = generatePointData("newCases", dateIndex); //choose 'newCases' or 'newDeaths'
+  const todayData = generatePointData(measure, dateIndex); //'newCases' or 'newDeaths'
   //const cumData = generateCumPointData("newCases", dateIndex);
   
   //creating regl instance with canvas ref

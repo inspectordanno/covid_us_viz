@@ -25,12 +25,12 @@ const calculateNew = (d, i, arr, measure) => {
 
 //add newCases and newDeaths and push to a new array
 const createNewEntriesArray = (oldEntriesMap) => {
-  const newEntriesArray = []
+  const newEntriesArray = [];
 
-  oldEntriesMap.forEach((value, key) => {
-    value.forEach((d, i) => {
-      const newCases = calculateNew(d, i, value, 'totalCases');
-      const newDeaths = calculateNew(d, i, value, 'totalDeaths');
+  oldEntriesMap.forEach((municipalityData, municipalityName) => {
+    municipalityData.forEach((d, i) => {
+      const newCases = calculateNew(d, i, municipalityData, 'totalCases');
+      const newDeaths = calculateNew(d, i, municipalityData, 'totalDeaths');
       const newEntry = {
         ...d,
         newCases,
@@ -43,6 +43,17 @@ const createNewEntriesArray = (oldEntriesMap) => {
   return newEntriesArray;
 }
 
+//returns es6 map grouped by dateIndex and fips
+const toGroupedMap = (newEntriesArray) => {
+  const groupedbyDate = groups(newEntriesArray, d => d.date);
+  const dateMap = new Map();
+  groupedbyDate.forEach((entry, index) => {
+    const dateIndex = index;
+    const dataByFips = group(entry[1], d => d.fips);
+    dateMap.set(dateIndex, dataByFips);
+  });
+  return dateMap;
+}
 
 export const fetchStateNyt = async () => {
   try {
@@ -60,7 +71,7 @@ export const fetchStateNyt = async () => {
     const groupByState = group(stateRes, d => d.state);
     const newEntriesArray = createNewEntriesArray(groupByState);
 
-    return groups(newEntriesArray, d => d.date); //returns es6 map
+    return toGroupedMap(newEntriesArray);
   } catch (e) {
     console.error(e);
   }
@@ -109,7 +120,7 @@ export const fetchCountyNyt = async () => {
     const groupByPlace = group(coords, d => d.coordinates);
     const newEntriesArray = createNewEntriesArray(groupByPlace);
 
-    return groups(newEntriesArray, d => d.date); //returns es6 map
+    return toGroupedMap(newEntriesArray);
   } catch (e) {
     console.error(e);
   }

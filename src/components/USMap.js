@@ -7,16 +7,12 @@ import stateFips from "../../dist/data/states_by_fips.json";
 import albersProjection from "../util/albersProjection";
 import fipsExceptions from '../util/fipsExceptions';
 
-const UsMap = ({ stateData, countyData, dateIndex, width, height }) => {
-
-  console.log(countyData);
+const UsMap = ({ stateData, countyData, dateIndex, measure, width, height }) => {
 
   const projection = albersProjection(width, height);
   const pathGenerator = d3.geoPath().projection(projection);
 
-  const mapScale = d3.scaleThreshold()
-    .domain([1, 10, 100, 1000, 10000])
-    .range(d3.schemePuBuGn[6])
+  console.log(dateIndex);
 
   const getFips = (properties) => {
     const boroughs = { 
@@ -38,13 +34,28 @@ const UsMap = ({ stateData, countyData, dateIndex, width, height }) => {
     }
   }
 
-  const todayData = countyData
+  const todayData = countyData.get(dateIndex);
+
+  const getMeasure = (fips, measure) => {
+    const fipsData = todayData.get(fips);
+    if (fipsData) { 
+      return fipsData[0][measure]; //for some reason data object is nested in an array
+    } else {
+      return 0; //return 0 if no data exists
+    }
+  }
+
+  const thresholdScale = d3.scaleThreshold()
+    .domain([1, 10, 100, 1000, 10000])
+    // .range(d3.schemePuBuGn[6])
+      .range([ ...d3.schemePastel2 ].reverse())
 
   return (
     <svg className="UsMap" width={width} height={height}>
       <g className="UsMap_counties" >
         {countyGeoJson.features.map(d => {
           const fips = getFips(d.properties);
+          const frequency = getMeasure(fips, measure);
 
           return (
             <path
@@ -54,6 +65,7 @@ const UsMap = ({ stateData, countyData, dateIndex, width, height }) => {
             id={`${d.properties.NAME}, ${
               stateFips[d.properties.STATE].abbreviation
             }`}
+            fill={thresholdScale(frequency)}
             strokeWidth={
               stateFips[d.properties.STATE].name === "Puerto Rico" ? 0 : 0.25
             }
