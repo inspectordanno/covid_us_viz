@@ -37,12 +37,12 @@ const CovidApp = () => {
         pointWidth={pointWidth}
         width={width} 
         height={height} />
-      <DataPoints 
+      {/* <DataPoints 
         countyData={covidData.county} 
         dateIndex={dateIndex}
         pointWidth={pointWidth}
         width={width} 
-        height={height} />
+        height={height} /> */}
     </div>
   )
   :

@@ -36,7 +36,6 @@ const DataPoints = ({ countyData, dateIndex, pointWidth, width, height }) => {
       while (timesToRepeat) {
         //randomize start points for each point
         const startPoints = calculateStartPoints();
-
         pointData.push({
           date: d.date,
           dateIndex,

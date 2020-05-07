@@ -1,91 +1,43 @@
-import React, { useEffect, useState, useRef, Fragment } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import * as d3 from "d3";
-import { group } from "d3-array";
 
 import stateGeoJson from "../../dist/data/us_states.json";
 import countyGeoJson from "../../dist/data/us_counties.json";
 import stateFips from "../../dist/data/states_by_fips.json";
 import albersProjection from "../util/albersProjection";
-import { dispatchBbox } from "../actions/actions";
+import fipsExceptions from '../util/fipsExceptions';
 
-const UsMap = ({ stateData, countyData, dateIndex, pointWidth, width, height }) => {
-  const countiesContainer = useRef();
-  const statesContainer = useRef();
-  const countyRef = useRef();
-  const stateRef = useRef();
-  const dispatch = useDispatch();
-  const [counties, setCounties] = useState([]);
-
-  const getFrequencyCount = (dateIndex, measure) => {
-    const countsObj = {};
-    const counts = countyData[dateIndex][1];
-
-    counts.forEach((d) => {
-      countsObj[d.fips] = d[measure];
-    });
-    return countsObj;
-  };
-
-  const getYesterdayFrequencyCount = (measure) => {
-    //no yesterday if first day
-    return dateIndex === 0
-      ? getFrequencyCount(dateIndex, measure)
-      : getFrequencyCount(dateIndex - 1, measure);
-  };
-
-  const yesterdayFreqCount = getYesterdayFrequencyCount("totalCases");
+const UsMap = ({ stateData, countyData, dateIndex, width, height }) => {
 
   const projection = albersProjection(width, height);
-
   const pathGenerator = d3.geoPath().projection(projection);
 
-  //gets max number of totalCases or totalDeaths on most recent day
-  //this will probably always default to NYC's total cases
-  const getMaxTotal = (measure) => {
-    const valuesfromLastDay = countyData[countyData.length - 1].map(
-      (d) => d[measure]
-    );
-    return d3.max(valuesfromLastDay);
-  };
+  const mapScale = d3.scaleThreshold()
+    .domain([1, 10, 100, 1000, 10000])
+    .range(d3.schemePuBuGn[6])
 
-  const countyScale = d3.scaleSequentialLog(
-    [0, getMaxTotal("totalDeaths")], //domain
-    d3.interpolateGreys //range interpolator
-  );
+  const getFips = (properties) => {
+    const boroughs = { 'New York': true, 'Kings': true, 'Bronx': true, 'Richmond': true, 'Queens': true };
 
-  useEffect(() => {
-    const states = d3.select(statesContainer.current)
-      .selectAll('us_state')
-      .data(stateGeoJson.features)
-    
-      states.enter()
-        .append('path')
-        .attr('class', 'us_state')
-        .attr('d', d => pathGenerator(d))
-        .attr('id', d => d.properties.NAME)
-        .attr('strokeWidth', 1)
-        .attr('stroke', 'black')
-
-      const allPoints = [];
-
-      for (let x = 0; x <= width; x += pointWidth) {
-        for (let y = 0; y <= height; y += pointWidth) {
-          allPoints.push([x, y]);
-        }
-      }
-
-      console.log(allPoints);
-
-      const nodes = d3.selectAll('.us_state').nodes();
-      console.log(nodes);
-  }, [])
+    //custom fips codes for nyc and puerto rico
+    if (properties.STATE === '36' && boroughs[properties.NAME]) {
+      return fipsExceptions.nyc;
+    } else if (properties.STATE === '72') {
+      return fipsExceptions.pr;
+    } else {
+      //last five characters of GEO_ID is fips code
+      return properties.GEO_ID.slice(-5);
+    }
+  }
 
   return (
     <svg className="UsMap" width={width} height={height}>
-      <g className="UsMap_counties" ref={countiesContainer}>
-        {countyGeoJson.features.map(d =>  
-          <path
+      <g className="UsMap_counties" >
+        {countyGeoJson.features.map(d => {
+          const fips = getFips(d.properties);
+
+          return (
+            <path
             key={d.properties.GEO_ID}
             d={pathGenerator(d)}
             className="us_county"
@@ -96,16 +48,13 @@ const UsMap = ({ stateData, countyData, dateIndex, pointWidth, width, height }) 
               stateFips[d.properties.STATE].name === "Puerto Rico" ? 0 : 0.25
             }
             stroke="black"
-            ref={countyRef}
           />
+          )
+        }  
         )}
       </g>
-      <g className="UsMap_states" ref={statesContainer}>
-        {/* {stateGeoJson.features.map((d) => {
-          if (stateRef.current && counties.length !== 52) {
-            console.log(stateRef.current);
-          }
-          return (
+      <g className="UsMap_states" >
+        {stateGeoJson.features.map(d => 
             <path
             key={d.properties.GEO_ID}
             d={pathGenerator(d)}
@@ -113,10 +62,8 @@ const UsMap = ({ stateData, countyData, dateIndex, pointWidth, width, height }) 
             id={d.properties.NAME}
             strokeWidth={1}
             stroke="black"
-            ref={stateRef}
             />
-          )}
-        )} */}
+        )}
       </g>
     </svg>
   );
