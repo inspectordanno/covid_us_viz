@@ -24,7 +24,9 @@ const calculateNew = (d, i, arr, measure) => {
 }
 
 //add newCases and newDeaths and push to a new array
-const createNewEntriesArray = (newEntriesArray, oldEntriesMap) => {
+const createNewEntriesArray = (oldEntriesMap) => {
+  const newEntriesArray = []
+
   oldEntriesMap.forEach((value, key) => {
     value.forEach((d, i) => {
       const newCases = calculateNew(d, i, value, 'totalCases');
@@ -37,6 +39,8 @@ const createNewEntriesArray = (newEntriesArray, oldEntriesMap) => {
       newEntriesArray.push(newEntry);
     });
   });
+
+  return newEntriesArray;
 }
 
 
@@ -54,8 +58,7 @@ export const fetchStateNyt = async () => {
       return formatted;
     });
     const groupByState = group(stateRes, d => d.state);
-    const newEntriesArray = [];
-    createNewEntriesArray(newEntriesArray, groupByState);
+    const newEntriesArray = createNewEntriesArray(groupByState);
 
     return groups(newEntriesArray, d => d.date); //returns es6 map
   } catch (e) {
@@ -104,8 +107,7 @@ export const fetchCountyNyt = async () => {
     //console.log(noFips);
 
     const groupByPlace = group(coords, d => d.coordinates);
-    const newEntriesArray = [];
-    createNewEntriesArray(newEntriesArray, groupByPlace);
+    const newEntriesArray = createNewEntriesArray(groupByPlace);
 
     return groups(newEntriesArray, d => d.date); //returns es6 map
   } catch (e) {

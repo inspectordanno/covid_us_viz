@@ -9,6 +9,8 @@ import fipsExceptions from '../util/fipsExceptions';
 
 const UsMap = ({ stateData, countyData, dateIndex, width, height }) => {
 
+  console.log(countyData);
+
   const projection = albersProjection(width, height);
   const pathGenerator = d3.geoPath().projection(projection);
 
@@ -35,6 +37,8 @@ const UsMap = ({ stateData, countyData, dateIndex, width, height }) => {
       return properties.GEO_ID.slice(-5);
     }
   }
+
+  const todayData = countyData
 
   return (
     <svg className="UsMap" width={width} height={height}>
