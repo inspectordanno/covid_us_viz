@@ -1,5 +1,6 @@
 import React from "react";
 import * as d3 from "d3";
+import { useSpring, animated } from 'react-spring';
 
 import stateGeoJson from "../../dist/data/us_states.json";
 import countyGeoJson from "../../dist/data/us_counties.json";
@@ -45,10 +46,11 @@ const UsMap = ({ stateData, countyData, dateIndex, measure, width, height }) => 
     }
   }
 
+  const schemeTurbo = ["#23171b","#2f9df5","#4df884","#dedd32","#f65f18","#900c00"];
+
   const thresholdScale = d3.scaleThreshold()
     .domain([1, 10, 100, 1000, 10000])
-    // .range(d3.schemePuBuGn[6])
-      .range([ ...d3.schemePastel2 ].reverse())
+    .range(schemeTurbo)
 
   return (
     <svg className="UsMap" width={width} height={height}>
@@ -56,16 +58,19 @@ const UsMap = ({ stateData, countyData, dateIndex, measure, width, height }) => 
         {countyGeoJson.features.map(d => {
           const fips = getFips(d.properties);
           const frequency = getMeasure(fips, measure);
+          const fillSpring = useSpring(
+            { to: { fill: thresholdScale(frequency) } }
+          );
 
           return (
-            <path
+            <animated.path
             key={d.properties.GEO_ID}
             d={pathGenerator(d)}
             className="us_county"
             id={`${d.properties.NAME}, ${
               stateFips[d.properties.STATE].abbreviation
             }`}
-            fill={thresholdScale(frequency)}
+            fill={fillSpring.fill}
             strokeWidth={
               stateFips[d.properties.STATE].name === "Puerto Rico" ? 0 : 0.25
             }

@@ -16,7 +16,6 @@ const CovidApp = () => {
 
 
   const dateIndex = useSelector(state => state.dateIndex);
-  const measure = 'newCases'; //newCases or newDeaths
 
   //fetches data on mount
   useEffect(() => {
@@ -52,14 +51,14 @@ const CovidApp = () => {
         stateData={covidData.state} 
         countyData={covidData.county} 
         dateIndex={dateIndex}
-        measure={measure}
+        measure={'totalCases'}
         width={width} 
         height={height} />
       {/* <DataPoints 
         countyData={covidData.county} 
         dateIndex={dateIndex}
         pointWidth={pointWidth}
-        measure={measure}
+        measure={'newCases'}
         width={width} 
         height={height} /> */}
     </div>
