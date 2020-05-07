@@ -17,7 +17,13 @@ const UsMap = ({ stateData, countyData, dateIndex, width, height }) => {
     .range(d3.schemePuBuGn[6])
 
   const getFips = (properties) => {
-    const boroughs = { 'New York': true, 'Kings': true, 'Bronx': true, 'Richmond': true, 'Queens': true };
+    const boroughs = { 
+      'New York': true, 
+      'Kings': true, 
+      'Bronx': true, 
+      'Richmond': true, 
+      'Queens': true 
+    };
 
     //custom fips codes for nyc and puerto rico
     if (properties.STATE === '36' && boroughs[properties.NAME]) {
