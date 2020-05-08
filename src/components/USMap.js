@@ -10,20 +10,15 @@ import fipsExceptions from '../util/fipsExceptions';
 
 const UsMap = ({ stateData, countyData, dateIndex, measure, width, height }) => {
 
+  const canvasRef = useRef();
   const projection = albersProjection(width, height);
   const pathGenerator = d3.geoPath().projection(projection);
 
   const getCountyFips = (properties) => {
-    const boroughs = { 
-      'New York': true, 
-      'Kings': true, 
-      'Bronx': true, 
-      'Richmond': true, 
-      'Queens': true 
-    };
+    const boroughs = new Set('New York', 'Kings', 'Bronx', 'Richmond', 'Queens');
 
     //custom fips codes for nyc and puerto rico
-    if (properties.STATE === '36' && boroughs[properties.NAME]) {
+    if (properties.STATE === '36' && boroughs.has(properties.NAME)) {
       return fipsExceptions.nyc;
     } else if (properties.STATE === '72') {
       return fipsExceptions.pr;
@@ -55,57 +50,54 @@ const UsMap = ({ stateData, countyData, dateIndex, measure, width, height }) => 
     //canvas work here
   },[dateIndex])
 
+  //   <animated.path
+  //   key={d.properties.GEO_ID}
+  //   d={pathGenerator(d)}
+  //   className="us_county"
+  //   id={`${d.properties.NAME}, ${
+  //     stateFips[d.properties.STATE].abbreviation
+  //   }`}
+  //   fill={fillSpring.fill}
+  //   strokeWidth={
+  //     stateFips[d.properties.STATE].name === "Puerto Rico" ? 0 : 0.25
+  //   }
+  //   stroke="black"
+  // />
+
   return (
-    <svg className="UsMap" width={width} height={height}>
-      <g className="UsMap_counties" >
-        {countyGeoJson.features.map(d => {
-          const fips = getCountyFips(d.properties);
-          const frequency = getFrequency(todayCountyData, fips, measure);
-          const fillSpring = useSpring(
-            { to: { fill: thresholdScale(frequency) } }
-          );
+    <div className="UsMap">
+      <canvas 
+        className="UsMap_counties"
+        width={width} 
+        height={height} 
+        ref={canvasRef} />
+      <svg className="UsMap_states" width={width} height={height}>
+        <g>
+          {stateGeoJson.features.map(d => {
+            const frequency = getFrequency(todayStateData, d.properties.STATE, measure);
+            const fillSpring = useSpring(
+              { to: { fill: thresholdScale(frequency) } }
+            );
 
-          return (
-            <animated.path
-            key={d.properties.GEO_ID}
-            d={pathGenerator(d)}
-            className="us_county"
-            id={`${d.properties.NAME}, ${
-              stateFips[d.properties.STATE].abbreviation
-            }`}
-            fill={fillSpring.fill}
-            strokeWidth={
-              stateFips[d.properties.STATE].name === "Puerto Rico" ? 0 : 0.25
-            }
-            stroke="black"
-          />
-          )
-        }  
-        )}
-      </g>
-      <g className="UsMap_states" >
-        {stateGeoJson.features.map(d => {
-          const frequency = getFrequency(todayStateData, d.properties.STATE, measure);
-          const fillSpring = useSpring(
-            { to: { fill: thresholdScale(frequency) } }
-          );
-
-          return (
-            <path
-            key={d.properties.GEO_ID}
-            d={pathGenerator(d)}
-            className="us_state"
-            id={d.properties.NAME}
-            fill='transparent'
-            strokeWidth={1}
-            stroke="black"
-            />
-          )
-        }  
-        )}
-      </g>
-    </svg>
+            return (
+              <path
+              key={d.properties.GEO_ID}
+              d={pathGenerator(d)}
+              className="us_state"
+              id={d.properties.NAME}
+              fill='transparent'
+              strokeWidth={1}
+              stroke="black"
+              />
+            )
+          }  
+          )}
+        </g>
+      </svg>
+    </div>
   );
 };
+
+
 
 export default UsMap;
