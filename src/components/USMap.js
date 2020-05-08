@@ -13,9 +13,7 @@ const UsMap = ({ stateData, countyData, dateIndex, measure, width, height }) => 
   const projection = albersProjection(width, height);
   const pathGenerator = d3.geoPath().projection(projection);
 
-  console.log(dateIndex);
-
-  const getFips = (properties) => {
+  const getCountyFips = (properties) => {
     const boroughs = { 
       'New York': true, 
       'Kings': true, 
@@ -35,10 +33,11 @@ const UsMap = ({ stateData, countyData, dateIndex, measure, width, height }) => 
     }
   }
 
-  const todayData = countyData.get(dateIndex);
+  const todayCountyData = countyData.get(dateIndex);
+  const todayStateData = stateData.get(dateIndex);
 
-  const getMeasure = (fips, measure) => {
-    const fipsData = todayData.get(fips);
+  const getFrequency = (data, fips, measure) => {
+    const fipsData = data.get(fips);
     if (fipsData) { 
       return fipsData[0][measure]; //for some reason data object is nested in an array
     } else {
@@ -46,18 +45,22 @@ const UsMap = ({ stateData, countyData, dateIndex, measure, width, height }) => 
     }
   }
 
-  const schemeTurbo = ["#23171b","#2f9df5","#4df884","#dedd32","#f65f18","#900c00"];
+  const schemeTurbo = ["#23171b","#3987f9","#2ee5ae","#95fb51","#feb927","#e54813","#900c00"];
 
   const thresholdScale = d3.scaleThreshold()
-    .domain([1, 10, 100, 1000, 10000])
+    .domain([1, 10, 100, 1000, 10000, 100000])
     .range(schemeTurbo)
+
+  useEffect(() => {
+    
+  },[dateIndex])
 
   return (
     <svg className="UsMap" width={width} height={height}>
       <g className="UsMap_counties" >
         {countyGeoJson.features.map(d => {
-          const fips = getFips(d.properties);
-          const frequency = getMeasure(fips, measure);
+          const fips = getCountyFips(d.properties);
+          const frequency = getFrequency(todayCountyData, fips, measure);
           const fillSpring = useSpring(
             { to: { fill: thresholdScale(frequency) } }
           );
@@ -81,15 +84,24 @@ const UsMap = ({ stateData, countyData, dateIndex, measure, width, height }) => 
         )}
       </g>
       <g className="UsMap_states" >
-        {stateGeoJson.features.map(d => 
+        {stateGeoJson.features.map(d => {
+          const frequency = getFrequency(todayStateData, d.properties.STATE, measure);
+          const fillSpring = useSpring(
+            { to: { fill: thresholdScale(frequency) } }
+          );
+
+          return (
             <path
             key={d.properties.GEO_ID}
             d={pathGenerator(d)}
             className="us_state"
             id={d.properties.NAME}
+            fill='transparent'
             strokeWidth={1}
             stroke="black"
             />
+          )
+        }  
         )}
       </g>
     </svg>
