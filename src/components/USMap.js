@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { useSpring, animated } from 'react-spring';
 
@@ -52,7 +52,7 @@ const UsMap = ({ stateData, countyData, dateIndex, measure, width, height }) => 
     .range(schemeTurbo)
 
   useEffect(() => {
-    
+    //canvas work here
   },[dateIndex])
 
   return (
