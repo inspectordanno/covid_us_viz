@@ -65,15 +65,16 @@ const UsMap = ({
     .range(schemeTurbo);
 
   //continue work on interpolate function
-  const interpolateFill = () => {
+  const interpolateFill = (elapsed, duration) => {
     const todayData = countyData.get(dateIndex);
     const yesterdayData = countyData.get(dateIndex - 1);
     const fips = getCountyFips(feature.properties);
     const freqYesterday = dateIndex === 0 ? 0 : getFrequency(yesterdayData, fips, measure);
     const freqToday = getFrequency(todayData, fips, measure);
 
-    const fills = { yesterday: thresholdScale(freqYesterday), today: thresholdScale(freqToday) };
-    return d3.interpolate(fills.yesterday, fills.today);
+    const t = d3.interpolate(thresholdScale(freqYesterday), thresholdScale(freqToday));
+
+    return t(elapsed / duration);
   }
 
   useEffect(() => {
