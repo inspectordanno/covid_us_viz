@@ -40,9 +40,6 @@ const UsMap = ({
     }
   };
 
-  const todayCountyData = countyData.get(dateIndex);
-  const todayStateData = stateData.get(dateIndex);
-
   const getFrequency = (data, fips, measure) => {
     const fipsData = data.get(fips);
     if (fipsData) {
@@ -67,72 +64,53 @@ const UsMap = ({
     .domain([1, 10, 100, 1000, 10000, 100000])
     .range(schemeTurbo);
 
-  useEffect(() => {
-    //canvas work here
-  }, [dateIndex]);
+  //continue work on interpolate function
+  const interpolateFill = () => {
+    const todayData = countyData.get(dateIndex);
+    const yesterdayData = countyData.get(dateIndex - 1);
+    const fips = getCountyFips(feature.properties);
+    const freqYesterday = dateIndex === 0 ? 0 : getFrequency(yesterdayData, fips, measure);
+    const freqToday = getFrequency(todayData, fips, measure);
+
+    const fills = [thresholdScale(freqYesterday), thresholdScale(freqToday)];
+    return d3.interpolate(fills[0], fills[1]);
+  }
 
   useEffect(() => {
     if (canvasRef.current) {
       const canvas = d3.select(canvasRef.current);
       const context = canvas.node().getContext("2d");
-      const customBase = document.createElement("custom");
-      const custom = d3.select(customBase);
 
-      const dataBind = (data) => {
-        custom
-          .selectAll(".us_county")
-          .data(data) //key is date plus index in the array
-          .join("path")
-          .attr("class", "us_county")
-          .attr("d", (d) => pathGenerator(d))
-          .attr(
-            "id",
-            (d) =>
-              `${d.properties.NAME}, ${
-                stateFips[d.properties.STATE].abbreviation
-              }`
-          )
-          .attr("strokeWidth", (d) =>
-            stateFips[d.properties.STATE].name === "Puerto Rico" ? 0 : 0.25
-          )
-          .transition()
-          .attr("fill", (d) => {
-            const fips = getCountyFips(d.properties);
-            const frequency = getFrequency(todayCountyData, fips, measure);
-            return thresholdScale(frequency);
-          });
-      };
+      const pathGeneratorCanvas = pathGenerator.context(context);
 
-      const draw = () => {
+      const draw = (elapsed) => {
         //clear canvas
-        context.clearRect(0, 0, width, height);
+        // context.clearRect(0, 0, width, height);
 
-        custom.selectAll(".us_county").each(function () {
-          const countySelection = d3.select(this);
-          const fill = countySelection.attr("fill");
-          const path = countySelection.attr("d");
-          const strokeWidth = countySelection.attr("strokeWidth");
-          const stroke = "black";
-
-          //drawing county
+        countyGeoJson.features.forEach(feature => {
           context.beginPath();
-          pathGenerator(path);
-          context.fillStyle = fill;
-          context.lineWidth = strokeWidth;
-          context.strokeStyle = stroke;
+          pathGeneratorCanvas(feature);
+          context.fillStyle = getFill(feature);
+          context.lineWidth = .25;
+          context.strokeStyle = 'black';
           context.fill();
           context.stroke();
-        });
+        })
+
       };
 
-      //bind data
-      dataBind(todayNewStartPos);
-
       //constantly repeating draw function
-      const t = d3.timer(draw);
+      const t = d3.timer((elapsed) => {
+        draw();
+        if (elapsed > duration) t.stop();
+      });
+
+      // if (dateIndex > 1) {
+      //   t.stop();
+      // }
 
       //cleanup function that stops timer on every rerender
-      return () => t.stop();
+      // return () => t.stop();
     }
   }, [canvasRef.current, dateIndex]);
 
@@ -147,14 +125,15 @@ const UsMap = ({
       <svg className="UsMap_states" width={width} height={height}>
         <g>
           {stateGeoJson.features.map((d) => {
-            const frequency = getFrequency(
-              todayStateData,
-              d.properties.STATE,
-              measure
-            );
-            const fillSpring = useSpring({
-              to: { fill: thresholdScale(frequency) },
-            });
+            //animate state fills
+            // const frequency = getFrequency(
+            //   todayStateData,
+            //   d.properties.STATE,
+            //   measure
+            // );
+            // const fillSpring = useSpring({
+            //   to: { fill: thresholdScale(frequency) },
+            // });
 
             return (
               <path

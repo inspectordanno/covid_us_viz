@@ -1,16 +1,16 @@
 .UsMap {
-  // display: none;
+  background-color: darkslategray;
+  display: grid;
+  height: 100%;
+  justify-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.UsMap_states {
   position: absolute;
   z-index: 0;
 }
-
-// .us_state {
-//   fill: transparent;
-// }
-
-// .us_county {
-  
-// }
 
 
 
