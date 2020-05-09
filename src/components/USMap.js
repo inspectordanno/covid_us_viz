@@ -72,8 +72,8 @@ const UsMap = ({
     const freqYesterday = dateIndex === 0 ? 0 : getFrequency(yesterdayData, fips, measure);
     const freqToday = getFrequency(todayData, fips, measure);
 
-    const fills = [thresholdScale(freqYesterday), thresholdScale(freqToday)];
-    return d3.interpolate(fills[0], fills[1]);
+    const fills = { yesterday: thresholdScale(freqYesterday), today: thresholdScale(freqToday) };
+    return d3.interpolate(fills.yesterday, fills.today);
   }
 
   useEffect(() => {
