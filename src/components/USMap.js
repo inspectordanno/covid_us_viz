@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { useDispatch } from 'react-redux';
 import * as d3 from "d3";
 import { useSpring, animated } from "react-spring";
 
@@ -7,6 +8,7 @@ import countyGeoJson from "../../dist/data/us_counties.json";
 import stateFips from "../../dist/data/states_by_fips.json";
 import albersProjection from "../util/albersProjection";
 import fipsExceptions from "../util/fipsExceptions";
+import { dispatchDateIndex } from '../actions/actions';
 
 const UsMap = ({
   stateData,
@@ -19,6 +21,7 @@ const UsMap = ({
   const canvasRef = useRef();
   const projection = albersProjection(width, height);
   const pathGenerator = d3.geoPath().projection(projection);
+  const dispatch = useDispatch();
 
   const getCountyFips = (properties) => {
     const boroughs = new Set(
@@ -64,54 +67,43 @@ const UsMap = ({
     .domain([1, 10, 100, 1000, 10000, 100000])
     .range(schemeTurbo);
 
-  //continue work on interpolate function
-  const interpolateFill = (elapsed, duration) => {
-    const todayData = countyData.get(dateIndex);
-    const yesterdayData = countyData.get(dateIndex - 1);
-    const fips = getCountyFips(feature.properties);
-    const freqYesterday = dateIndex === 0 ? 0 : getFrequency(yesterdayData, fips, measure);
-    const freqToday = getFrequency(todayData, fips, measure);
+  // //continue work on interpolate function
+  // const interpolateFill = (elapsed, duration, feature) => {
+  //   const todayData = countyData.get(dateIndex);
+  //   const yesterdayData = countyData.get(dateIndex - 1);
+  //   const fips = getCountyFips(feature.properties);
+  //   const freqYesterday = !yesterdayData ? 0 : getFrequency(yesterdayData, fips, measure);
+  //   const freqToday = getFrequency(todayData, fips, measure);
 
-    const t = d3.interpolate(thresholdScale(freqYesterday), thresholdScale(freqToday));
-
-    return t(elapsed / duration);
-  }
+  //   //if no change, return same color; if change, interpolate to new color
+  //   // if (freqYesterday === freqToday) {
+  //   //   return thresholdScale(freqToday);
+  //   // } else {
+  //   //   const t = d3.interpolateRgb(thresholdScale(freqYesterday), thresholdScale(freqToday));
+  //   //   return t(elapsed / duration);
+  //   // }
+  //   const t = d3.interpolateRgb(thresholdScale(freqYesterday), thresholdScale(freqToday));
+  //   return t(elapsed / duration);
+  // }
 
   useEffect(() => {
     if (canvasRef.current) {
       const canvas = d3.select(canvasRef.current);
       const context = canvas.node().getContext("2d");
-
       const pathGeneratorCanvas = pathGenerator.context(context);
+      const duration = 500;
 
-      const draw = (elapsed) => {
-        //clear canvas
-        // context.clearRect(0, 0, width, height);
-
-        countyGeoJson.features.forEach(feature => {
-          context.beginPath();
-          pathGeneratorCanvas(feature);
-          context.fillStyle = getFill(feature);
-          context.lineWidth = .25;
-          context.strokeStyle = 'black';
-          context.fill();
-          context.stroke();
-        })
-
-      };
-
-      //constantly repeating draw function
-      const t = d3.timer((elapsed) => {
-        draw();
-        if (elapsed > duration) t.stop();
+      countyGeoJson.features.forEach(feature => {
+        context.beginPath();
+        pathGeneratorCanvas(feature);
+        context.fillStyle = 'red';
+        context.lineWidth = .25;
+        context.strokeStyle = 'black';
+        context.fill();
+        context.stroke();
+        context.closePath();
       });
 
-      // if (dateIndex > 1) {
-      //   t.stop();
-      // }
-
-      //cleanup function that stops timer on every rerender
-      // return () => t.stop();
     }
   }, [canvasRef.current, dateIndex]);
 

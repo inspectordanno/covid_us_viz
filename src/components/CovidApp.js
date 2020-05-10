@@ -31,18 +31,6 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (covidData) {
-      const numDays = covidData.state.size;
-
-      if (dateIndex < numDays - 1) {
-        timeout(() => {
-          dispatch(dispatchDateIndex(dateIndex + 1))
-        }, 500)
-      }
-    }
-  },[dateIndex, covidData])
-
   return covidData && Number.isInteger(dateIndex)
   ?
   (
