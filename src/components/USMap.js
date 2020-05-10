@@ -24,13 +24,13 @@ const UsMap = ({
   const dispatch = useDispatch();
 
   const getCountyFips = (properties) => {
-    const boroughs = new Set(
+    const boroughs = new Set([
       "New York",
       "Kings",
       "Bronx",
       "Richmond",
       "Queens"
-    );
+    ]);
 
     //custom fips codes for nyc and puerto rico
     if (properties.STATE === "36" && boroughs.has(properties.NAME)) {
@@ -89,16 +89,20 @@ const UsMap = ({
   useEffect(() => {
     if (canvasRef.current) {
       const canvas = d3.select(canvasRef.current);
-      const context = canvas.node().getContext("2d");
-      const pathGeneratorCanvas = pathGenerator.context(context);
-      const duration = 500;
+      const context = canvas.node().getContext("2d");   
+      const pathGeneratorCanvas = pathGenerator.context(context);   
+      const todayData = countyData.get(dateIndex);
 
       countyGeoJson.features.forEach(feature => {
+        const fips = getCountyFips(feature.properties);
+        const freq = getFrequency(todayData, fips, measure);
+        const fill = thresholdScale(freq);
+
         context.beginPath();
         pathGeneratorCanvas(feature);
-        context.fillStyle = 'red';
         context.lineWidth = .25;
-        context.strokeStyle = 'black';
+        context.fillStyle = fill;
+        feature.properties.STATE === '72' ? context.strokeStyle = fill : context.strokeStyle = 'black'; //no stroke for PR
         context.fill();
         context.stroke();
         context.closePath();
