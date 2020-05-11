@@ -23,6 +23,7 @@ const CovidApp = () => {
       try {
         const stateRes = await fetchStateNyt();
         const countyRes = await fetchCountyNyt();
+        console.log(countyRes);
         setCovidData({ state: stateRes, county: countyRes });
       } catch (e) {
         console.error(e);
@@ -52,6 +53,7 @@ const CovidApp = () => {
         countyData={covidData.county} 
         dateIndex={dateIndex}
         measure={'totalCases'}
+        isRollingAvg={false}
         width={width} 
         height={height} />
       {/* <DataPoints 
