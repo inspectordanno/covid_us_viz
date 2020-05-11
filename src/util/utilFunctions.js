@@ -20,7 +20,7 @@ export const getCountyFips = (fips) => {
   }
 };
 
-export const getFrequency = (countyData, dateIndex, fips, measure) => {
+export const getFrequency = (countyData, dateIndex, fips, measure) => { 
   const fipsData = countyData.get(dateIndex).get(fips);
   if (fipsData) {
     return fipsData[0][measure]; //for some reason data object is nested in an array
@@ -29,16 +29,19 @@ export const getFrequency = (countyData, dateIndex, fips, measure) => {
   }
 };
 
-export const threeDayAverage = (dateIndex, fips, measure) => {
-  const yesterday = getFrequency(countyData.get(dateIndex - 1), fips, measure);
-  const today = getFrequency(countyData.get(dateIndex), fips, measure);
-  const tomorrow = getFrequency(countyData.get(dateIndex + 1), fips, measure);
+export const threeDayAverage = (countyData, dateIndex, fips, measure) => {
 
-  if (!yesterday) {
-    return mean([today, tomorrow, getFrequency(countyData.get(dateIndex + 2), fips, measure)]);
-  } else if (!tomorrow) {
-    return mean([today, yesterday, getFrequency(countyData.get(dateIndex - 2), fips, measure)]);
-  } else {
-    return mean([yesterday, today, tomorrow]);
+  const getFreq = (customIndex) => {
+    return getFrequency(countyData, customIndex, fips, measure);
+  }
+
+  const lastIndex = countyData.size - 1;
+
+  if (dateIndex === 0) { //if first day, get average of first three days
+    return mean([getFreq(0), getFreq(1), getFreq(2)]);
+  } else if (dateIndex === lastIndex) { //if last day, get average of last three days
+    return mean([getFreq(lastIndex), getFreq(lastIndex - 1), getFreq(lastIndex - 2)]);
+  } else { //get average of yesterday, current day, and tomorrow
+    return mean([getFreq(dateIndex - 1), getFreq(dateIndex), getFreq(dateIndex + 1)]);
   }
 }

@@ -14,7 +14,6 @@ const CovidApp = () => {
   const height = window.innerHeight;
   const pointWidth = 2;
 
-
   const dateIndex = useSelector(state => state.dateIndex);
 
   //fetches data on mount
@@ -52,8 +51,8 @@ const CovidApp = () => {
         stateData={covidData.state} 
         countyData={covidData.county} 
         dateIndex={dateIndex}
-        measure={'totalCases'}
-        isRollingAvg={false}
+        measure={'totalDeaths'}
+        isRollingAvg={true}
         width={width} 
         height={height} />
       {/* <DataPoints 

@@ -42,28 +42,6 @@ const UsMap = ({
     .domain([1, 10, 100, 1000, 10000, 100000])
     .range(schemeTurbo);
 
-  //continue work on interpolate function
-  const interpolateFill = (elapsed, duration, feature) => {
-    const todayData = countyData.get(dateIndex);
-    const yesterdayData = countyData.get(dateIndex - 1);
-    const fips = getCountyFips(feature.properties);
-    const freqYesterday = !yesterdayData
-      ? 0
-      : getFrequency(yesterdayData, fips, measure);
-    const freqToday = getFrequency(todayData, fips, measure);
-
-    //if no change, return same color; if change, interpolate to new color
-    if (freqYesterday === freqToday) {
-      return thresholdScale(freqToday);
-    } else {
-      const t = d3.interpolateRgb(
-        thresholdScale(freqYesterday),
-        thresholdScale(freqToday)
-      );
-      return t(elapsed / duration);
-    }
-  };
-
   useEffect(() => {
     if (canvasRef.current) {
       const canvas = d3.select(canvasRef.current);
