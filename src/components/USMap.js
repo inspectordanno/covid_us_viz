@@ -100,7 +100,7 @@ const UsMap = ({
         pathGeneratorCanvas(feature);
         context.lineWidth = .25;
         context.fillStyle = fill;
-        feature.properties.STATE === '72' ? context.strokeStyle = fill : context.strokeStyle = 'black'; //no stroke for PR
+        feature.id.substring(0, 2) === '72' ? context.strokeStyle = fill : context.strokeStyle = 'black'; //no stroke for PR
         context.fill();
         context.stroke();
         context.closePath();
