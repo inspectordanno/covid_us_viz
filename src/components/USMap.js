@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch } from 'react-redux';
 import * as d3 from "d3";
+import { feature } from 'topojson-client';
 import { useSpring, animated } from "react-spring";
 
-import stateGeoJson from "../../dist/data/us_states.json";
-import countyGeoJson from "../../dist/data/us_counties.json";
+import stateTopo from '../../dist/data/states-10m.json';
+import countyTopo from '../../dist/data/counties-10m.json';
 import stateFips from "../../dist/data/states_by_fips.json";
 import albersProjection from "../util/albersProjection";
 import fipsExceptions from "../util/fipsExceptions";
@@ -23,23 +24,22 @@ const UsMap = ({
   const pathGenerator = d3.geoPath().projection(projection);
   const dispatch = useDispatch();
 
-  const getCountyFips = (properties) => {
+  const getCountyFips = (fips) => {
     const boroughs = new Set([
-      "New York",
-      "Kings",
-      "Bronx",
-      "Richmond",
-      "Queens"
+      "36061", // New York (Manhattan)
+      "36047", //Kings (Brooklyn)
+      "36005", //Bronx
+      "36085", //Staten Island
+      "36081" //Queens
     ]);
 
     //custom fips codes for nyc and puerto rico
-    if (properties.STATE === "36" && boroughs.has(properties.NAME)) {
+    if (boroughs.has(fips)) {
       return fipsExceptions.nyc;
-    } else if (properties.STATE === "72") {
+    } else if (fips.substring(0, 2) === "72") {
       return fipsExceptions.pr;
     } else {
-      //last five characters of GEO_ID is fips code
-      return properties.GEO_ID.slice(-5);
+      return fips;
     }
   };
 
@@ -67,24 +67,22 @@ const UsMap = ({
     .domain([1, 10, 100, 1000, 10000, 100000])
     .range(schemeTurbo);
 
-  // //continue work on interpolate function
-  // const interpolateFill = (elapsed, duration, feature) => {
-  //   const todayData = countyData.get(dateIndex);
-  //   const yesterdayData = countyData.get(dateIndex - 1);
-  //   const fips = getCountyFips(feature.properties);
-  //   const freqYesterday = !yesterdayData ? 0 : getFrequency(yesterdayData, fips, measure);
-  //   const freqToday = getFrequency(todayData, fips, measure);
+  //continue work on interpolate function
+  const interpolateFill = (elapsed, duration, feature) => {
+    const todayData = countyData.get(dateIndex);
+    const yesterdayData = countyData.get(dateIndex - 1);
+    const fips = getCountyFips(feature.properties);
+    const freqYesterday = !yesterdayData ? 0 : getFrequency(yesterdayData, fips, measure);
+    const freqToday = getFrequency(todayData, fips, measure);
 
-  //   //if no change, return same color; if change, interpolate to new color
-  //   // if (freqYesterday === freqToday) {
-  //   //   return thresholdScale(freqToday);
-  //   // } else {
-  //   //   const t = d3.interpolateRgb(thresholdScale(freqYesterday), thresholdScale(freqToday));
-  //   //   return t(elapsed / duration);
-  //   // }
-  //   const t = d3.interpolateRgb(thresholdScale(freqYesterday), thresholdScale(freqToday));
-  //   return t(elapsed / duration);
-  // }
+    //if no change, return same color; if change, interpolate to new color
+    if (freqYesterday === freqToday) {
+      return thresholdScale(freqToday);
+    } else {
+      const t = d3.interpolateRgb(thresholdScale(freqYesterday), thresholdScale(freqToday));
+      return t(elapsed / duration);
+    }
+  }
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -93,8 +91,8 @@ const UsMap = ({
       const pathGeneratorCanvas = pathGenerator.context(context);   
       const todayData = countyData.get(dateIndex);
 
-      countyGeoJson.features.forEach(feature => {
-        const fips = getCountyFips(feature.properties);
+      feature(countyTopo, countyTopo.objects.counties).features.forEach(feature => {
+        const fips = getCountyFips(feature.id);
         const freq = getFrequency(todayData, fips, measure);
         const fill = thresholdScale(freq);
 
@@ -121,23 +119,13 @@ const UsMap = ({
       />
       <svg className="UsMap_states" width={width} height={height}>
         <g>
-          {stateGeoJson.features.map((d) => {
-            //animate state fills
-            // const frequency = getFrequency(
-            //   todayStateData,
-            //   d.properties.STATE,
-            //   measure
-            // );
-            // const fillSpring = useSpring({
-            //   to: { fill: thresholdScale(frequency) },
-            // });
-
+          {feature(stateTopo, stateTopo.objects.states).features.map((feature) => {
             return (
               <path
-                key={d.properties.GEO_ID}
-                d={pathGenerator(d)}
+                key={feature.id}
+                d={pathGenerator(feature)}
                 className="us_state"
-                id={d.properties.NAME}
+                id={feature.properties.name}
                 fill="transparent"
                 strokeWidth={1}
                 stroke="black"
