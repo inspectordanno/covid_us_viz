@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import * as d3 from "d3";
 import { feature } from "topojson-client";
-import { useSpring, animated } from "react-spring";
 
 import {
   getCountyFips,
@@ -11,9 +10,7 @@ import {
 } from "../util/utilFunctions";
 import stateTopo from "../../dist/data/states-10m.json";
 import countyTopo from "../../dist/data/counties-10m.json";
-import stateFips from "../../dist/data/states_by_fips.json";
 import albersProjection from "../util/albersProjection";
-import fipsExceptions from "../util/fipsExceptions";
 import { dispatchDateIndex } from "../actions/actions";
 
 const UsMap = ({
