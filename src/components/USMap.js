@@ -103,7 +103,6 @@ const UsMap = ({
         feature.id.substring(0, 2) === '72' ? context.strokeStyle = fill : context.strokeStyle = 'black'; //no stroke for PR
         context.fill();
         context.stroke();
-        context.closePath();
       });
 
     }
