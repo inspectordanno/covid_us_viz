@@ -11,7 +11,6 @@ import {
 import stateTopo from "../../dist/data/states-10m.json";
 import countyTopo from "../../dist/data/counties-10m.json";
 import albersProjection from "../util/albersProjection";
-import { dispatchDateIndex } from "../actions/actions";
 
 const UsMap = ({
   stateData,

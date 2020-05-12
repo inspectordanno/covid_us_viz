@@ -5,13 +5,12 @@ import { timeout } from 'd3-timer';
 import { fetchStateNyt, fetchCountyNyt } from '../util/dataFetches';
 import { dispatchDateIndex } from '../actions/actions';
 import UsMap from './UsMap';
+import Nav from './Nav';
 import DataPoints from './DataPoints';
 
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
   const dispatch = useDispatch();
-  const width = window.innerWidth;
-  const height = window.innerHeight;
   const pointWidth = 2;
 
   const dateIndex = useSelector(state => state.dateIndex);
@@ -47,21 +46,18 @@ const CovidApp = () => {
   ?
   (
     <div className="CovidApp">
+      <Nav 
+        countyData={covidData.county}
+        dateIndex={dateIndex}
+      />
       <UsMap 
         stateData={covidData.state} 
         countyData={covidData.county} 
         dateIndex={dateIndex}
         measure={'totalDeaths'}
         isRollingAvg={true}
-        width={width} 
-        height={height} />
-      {/* <DataPoints 
-        countyData={covidData.county} 
-        dateIndex={dateIndex}
-        pointWidth={pointWidth}
-        measure={'newCases'}
-        width={width} 
-        height={height} /> */}
+        width={window.innerWidth} 
+        height={window.innerHeight * .85} /> 
     </div>
   )
   :

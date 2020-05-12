@@ -1,8 +1,10 @@
 @use "components/CovidApp";
 @use "components/UsMap";
 @use "components/DataPoints";
+@use "components/Nav";
+@use "components/Dropdowns";
 
-html,body, #app {
+html, body, #app {
   width: 100%;
   height: 100%;
 }
