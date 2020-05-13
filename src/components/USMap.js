@@ -7,6 +7,7 @@ import {
   getCountyFips,
   getFrequency,
   threeDayAverage,
+  percentChange
 } from "../util/utilFunctions";
 import stateTopo from "../../dist/data/states-10m.json";
 import countyTopo from "../../dist/data/counties-10m.json";
@@ -17,7 +18,7 @@ const UsMap = ({
   countyData,
   dateIndex,
   measure,
-  isRollingAvg,
+  measureType,
   width,
   height,
 }) => {
@@ -50,11 +51,16 @@ const UsMap = ({
       feature(countyTopo, countyTopo.objects.counties).features.forEach(
         (feature) => {
           const fips = getCountyFips(feature.id);
-          const freq = isRollingAvg
-            ? threeDayAverage(countyData, dateIndex, fips, measure)
-            : getFrequency(countyData, dateIndex, fips, measure);
+          const getFreq = (measureType) => { 
+            const meastureTypes = {
+              'rawNumber': getFrequency(countyData, dateIndex, fips, measure),
+              'rollingAverage': threeDayAverage(countyData, dateIndex, fips, measure),
+              'percentChange': percentChange(countyData, dateIndex, fips, measure)
+            }
+            return meastureTypes[measureType];
+          };
+          const freq = getFreq(measureType);
           const fill = thresholdScale(freq);
-
           context.beginPath();
           pathGeneratorCanvas(feature);
           context.lineWidth = 0.25;

@@ -1,5 +1,6 @@
-import { mean } from 'd3-array';
-import fipsExceptions from './fipsExceptions';
+import { mean } from "d3-array";
+import fipsExceptions from "./fipsExceptions";
+import { subMonths, format } from "date-fns/subMonths";
 
 export const getCountyFips = (fips) => {
   const boroughs = new Set([
@@ -7,7 +8,7 @@ export const getCountyFips = (fips) => {
     "36047", //Kings (Brooklyn)
     "36005", //Bronx
     "36085", //Staten Island
-    "36081" //Queens
+    "36081", //Queens
   ]);
 
   //custom fips codes for nyc and puerto rico
@@ -20,8 +21,8 @@ export const getCountyFips = (fips) => {
   }
 };
 
-export const getFrequency = (countyData, dateIndex, fips, measure) => { 
-  const fipsData = countyData.get(dateIndex).get(fips);
+export const getFrequency = (countyData, dateIndex, fips, measure) => {
+  const fipsData = countyData.get(dateIndex).data.get(fips);
   if (fipsData) {
     return fipsData[0][measure]; //for some reason data object is nested in an array
   } else {
@@ -30,18 +31,45 @@ export const getFrequency = (countyData, dateIndex, fips, measure) => {
 };
 
 export const threeDayAverage = (countyData, dateIndex, fips, measure) => {
-
   const getFreq = (customIndex) => {
     return getFrequency(countyData, customIndex, fips, measure);
-  }
+  };
 
   const lastIndex = countyData.size - 1;
 
-  if (dateIndex === 0) { //if first day, get average of first three days
+  if (dateIndex === 0) {
+    //if first day, get average of first three days
     return mean([getFreq(0), getFreq(1), getFreq(2)]);
-  } else if (dateIndex === lastIndex) { //if last day, get average of last three days
-    return mean([getFreq(lastIndex), getFreq(lastIndex - 1), getFreq(lastIndex - 2)]);
-  } else { //get average of yesterday, current day, and tomorrow
-    return mean([getFreq(dateIndex - 1), getFreq(dateIndex), getFreq(dateIndex + 1)]);
+  } else if (dateIndex === lastIndex) {
+    //if last day, get average of last three days
+    return mean([
+      getFreq(lastIndex),
+      getFreq(lastIndex - 1),
+      getFreq(lastIndex - 2),
+    ]);
+  } else {
+    //get average of yesterday, current day, and tomorrow
+    return mean([
+      getFreq(dateIndex - 1),
+      getFreq(dateIndex),
+      getFreq(dateIndex + 1),
+    ]);
   }
-}
+};
+
+export const percentChange = (countyData, dateIndex, fips, measure) => {
+  const nowfreq = getFrequency(countyData, dateIndex, fips, measure);
+  const now = countyData.get(dateIndex).date;
+  const prev = format(subMonths(now, 1), "YYYY-MM-DD"); //1 month previous
+  const getPrevFreq = () => {
+    for (const [value, key] of countyData.entries()) {
+      if (value.date === prev) {
+        return getFrequency(countyData, key, fips, measure);
+      }
+    }
+  };
+  const prevFreq = getPrevFreq();
+  console.log(prevFreq);
+  const percentChange = (nowfreq - prevFreq) / prevFreq;
+  return percentChange;
+};

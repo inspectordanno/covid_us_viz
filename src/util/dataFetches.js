@@ -50,7 +50,8 @@ const toGroupedMap = (newEntriesArray) => {
   groupedbyDate.forEach((entry, index) => {
     const dateIndex = index;
     const dataByFips = group(entry[1], d => d.fips);
-    dateMap.set(dateIndex, dataByFips);
+    const payload = { date: entry[0], data: dataByFips };
+    dateMap.set(dateIndex, payload);
   });
   return dateMap;
 }
