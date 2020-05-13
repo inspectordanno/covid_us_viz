@@ -2,12 +2,13 @@ import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import * as d3 from "d3";
 import { feature } from "topojson-client";
+import { dispatchDateIndex } from '../actions/actions';
 
 import {
   getCountyFips,
   getFrequency,
   threeDayAverage,
-  percentChange
+  doPercentChange
 } from "../util/utilFunctions";
 import stateTopo from "../../dist/data/states-10m.json";
 import countyTopo from "../../dist/data/counties-10m.json";
@@ -17,6 +18,7 @@ const UsMap = ({
   stateData,
   countyData,
   dateIndex,
+  dateMap,
   measure,
   measureType,
   width,
@@ -42,6 +44,19 @@ const UsMap = ({
     .domain([1, 10, 100, 1000, 10000, 100000])
     .range(schemeTurbo);
 
+  //object literal switch statement
+  //gets frequency depending on measureType
+  const getFreq = (measureType, fips) => { 
+    const meastureTypes = {
+      'rawNumber': () => getFrequency(countyData, dateIndex, fips, measure),
+      'rollingAverage': () => threeDayAverage(countyData, dateIndex, fips, measure),
+      'percentChange': () => doPercentChange(countyData, dateIndex, dateMap, fips, measure, { month: 1 }, (newDateIndex) => {
+        dispatch(dispatchDateIndex(newDateIndex));
+      })
+    }
+    return meastureTypes[measureType]();
+  };
+
   useEffect(() => {
     if (canvasRef.current) {
       const canvas = d3.select(canvasRef.current);
@@ -51,15 +66,7 @@ const UsMap = ({
       feature(countyTopo, countyTopo.objects.counties).features.forEach(
         (feature) => {
           const fips = getCountyFips(feature.id);
-          const getFreq = (measureType) => { 
-            const meastureTypes = {
-              'rawNumber': getFrequency(countyData, dateIndex, fips, measure),
-              'rollingAverage': threeDayAverage(countyData, dateIndex, fips, measure),
-              'percentChange': percentChange(countyData, dateIndex, fips, measure)
-            }
-            return meastureTypes[measureType];
-          };
-          const freq = getFreq(measureType);
+          const freq = getFreq(measureType, fips);
           const fill = thresholdScale(freq);
           context.beginPath();
           pathGeneratorCanvas(feature);

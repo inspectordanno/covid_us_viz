@@ -44,7 +44,7 @@ const CovidApp = () => {
     }
   },[dateIndex, covidData])
 
-  return covidData && Number.isInteger(dateIndex)
+  return covidData && dateMap && Number.isInteger(dateIndex)
   ?
   (
     <div className="CovidApp">
@@ -56,6 +56,7 @@ const CovidApp = () => {
         stateData={covidData.state} 
         countyData={covidData.county} 
         dateIndex={dateIndex}
+        dateMap={dateMap}
         measure={'totalDeaths'}
         measureType={'percentChange'} //rawNumber, rollingAverage, percentChange
         width={window.innerWidth} 
