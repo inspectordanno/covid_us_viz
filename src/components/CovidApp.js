@@ -10,8 +10,8 @@ import DataPoints from './DataPoints';
 
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
+  const [dateMap, setDateMap] = useState();
   const dispatch = useDispatch();
-  const pointWidth = 2;
 
   const dateIndex = useSelector(state => state.dateIndex);
 
@@ -21,7 +21,9 @@ const CovidApp = () => {
       try {
         const stateRes = await fetchStateNyt();
         const countyRes = await fetchCountyNyt();
-        console.log(countyRes);
+        const dateMapObj = {};
+        countyRes.forEach((value, key) => dateMapObj[value.date] = key);
+        setDateMap(dateMapObj);
         setCovidData({ state: stateRes, county: countyRes });
       } catch (e) {
         console.error(e);

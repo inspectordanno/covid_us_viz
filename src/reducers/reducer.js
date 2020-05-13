@@ -9,11 +9,6 @@ export default (state = reducerDefaultState, action) => {
         ...state,
         dateIndex: action.dateIndex
       }
-    case 'SET_BBOX':
-      return {
-        ...state,
-        bbox: action.bbox
-      }
     default: 
       return state;
   }

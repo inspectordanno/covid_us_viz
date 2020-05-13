@@ -1,6 +1,6 @@
 import { mean } from "d3-array";
 import fipsExceptions from "./fipsExceptions";
-import { subMonths, format } from "date-fns/subMonths";
+import { parse, subMonths, format } from "date-fns";
 
 export const getCountyFips = (fips) => {
   const boroughs = new Set([
@@ -57,10 +57,17 @@ export const threeDayAverage = (countyData, dateIndex, fips, measure) => {
   }
 };
 
+const dateToken = 'yyyy-MM-dd';
+
+//returns Date object
+const parseDate = (dateIndex) => {
+  return parse(countyData.get(dateIndex).date, dateToken, new Date());
+}
+
 export const percentChange = (countyData, dateIndex, fips, measure) => {
   const nowfreq = getFrequency(countyData, dateIndex, fips, measure);
-  const now = countyData.get(dateIndex).date;
-  const prev = format(subMonths(now, 1), "YYYY-MM-DD"); //1 month previous
+  const nowParsed = parseDate(dateToken);
+  const prev = format(subMonths(nowParsed, 1), dateToken); //1 month previous
   const getPrevFreq = () => {
     for (const [value, key] of countyData.entries()) {
       if (value.date === prev) {
@@ -73,3 +80,7 @@ export const percentChange = (countyData, dateIndex, fips, measure) => {
   const percentChange = (nowfreq - prevFreq) / prevFreq;
   return percentChange;
 };
+
+export const doPercentChange = (countyData, dateIndex, dispatch) => {
+  const firstDate = parse(countyData.get(dateIndex).date, date
+}
