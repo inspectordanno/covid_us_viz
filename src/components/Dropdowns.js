@@ -8,6 +8,7 @@ const Dropdowns = ({ countyData, dateIndex }) => {
   const optionsOne = [
     { value: 'total', label: 'Total' },
     { value: 'new', label: 'New' },
+    { value: 'percentChange', label: 'Percent change from a week before'}
   ]
 
   const optionsTwo = [
@@ -18,9 +19,8 @@ const Dropdowns = ({ countyData, dateIndex }) => {
   return (
     <div className='Dropdowns'>
       <div className='Dropdowns__categories'>
-        <Select className="category_select" options={optionsOne}/>
-        <span className="covid_title">Covid</span>
         <Select className="category_select" options={optionsTwo} />
+        <Select className="category_select" options={optionsOne}/>
       </div>
       <span>United States</span>
       <DatePicker />
