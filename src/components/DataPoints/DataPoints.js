@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux';
 import * as d3 from "d3";
 import { randomInt } from 'd3-random';
 
-import mainRegl from '../webgl/regl';
-import { dispatchDateIndex } from "../actions/actions";
-import albersProjection from "../util/albersProjection";
+import mainRegl from '../../webgl/regl';
+import { dispatchDateIndex } from "../../actions/actions";
+import albersProjection from "../../util/albersProjection";
 
 const DataPoints = ({ countyData, dateIndex, pointWidth, measure, width, height }) => {
   const canvasRef = useRef();

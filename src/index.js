@@ -8,7 +8,7 @@ import 'normalize.css/normalize.css';
 import './styles/styles.scss';
 
 import configureStore from './store/configureStore';
-import CovidApp from './components/CovidApp';
+import CovidApp from './components/CovidApp/CovidApp';
 
 const store = configureStore();
 

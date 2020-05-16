@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { timeout } from 'd3-timer';
 
-import { fetchStateNyt, fetchCountyNyt } from '../util/dataFetches';
-import { dispatchDateIndex } from '../actions/actions';
-import UsMap from './UsMap';
-import Nav from './Nav';
-import DataPoints from './DataPoints';
+import covidAppStyles from './covidApp.module.scss';
+
+import { fetchStateNyt, fetchCountyNyt } from '../../util/dataFetches';
+import { dispatchDateIndex } from '../../actions/actions';
+import UsMap from '../USMap/USMap';
+import Header from '../Header/Header';
 
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
@@ -47,10 +48,8 @@ const CovidApp = () => {
   return covidData && dateMap && Number.isInteger(dateIndex)
   ?
   (
-    <div className="CovidApp">
-      <Nav 
-        countyData={covidData.county}
-        dateIndex={dateIndex}
+    <div className={covidAppStyles.CovidApp}>
+      <Header 
       />
       <UsMap 
         stateData={covidData.state} 

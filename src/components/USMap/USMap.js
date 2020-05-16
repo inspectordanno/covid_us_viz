@@ -4,17 +4,19 @@ import * as d3 from "d3";
 import { feature } from "topojson-client";
 import { parse, add, isBefore, format } from 'date-fns';
 
-import { dispatchDateIndex, dispatchDateIncrement } from '../actions/actions';
+import USMapStyles from './USMap.module.scss';
+
+import { dispatchDateIndex, dispatchDateIncrement } from '../../actions/actions';
 
 import {
   getCountyFips,
   getFrequency,
   threeDayAverage,
   percentChange
-} from "../util/utilFunctions";
-import stateTopo from "../../dist/data/states-10m.json";
-import countyTopo from "../../dist/data/counties-10m.json";
-import albersProjection from "../util/albersProjection";
+} from "../../util/utilFunctions";
+import stateTopo from "../../../dist/data/states-10m.json";
+import countyTopo from "../../../dist/data/counties-10m.json";
+import albersProjection from "../../util/albersProjection";
 
 const UsMap = ({
   stateData,
@@ -50,8 +52,6 @@ const UsMap = ({
     }
   }
 
-  console.log(getDomain(measureType))
-
   const thresholdScale = d3
     .scaleThreshold()
     .domain(getDomain(measureType))
@@ -78,7 +78,6 @@ const UsMap = ({
         (feature) => {
           const fips = getCountyFips(feature.id);
           const freq = getFreq(measureType, fips);
-          console.log(freq);
           const fill = thresholdScale(freq);
           context.beginPath();
           pathGeneratorCanvas(feature);
@@ -95,14 +94,13 @@ const UsMap = ({
   }, [canvasRef.current, dateIndex]);
 
   return (
-    <div className="UsMap">
+    <div className={USMapStyles.USMap}>
       <canvas
-        className="UsMap_counties"
         width={width}
         height={height}
         ref={canvasRef}
       />
-      <svg className="UsMap_states" width={width} height={height}>
+      <svg className={USMapStyles.states} width={width} height={height}>
         <g>
           {feature(stateTopo, stateTopo.objects.states).features.map(
             (feature) => {
