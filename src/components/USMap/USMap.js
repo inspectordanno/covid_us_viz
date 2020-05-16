@@ -4,8 +4,7 @@ import * as d3 from "d3";
 import { feature } from "topojson-client";
 import { parse, add, isBefore, format } from 'date-fns';
 
-  import styles from './USMap.module.scss';
-
+import styles from './USMap.module.scss';
 import { dispatchDateIndex, dispatchDateIncrement } from '../../actions/actions';
 
 const component = () => {

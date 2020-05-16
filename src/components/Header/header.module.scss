@@ -1,15 +1,33 @@
-.Dropdowns {
+.header {
   display: grid;
-  justify-items: center;
-  row-gap: 10px;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-areas: 
+    "measure measureType legend legend figure figure"
+    "datePicker datePicker legend legend figure figure"
+  ;
+  column-gap: 5px;
 }
 
-.Dropdowns__categories {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+.categorySelect {
+  width: 15px;
 }
 
-.category_select {
-  width: 100px;
+.measure {
+  grid-area: measure;
+}
+
+.measureType {
+  grid-area: measureType;
+}
+
+.legend {
+  grid-area: legend;
+}
+
+.datePicker {
+  grid-area: datePicker;
+}
+
+.figure {
+  grid-area: figure;
 }

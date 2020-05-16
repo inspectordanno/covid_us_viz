@@ -2,8 +2,6 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-console.log(isDevelopment);
-
 module.exports = {
   entry: "./src/index.js",
   output: {
