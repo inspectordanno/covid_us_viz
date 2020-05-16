@@ -22,9 +22,9 @@ export const getCountyFips = (fips) => {
 };
 
 export const getFrequency = (countyData, dateIndex, fips, measure) => {
-  const fipsData = countyData.get(dateIndex).data.get(fips);
-  if (fipsData) {
-    return fipsData[0][measure]; //for some reason data object is nested in an array
+  const day = countyData.get(dateIndex);
+  if (day && day.data.get(fips)) {
+    return day.data.get(fips)[0][measure]; //data object for municipality is nested in an array
   } else {
     return 0; //return 0 if no data exists
   }
@@ -57,38 +57,30 @@ export const threeDayAverage = (countyData, dateIndex, fips, measure) => {
   }
 };
 
-const dateToken = 'yyyy-MM-dd';
+const dateToken = "yyyy-MM-dd";
 
 //returns Date object
 const parseDate = (countyData, dateIndex) => {
   return parse(countyData.get(dateIndex).date, dateToken, new Date());
-}
+};
 
 // @param timePeriod is how long to compare now vs. previous (e.x. 1 month, 2 weeks, etc.)
-export const percentChange = (countyData, dateIndex, dateMap, fips, measure, timePeriod) => {
+export const percentChange = (
+  countyData,
+  dateIndex,
+  dateMap,
+  fips,
+  measure,
+  timePeriod
+) => {
   const nowfreq = getFrequency(countyData, dateIndex, fips, measure);
   const nowParsed = parseDate(countyData, dateIndex);
   const prev = format(sub(nowParsed, timePeriod), dateToken);
   const prevFreq = getFrequency(countyData, dateMap[prev], fips, measure);
-  const percentChange = (nowfreq - prevFreq) / prevFreq;
-  return percentChange;
-};
-
-export const doPercentChange = (countyData, dateIndex, dateMap, fips, measure, timePeriod, dispatchDateIndex) => {
-  const firstDate = parseDate(countyData, 0);
-  const timePeriodFromFirstDate = add(firstDate, timePeriod);
-  const currentDate = parseDate(countyData, dateIndex);
-  
-  //if the current date is before the time period from the first date, update the date index to be
-  //the time period from the first date, otherwise calculate percent change
-  //e.x. if we want to compare percent change between a date and a month previous, we can only compare
-  //dates that have month-previous counterparts
-  //if they do not, we have to update the date to the first date that has a month previous counterpart,
-  //which is the time period from the first date
-  if (isBefore(currentDate, timePeriodFromFirstDate)) {
-    const formatted = format(timePeriodFromFirstDate, dateToken); //formatting to yyyy-MM-dd date
-    dispatchDateIndex(dateMap[formatted]); //looking up date index and and dispatching to store
+  const percentChange = ((nowfreq - prevFreq) / prevFreq) * 100; //times 100 to make percent
+  if (prevFreq === 0) {
+    return 0; //can't divide by 0, so return 0
   } else {
-    return percentChange(countyData, dateIndex, dateMap, fips, measure, timePeriod);
+    return percentChange;
   }
-}
+};

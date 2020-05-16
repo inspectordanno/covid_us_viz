@@ -57,7 +57,7 @@ const CovidApp = () => {
         countyData={covidData.county} 
         dateIndex={dateIndex}
         dateMap={dateMap}
-        measure={'totalDeaths'}
+        measure={'totalCases'}
         measureType={'percentChange'} //rawNumber, rollingAverage, percentChange
         width={window.innerWidth} 
         height={window.innerHeight * .85} /> 

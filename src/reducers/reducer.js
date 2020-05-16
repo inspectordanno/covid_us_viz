@@ -1,5 +1,6 @@
 const reducerDefaultState = {
-  dateIndex: 0
+  dateIndex: 0,
+  autoDateIncrement: true
 }
 
 export default (state = reducerDefaultState, action) => {
@@ -8,6 +9,11 @@ export default (state = reducerDefaultState, action) => {
       return {
         ...state,
         dateIndex: action.dateIndex
+      }
+    case 'AUTO_DATE_INCREMENT':
+      return {
+        ...state,
+        autoDateIncrement: action.autoDateIncrement
       }
     default: 
       return state;

@@ -3,3 +3,8 @@ export const dispatchDateIndex = (dateIndex) => ({
   dateIndex
 });
 
+export const dispatchDateIncrement = (autoDateIncrement) => ({
+  type: 'AUTO_DATE_INCREMENT',
+  autoDateIncrement
+})
+
