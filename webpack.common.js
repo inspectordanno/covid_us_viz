@@ -1,40 +1,56 @@
-const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const devMode = process.env.NODE_ENV !== 'production';
+const path = require("path");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const isDevelopment = process.env.NODE_ENV !== "production";
+
+console.log(isDevelopment);
 
 module.exports = {
-  entry: './src/index.js',
+  entry: "./src/index.js",
   output: {
-    path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js'
+    path: path.join(__dirname, "dist"),
+    filename: "bundle.js",
   },
   module: {
-    rules: [{
-      loader: 'babel-loader',
-      test: /\.js$/,
-      exclude: /node_modules/
-    
-    }, {
-      test: /\.s?css$/,
-      use: [
-        {
-          loader: MiniCssExtractPlugin.loader,
-          options: {
-            hmr: process.env.NODE_ENV === 'development',
+    rules: [
+      {
+        loader: "babel-loader",
+        test: /\.js$/,
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.s?css$/,
+        oneOf: [
+          {
+            test: /\.module\.s?css$/,
+            use: [
+              isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
+              {
+                loader: "css-loader",
+                options: { modules: true }
+              },
+              "sass-loader"
+            ]
           },
-        },
-        'css-loader',
-        'sass-loader'
-      ]  
-    }]
+          {
+            use: [
+              isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader, 
+              "css-loader", 
+              "sass-loader"
+            ]
+          }
+        ]
+      }
+    ]
   },
   plugins: [
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
-      filename: devMode ? '[name].css' : '[name].[hash].css',
-      chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
+      filename: isDevelopment ? "[name].css" : "[name].[hash].css",
+      chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css",
     }),
   ],
-  externals: []
+  resolve: {
+    extensions: ['.js', '.scss']
+  },
 };

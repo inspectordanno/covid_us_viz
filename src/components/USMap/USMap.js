@@ -4,9 +4,16 @@ import * as d3 from "d3";
 import { feature } from "topojson-client";
 import { parse, add, isBefore, format } from 'date-fns';
 
-import USMapStyles from './USMap.module.scss';
+  import styles from './USMap.module.scss';
 
 import { dispatchDateIndex, dispatchDateIncrement } from '../../actions/actions';
+
+const component = () => {
+
+  return (
+    <div className={styles.sampleClass}></div>
+  )
+}
 
 import {
   getCountyFips,
@@ -93,14 +100,16 @@ const UsMap = ({
     }
   }, [canvasRef.current, dateIndex]);
 
+  console.log(styles.USMap);
+
   return (
-    <div className={USMapStyles.USMap}>
+    <div className={styles.USMap}>
       <canvas
         width={width}
         height={height}
         ref={canvasRef}
       />
-      <svg className={USMapStyles.states} width={width} height={height}>
+      <svg className={styles.states} width={width} height={height}>
         <g>
           {feature(stateTopo, stateTopo.objects.states).features.map(
             (feature) => {

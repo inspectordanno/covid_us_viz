@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { timeout } from 'd3-timer';
 
-import covidAppStyles from './covidApp.module.scss';
+import styles from './covidApp.module.scss';
 
 import { fetchStateNyt, fetchCountyNyt } from '../../util/dataFetches';
 import { dispatchDateIndex } from '../../actions/actions';
@@ -48,7 +48,7 @@ const CovidApp = () => {
   return covidData && dateMap && Number.isInteger(dateIndex)
   ?
   (
-    <div className={covidAppStyles.CovidApp}>
+    <div className={styles.CovidApp}>
       <Header 
       />
       <UsMap 
