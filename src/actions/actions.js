@@ -1,10 +1,15 @@
 export const dispatchDateIndex = (dateIndex) => ({
-  type: 'UPDATE_DATE_INDEX',
+  type: 'DATE_INDEX',
   dateIndex
 });
 
-export const dispatchDateIncrement = (autoDateIncrement) => ({
-  type: 'AUTO_DATE_INCREMENT',
-  autoDateIncrement
+export const dispatchDateIncrement = (dateIncrement) => ({
+  type: 'DATE_INCREMENT',
+  dateIncrement
+})
+
+export const dispatchDomain = (domain) => ({
+  type: 'DOMAIN',
+  domain
 })
 

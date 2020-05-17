@@ -1,19 +1,25 @@
 const reducerDefaultState = {
   dateIndex: 0,
-  autoDateIncrement: true
+  dateIncrement: true,
+  domain: [1, 10, 100, 1000, 10000, 100000]
 }
 
 export default (state = reducerDefaultState, action) => {
   switch (action.type) {
-    case 'UPDATE_DATE_INDEX':
+    case 'DATE_INDEX':
       return {
         ...state,
         dateIndex: action.dateIndex
       }
-    case 'AUTO_DATE_INCREMENT':
+    case 'DATE_INCREMENT':
       return {
         ...state,
-        autoDateIncrement: action.autoDateIncrement
+        dateIncrement: action.dateIncrement
+      }
+    case 'DOMAIN':
+      return {
+        ...state,
+        domain: action.domain
       }
     default: 
       return state;

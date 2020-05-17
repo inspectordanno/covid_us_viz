@@ -6,8 +6,11 @@ import Select from 'react-select';
 import { header, categorySelect, measure, measureType, datePicker, legend, figure } from './header.module.scss';
 import Legend from '../Legend/Legend';
 import Figure from '../Figure/Figure';
+import { useSelector } from "react-redux";
 
 const Header = ({ countyData, dateIndex }) => {
+
+  const domain = useSelector(state => state.domain);
 
   const measureTypeOpts = [
     { value: 'total', label: 'Total' },
@@ -20,7 +23,9 @@ const Header = ({ countyData, dateIndex }) => {
     { value: 'deaths', label: 'Deaths' },
   ]
 
-  return (
+  return domain 
+  ?
+  (
     <div className={header}>
         <Select 
           className={`${categorySelect}, ${measure}`} 
@@ -29,10 +34,12 @@ const Header = ({ countyData, dateIndex }) => {
           className={`${categorySelect}, ${measureType}`} 
           options={measureTypeOpts}/>
         <DatePicker className={datePicker}/>
-        <Legend />
+        <Legend domain={domain} />
         <Figure />
     </div>
-  );
-};
+  )
+  :
+  null;
+}
 
 export default Header;

@@ -5,6 +5,7 @@ import { feature } from "topojson-client";
 import { parse, add, isBefore, format } from 'date-fns';
 
 import styles from './USMap.module.scss';
+import { schemeTurbo } from '../../util/colors';
 import { dispatchDateIndex, dispatchDateIncrement } from '../../actions/actions';
 
 const component = () => {
@@ -40,21 +41,13 @@ const UsMap = ({
   const pathGenerator = d3.geoPath().projection(projection);
   const dispatch = useDispatch();
 
-  const schemeTurbo = [
-    "#23171b",
-    "#3987f9",
-    "#2ee5ae",
-    "#95fb51",
-    "#feb927",
-    "#e54813",
-    "#900c00",
-  ];
-
   const getDomain = (measureType) => {
     if (measureType !== 'percentChange') {
-      return [1, 10, 100, 1000, 10000, 100000];
+      const domain = [1, 10, 100, 1000, 10000, 100000];
+      return domain;
     } else if (measureType === 'percentChange') {
-      return [1, 5, 10, 50, 100, 1000];
+      const domain = [1, 5, 10, 50, 100, 1000];
+      return domain;
     }
   }
 
