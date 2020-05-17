@@ -5,8 +5,8 @@
   "author": "Dan Spector",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js",
+    "start": "webpack-dev-server --mode development",
+    "build": "webpack --mode production",
     "test": "jest --config=jest.config.json",
     "deploy": "gh-pages -d dist"
   },
