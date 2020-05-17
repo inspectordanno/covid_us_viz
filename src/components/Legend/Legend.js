@@ -4,12 +4,15 @@ import { scaleThreshold } from '@vx/scale';
 import { LegendThreshold, LegendItem, LegendLabel } from "@vx/legend";
 
 import styles from "../Header/header.module.scss";
-import { schemeTurbo } from "../../util/colors";
+import { domain, range } from '../../util/scale';
 
-const Legend = () => {
+const Legend = ({ measure }) => {
+
+  const rangeType = measure.includes('percent') ? 'percent' : 'number';
 
   const thresholdScale = scaleThreshold({
-    
+    domain: domain[measure],
+    range: range[rangeType]
   });
 
   const formatLabel = (text) => {

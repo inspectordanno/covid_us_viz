@@ -1,7 +1,7 @@
 const reducerDefaultState = {
   dateIndex: 0,
-  dateIncrement: true,
-  domain: [1, 10, 100, 1000, 10000, 100000]
+  dateIncrement: true, //true, false
+  measure: 'totalCases' //totalCases, totalDeaths, newCases, newDeaths, percentChangeCases, percentChangeDeaths
 }
 
 export default (state = reducerDefaultState, action) => {
@@ -15,6 +15,11 @@ export default (state = reducerDefaultState, action) => {
       return {
         ...state,
         dateIncrement: action.dateIncrement
+      }
+    case 'MEASURE': 
+      return {
+        ...state,
+        measure: action.measure
       }
     default: 
       return state;

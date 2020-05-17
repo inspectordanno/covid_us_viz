@@ -8,3 +8,8 @@ export const dispatchDateIncrement = (dateIncrement) => ({
   dateIncrement
 });
 
+export const dispatchMeasure = (measure) => ({
+  type: 'MEASURE',
+  measure
+});
+

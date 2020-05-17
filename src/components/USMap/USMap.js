@@ -37,12 +37,12 @@ const UsMap = ({
   const thresholdScale = d3
     .scaleThreshold()
     .domain(domain[measure])
-    .range(domain[rangeType]);
+    .range(range[rangeType]);
 
-  const getFreq = (measureType, fips) => { 
-    if (measureType === 'percentChangeCases') {
+  const getFreq = (fips) => { 
+    if (measure === 'percentChangeCases') {
       return percentChange(countyData, dateIndex, dateMap, fips, 'newCases', { 'weeks': 1 });
-    } else if (measureType === 'percentChangeDeaths') {
+    } else if (measure === 'percentChangeDeaths') {
       return percentChange(countyData, dateIndex, dateMap, fips, 'newDeaths', { 'weeks': 1 });
     } else {
       return threeDayAverage(countyData, dateIndex, fips, measure); //for raw number, use getFrequency(countyData, dateIndex, fips, measure)
@@ -58,7 +58,7 @@ const UsMap = ({
       feature(countyTopo, countyTopo.objects.counties).features.forEach(
         (feature) => {
           const fips = getCountyFips(feature.id);
-          const freq = getFreq(measureType, fips);
+          const freq = getFreq(fips);
           const fill = thresholdScale(freq);
           context.beginPath();
           pathGeneratorCanvas(feature);
