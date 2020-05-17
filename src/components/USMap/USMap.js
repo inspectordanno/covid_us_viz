@@ -65,8 +65,8 @@ const UsMap = ({
           context.lineWidth = 0.25;
           context.fillStyle = fill;
           feature.id.substring(0, 2) === "72"
-            ? (context.strokeStyle = fill)
-            : (context.strokeStyle = "black"); //no stroke for PR
+            ? (context.strokeStyle = fill) //no stroke for PR
+            : (context.strokeStyle = "black"); 
           context.fill();
           context.stroke();
         }

@@ -24,9 +24,15 @@ const Legend = ({ measure }) => {
     } 
 
     const formatted = words.map(word => {
-      //if number format, if not a number, do nothing
-      if (+word) {
-        return format(",d")(word);
+      const formattedNumber = format(",d")(word); //adds commas to number
+
+      //if word is a number and we are using a number domain, format as number 
+      //if word is a percent and we are using a percent domain, format as percent
+      //if not a number, do nothing
+      if (+word && rangeType === 'number') {
+        return formattedNumber;
+      } else if (+word && rangeType === 'percent') {
+        return formattedNumber + '%';
       } else {
         return word;
       }

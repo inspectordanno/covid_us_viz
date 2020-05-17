@@ -1,4 +1,4 @@
-const reducerDefaultState = {
+export const reducerDefaultState = {
   dateIndex: 0,
   dateIncrement: true, //true, false
   measure: 'totalCases' //totalCases, totalDeaths, newCases, newDeaths, percentChangeCases, percentChangeDeaths
