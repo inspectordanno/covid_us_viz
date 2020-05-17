@@ -16,11 +16,6 @@ export default (state = reducerDefaultState, action) => {
         ...state,
         dateIncrement: action.dateIncrement
       }
-    case 'DOMAIN':
-      return {
-        ...state,
-        domain: action.domain
-      }
     default: 
       return state;
   }

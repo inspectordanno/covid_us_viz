@@ -6,10 +6,5 @@ export const dispatchDateIndex = (dateIndex) => ({
 export const dispatchDateIncrement = (dateIncrement) => ({
   type: 'DATE_INCREMENT',
   dateIncrement
-})
-
-export const dispatchDomain = (domain) => ({
-  type: 'DOMAIN',
-  domain
-})
+});
 

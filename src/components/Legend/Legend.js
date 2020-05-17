@@ -6,11 +6,10 @@ import { LegendThreshold, LegendItem, LegendLabel } from "@vx/legend";
 import styles from "../Header/header.module.scss";
 import { schemeTurbo } from "../../util/colors";
 
-const Legend = ({ domain }) => {
+const Legend = () => {
 
   const thresholdScale = scaleThreshold({
-    domain,
-    range: schemeTurbo
+    
   });
 
   const formatLabel = (text) => {

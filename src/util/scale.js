@@ -1,3 +1,5 @@
+import { schemeRdBu } from 'd3-scale-chromatic';
+
 //domain and range for threshold scale
 
 //domains for each measure, for each municipality
@@ -6,16 +8,19 @@ export const domain = {
   'totalDeaths': [1, 10, 100, 500, 1000, 5000],
   'newCases': [1, 10, 100, 500, 1000, 5000],
   'newDeaths': [1, 5, 10, 50, 100, 500],
-  'percentChange': [1, 5, 10, 50, 100, 1000] //percentages, ex. 1%, 5%, 10%
+  'percentChange': [-500, -100, -50, -25, 0, 25, 50, 100, 500] //percentages, ex. 1%, 5%, 10%
 }
 
-//schemeTurbo
-export const range = [
-  "#23171b",
-  "#3987f9",
-  "#2ee5ae",
-  "#95fb51",
-  "#feb927",
-  "#e54813",
-  "#900c00"
-];
+//number of colors in range must always be one more than number of values in domain
+export const range = {
+  'number': [ //schemeTurbo
+    "#23171b",
+    "#3987f9",
+    "#2ee5ae",
+    "#95fb51",
+    "#feb927",
+    "#e54813",
+    "#900c00"
+  ],
+  'percent': schemeRdBu[domain.percentChange.length + 1]
+}

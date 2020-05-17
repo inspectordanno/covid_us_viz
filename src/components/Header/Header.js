@@ -8,14 +8,15 @@ import Legend from '../Legend/Legend';
 import Figure from '../Figure/Figure';
 import { useSelector } from "react-redux";
 
-const Header = ({ dateIndex, dateMap, domain }) => {
-
-  const domain = useSelector(state => state.domain);
+const Header = ({ dateIndex, dateMap }) => {
 
   const measureTypeOpts = [
-    { value: 'total', label: 'Total' },
-    { value: 'new', label: 'New' },
-    { value: 'percentChange', label: 'Percent change from a week before'}
+    { value: 'totalCases', label: 'Total Cases' },
+    { value: 'newCases', label: 'New Cases' },
+    { value: 'totalDeaths', label: 'Total Deaths'},
+    { value: 'newDeaths', label: 'New Deaths' },
+    { value: 'percentChangeCases', label: 'Percent change in new cases from a week before'},
+    { value: 'percentChangeDeaths', label: 'Percent change in new deaths from a week before'}
   ]
 
   const measureOpts = [
@@ -32,7 +33,7 @@ const Header = ({ dateIndex, dateMap, domain }) => {
           className={`${categorySelect}, ${measureType}`} 
           options={measureTypeOpts}/>
         <DatePicker className={datePicker}/>
-        <Legend domain={domain} />
+        <Legend />
         <Figure />
     </div>
   )

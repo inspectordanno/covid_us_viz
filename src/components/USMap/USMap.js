@@ -24,7 +24,6 @@ const UsMap = ({
   dateIndex,
   dateMap,
   measure,
-  measureType,
   width,
   height,
 }) => {
@@ -33,36 +32,18 @@ const UsMap = ({
   const pathGenerator = d3.geoPath().projection(projection);
   const dispatch = useDispatch();
 
-  const getCalculation = (measureType, measure) => {
-    if (measureType === 'percentChange') {
-      return 'total' + measure; //percentChange only works on totalCases or totalDeaths
-    } else {
-      return measureType + measure; //concatenate into totalCases, totalDeaths, newCases, or new Deaths
-    }
-  };
-
-  const calculation = (measureType, measure);
-
-  //if percentChange change, get the percentageChange domain
-  //otherwise, get the domain for the measure (cases, deaths) and measureType (total, new)
-  const getDomain = (measureType) => {
-    if (measureType === 'percentChange') {
-      dispatch(dispatchDomain(domain['percentChange']));
-      return domain['percentChange'];
-    } else {
-      dispatch(dispatchDomain(domain[calculation]));
-      return domain[calculation];
-    }
-  }
+  const rangeType = measure.includes('percent') ? 'percent' : 'number';
 
   const thresholdScale = d3
     .scaleThreshold()
-    .domain(getDomain(measureType))
-    .range(range);
+    .domain(domain[measure])
+    .range(domain[rangeType]);
 
   const getFreq = (measureType, fips) => { 
-    if (measureType === 'percentChange') {
-      return percentChange(countyData, dateIndex, dateMap, fips, measure, { 'weeks': 1 });
+    if (measureType === 'percentChangeCases') {
+      return percentChange(countyData, dateIndex, dateMap, fips, 'newCases', { 'weeks': 1 });
+    } else if (measureType === 'percentChangeDeaths') {
+      return percentChange(countyData, dateIndex, dateMap, fips, 'newDeaths', { 'weeks': 1 });
     } else {
       return threeDayAverage(countyData, dateIndex, fips, measure); //for raw number, use getFrequency(countyData, dateIndex, fips, measure)
     }
