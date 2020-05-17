@@ -1,6 +1,6 @@
 import React from "react";
 import { format } from "d3-format";
-import { scaleThreshold } from '@vx/scale';
+import scale from '../../util/scale';
 import { LegendThreshold, LegendItem, LegendLabel } from "@vx/legend";
 
 import styles from "../Header/header.module.scss";
@@ -9,11 +9,7 @@ import { domain, range } from '../../util/scale';
 const Legend = ({ measure }) => {
 
   const rangeType = measure.includes('percent') ? 'percent' : 'number';
-
-  const thresholdScale = scaleThreshold({
-    domain: domain[measure],
-    range: range[rangeType]
-  });
+  const thresholdScale = scale(measure);
 
   const formatLabel = (text) => {
     const words = text.split(' ');

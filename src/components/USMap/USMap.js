@@ -5,7 +5,7 @@ import { feature } from "topojson-client";
 import { parse, add, isBefore, format } from 'date-fns';
 
 import styles from './USMap.module.scss';
-import { domain, range } from '../../util/scale';
+import scale from '../../util/scale';
 import { dispatchDateIndex, dispatchDateIncrement, dispatchDomain } from '../../actions/actions';
 
 import {
@@ -30,14 +30,8 @@ const UsMap = ({
   const canvasRef = useRef();
   const projection = albersProjection(width, height);
   const pathGenerator = d3.geoPath().projection(projection);
-  const dispatch = useDispatch();
 
-  const rangeType = measure.includes('percent') ? 'percent' : 'number';
-
-  const thresholdScale = d3
-    .scaleThreshold()
-    .domain(domain[measure])
-    .range(range[rangeType]);
+  const thresholdScale = scale(measure);
 
   const getFreq = (fips) => { 
     if (measure === 'percentChangeCases') {

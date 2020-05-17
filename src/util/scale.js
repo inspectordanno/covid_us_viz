@@ -1,9 +1,10 @@
 import { schemeRdBu } from 'd3-scale-chromatic';
+import { scaleThreshold } from 'd3-scale';
 
 //domain and range for threshold scale
 
 //domains for each measure, for each municipality
-export const domain = {
+const domain = {
   'totalCases': [1, 10, 100, 1000, 10000, 100000],
   'totalDeaths': [1, 10, 100, 500, 1000, 5000],
   'newCases': [1, 10, 100, 500, 1000, 5000],
@@ -12,7 +13,7 @@ export const domain = {
 }
 
 //number of colors in range must always be one more than number of values in domain
-export const range = {
+const range = {
   'number': [ //schemeTurbo
     "#23171b",
     "#3987f9",
@@ -24,3 +25,13 @@ export const range = {
   ],
   'percent': schemeRdBu[domain.percentChange.length + 1]
 }
+
+const scale = (measure) => {
+  const domainType = measure.includes('percent') ? 'percent' : 'number';
+
+  return scaleThreshold()
+    .domain(domain[measure])
+    .range(range[domainType])
+}
+
+export default scale;
