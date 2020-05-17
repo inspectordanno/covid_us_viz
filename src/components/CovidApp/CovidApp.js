@@ -15,6 +15,7 @@ const CovidApp = () => {
   const dispatch = useDispatch();
 
   const dateIndex = useSelector(state => state.dateIndex);
+  const domain = useSelector(state => state.domain);
 
   //fetches data on mount
   useEffect(() => {
@@ -45,19 +46,23 @@ const CovidApp = () => {
     }
   },[dateIndex, covidData])
 
-  return covidData && dateMap && Number.isInteger(dateIndex)
+  return covidData && dateMap && domain && Number.isInteger(dateIndex)
   ?
   (
     <div className={styles.CovidApp}>
       <Header 
+        dateIndex={dateIndex}
+        dateMap={dateMap}
+        domain={domain}
       />
       <UsMap 
         stateData={covidData.state} 
         countyData={covidData.county} 
         dateIndex={dateIndex}
         dateMap={dateMap}
-        measure={'totalCases'}
-        measureType={'percentChange'} //rawNumber, rollingAverage, percentChange
+        measureType={'total'} //total, new, percentChange
+        measure={'Cases'} //Cases, Deaths
+        isPercentChange={true}
         width={window.innerWidth} 
         height={window.innerHeight * .85} /> 
     </div>

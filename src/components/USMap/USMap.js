@@ -5,15 +5,8 @@ import { feature } from "topojson-client";
 import { parse, add, isBefore, format } from 'date-fns';
 
 import styles from './USMap.module.scss';
-import { schemeTurbo } from '../../util/colors';
-import { dispatchDateIndex, dispatchDateIncrement } from '../../actions/actions';
-
-const component = () => {
-
-  return (
-    <div className={styles.sampleClass}></div>
-  )
-}
+import { domain, range } from '../../util/scale';
+import { dispatchDateIndex, dispatchDateIncrement, dispatchDomain } from '../../actions/actions';
 
 import {
   getCountyFips,
@@ -30,7 +23,6 @@ const UsMap = ({
   countyData,
   dateIndex,
   dateMap,
-  autoDateIncrement,
   measure,
   measureType,
   width,
@@ -41,30 +33,39 @@ const UsMap = ({
   const pathGenerator = d3.geoPath().projection(projection);
   const dispatch = useDispatch();
 
+  const getCalculation = (measureType, measure) => {
+    if (measureType === 'percentChange') {
+      return 'total' + measure; //percentChange only works on totalCases or totalDeaths
+    } else {
+      return measureType + measure; //concatenate into totalCases, totalDeaths, newCases, or new Deaths
+    }
+  };
+
+  const calculation = (measureType, measure);
+
+  //if percentChange change, get the percentageChange domain
+  //otherwise, get the domain for the measure (cases, deaths) and measureType (total, new)
   const getDomain = (measureType) => {
-    if (measureType !== 'percentChange') {
-      const domain = [1, 10, 100, 1000, 10000, 100000];
-      return domain;
-    } else if (measureType === 'percentChange') {
-      const domain = [1, 5, 10, 50, 100, 1000];
-      return domain;
+    if (measureType === 'percentChange') {
+      dispatch(dispatchDomain(domain['percentChange']));
+      return domain['percentChange'];
+    } else {
+      dispatch(dispatchDomain(domain[calculation]));
+      return domain[calculation];
     }
   }
 
   const thresholdScale = d3
     .scaleThreshold()
     .domain(getDomain(measureType))
-    .range(schemeTurbo);
+    .range(range);
 
-  //object literal switch statement
-  //gets frequency depending on measureType
   const getFreq = (measureType, fips) => { 
-    const meastureTypes = {
-      'rawNumber': getFrequency(countyData, dateIndex, fips, measure),
-      'rollingAverage': threeDayAverage(countyData, dateIndex, fips, measure),
-      'percentChange': percentChange(countyData, dateIndex, dateMap, fips, measure, { 'weeks': 1 })
+    if (measureType === 'percentChange') {
+      return percentChange(countyData, dateIndex, dateMap, fips, measure, { 'weeks': 1 });
+    } else {
+      return threeDayAverage(countyData, dateIndex, fips, measure); //for raw number, use getFrequency(countyData, dateIndex, fips, measure)
     }
-    return meastureTypes[measureType];
   };
 
   useEffect(() => {

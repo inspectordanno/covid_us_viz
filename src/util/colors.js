@@ -5,5 +5,5 @@ export const schemeTurbo = [
   "#95fb51",
   "#feb927",
   "#e54813",
-  "#900c00",
+  "#900c00"
 ];

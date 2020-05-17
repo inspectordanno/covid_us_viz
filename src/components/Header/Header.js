@@ -8,7 +8,7 @@ import Legend from '../Legend/Legend';
 import Figure from '../Figure/Figure';
 import { useSelector } from "react-redux";
 
-const Header = ({ countyData, dateIndex }) => {
+const Header = ({ dateIndex, dateMap, domain }) => {
 
   const domain = useSelector(state => state.domain);
 
@@ -23,9 +23,7 @@ const Header = ({ countyData, dateIndex }) => {
     { value: 'deaths', label: 'Deaths' },
   ]
 
-  return domain 
-  ?
-  (
+  return (
     <div className={header}>
         <Select 
           className={`${categorySelect}, ${measure}`} 
@@ -38,8 +36,6 @@ const Header = ({ countyData, dateIndex }) => {
         <Figure />
     </div>
   )
-  :
-  null;
 }
 
 export default Header;
