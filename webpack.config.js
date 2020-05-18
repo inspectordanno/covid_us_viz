@@ -1,5 +1,8 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = (env, argv) => {
   const isDevelopment = argv.mode === "development";
@@ -7,7 +10,8 @@ module.exports = (env, argv) => {
   console.log(isDevelopment);
 
   return {
-    entry: "./src/index.js",
+    context: path.join(__dirname, 'src'),
+    entry: path.join(__dirname, 'src', 'index.js'),
     output: {
       path: path.join(__dirname, "dist"),
       filename: "bundle.js",
@@ -51,8 +55,15 @@ module.exports = (env, argv) => {
         filename: isDevelopment ? "[name].css" : "[name].[hash].css",
         chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css",
       }),
+      new CleanWebpackPlugin(),
+      new HtmlWebpackPlugin({ template: path.join(__dirname, 'src', 'index.html') }),
+      new CopyPlugin( 
+        [
+          { from: 'data', to: 'data' }
+        ],
+      ),
     ],
-    devtool: "eval-cheap-module-source-map",
+    devtool: isDevelopment ? "eval-cheap-module-source-map" : false,
     devServer: {
       contentBase: path.join(__dirname, "dist"),
       historyApiFallback: true,
