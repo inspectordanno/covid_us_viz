@@ -15,6 +15,7 @@ const CovidApp = () => {
   const dispatch = useDispatch();
 
   const dateIndex = useSelector(state => state.dateIndex);
+  const dateIncrement = useSelector(state => state.dateIncrement)
   const measure = useSelector(state => state.measure);
 
   //fetches data on mount
@@ -38,13 +39,13 @@ const CovidApp = () => {
     if (covidData) {
       const numDays = covidData.state.size;
 
-      if (dateIndex < numDays - 1) {
+      if (dateIndex < numDays - 1 && dateIncrement) {
         timeout(() => {
           dispatch(dispatchDateIndex(dateIndex + 1))
         }, 250)
       }
     }
-  },[dateIndex, covidData])
+  },[dateIndex, covidData, dateIncrement])
 
   return covidData && dateMap && measure && Number.isInteger(dateIndex)
   ?

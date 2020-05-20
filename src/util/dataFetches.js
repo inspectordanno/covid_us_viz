@@ -1,7 +1,7 @@
 import { csv } from 'd3-fetch';
 import { group, groups } from 'd3-array';
 
-import countyDict from '../../dist/data/county_dict.json';
+import countyDict from '../data/county_dict.json';
 import fipsExceptions from '../util/fipsExceptions';
 
 //this function calculates the number of new cases/deaths for each place

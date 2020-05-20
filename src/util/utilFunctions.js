@@ -73,10 +73,10 @@ export const percentChange = (
   measure,
   timePeriod
 ) => {
-  const nowfreq = getFrequency(countyData, dateIndex, fips, measure);
+  const nowfreq = threeDayAverage(countyData, dateIndex, fips, measure);
   const nowParsed = parseDate(countyData, dateIndex);
   const prev = format(sub(nowParsed, timePeriod), dateToken);
-  const prevFreq = getFrequency(countyData, dateMap[prev], fips, measure);
+  const prevFreq = threeDayAverage(countyData, dateMap[prev], fips, measure);
   const percentChange = ((nowfreq - prevFreq) / prevFreq) * 100; //times 100 to make percent
   if (prevFreq === 0) {
     return 0; //can't divide by 0, so return 0

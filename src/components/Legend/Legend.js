@@ -1,15 +1,15 @@
 import React from "react";
 import { format } from "d3-format";
-import scale from '../../util/scale';
-import { LegendThreshold, LegendItem, LegendLabel } from "@vx/legend";
+import makeScale from '../../util/scale';
+import { LegendThreshold, LegendLinear, LegendItem, LegendLabel } from "@vx/legend";
 
 import styles from "../Header/header.module.scss";
 import { domain, range } from '../../util/scale';
 
 const Legend = ({ measure }) => {
 
-  const rangeType = measure.includes('percent') ? 'percent' : 'number';
-  const thresholdScale = scale(measure);
+  const domainType = measure.includes('percent') ? 'percent' : 'number';
+  const scale = makeScale(measure);
 
   const formatLabel = (text) => {
     const words = text.split(' ');
@@ -25,9 +25,9 @@ const Legend = ({ measure }) => {
       //if word is a number and we are using a number domain, format as number 
       //if word is a percent and we are using a percent domain, format as percent
       //if not a number, do nothing
-      if (+word && rangeType === 'number') {
+      if (+word && domainType === 'number') {
         return formattedNumber;
-      } else if (+word && rangeType === 'percent') {
+      } else if (+word && domainType === 'percent') {
         return formattedNumber + '%';
       } else {
         return word;
@@ -43,28 +43,42 @@ const Legend = ({ measure }) => {
     }
   }
 
+  const makeLabels = () => {
+    return (labels) => {
+      return labels.map((label, i) => {
+        const size = 15;
+        return (
+          <LegendItem key={`legend-quantile-${i}`} margin="1px 0">
+            <svg width={size} height={size}>
+              <rect fill={label.value} width={size} height={size} />
+            </svg>
+            <LegendLabel align={"left"} margin={"2px 0 0 10px"}>
+              {formatLabel(label.text)}
+            </LegendLabel>
+          </LegendItem>
+        );
+      });
+    }
+  }
+
+  const generateScale = () => {
+    if (domainType === 'number') {
+      return (
+        <LegendThreshold scale={scale}>
+          {makeLabels()}
+        </LegendThreshold>
+      )
+    } else if (domainType === 'percent') {
+      return (
+        <LegendLinear scale={scale} steps={5} />
+      )
+    }
+  }
+
   return (
     <div className={styles.legend}>
       <div>Title</div>
-      <LegendThreshold 
-        scale={thresholdScale}
-        >
-        {(labels) => {
-          return labels.map((label, i) => {
-            const size = 15;
-            return (
-              <LegendItem key={`legend-quantile-${i}`} margin="1px 0">
-                <svg width={size} height={size}>
-                  <rect fill={label.value} width={size} height={size} />
-                </svg>
-                <LegendLabel align={"left"} margin={"2px 0 0 10px"}>
-                  {formatLabel(label.text)}
-                </LegendLabel>
-              </LegendItem>
-            );
-          });
-        }}
-      </LegendThreshold>
+      {generateScale()}
     </div>
   );
 };

@@ -11,8 +11,14 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@vx/curve": "0.0.196",
+    "@vx/event": "0.0.196",
+    "@vx/grid": "0.0.196",
     "@vx/legend": "0.0.196",
+    "@vx/mock-data": "0.0.196",
     "@vx/scale": "0.0.196",
+    "@vx/shape": "0.0.196",
+    "@vx/tooltip": "0.0.196",
     "babel-plugin-react-css-modules": "^5.2.6",
     "d3": "^5.15.0",
     "d3-array": "^2.4.0",

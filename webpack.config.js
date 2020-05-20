@@ -7,8 +7,6 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = (env, argv) => {
   const isDevelopment = argv.mode === "development";
 
-  console.log(isDevelopment);
-
   return {
     context: path.join(__dirname, 'src'),
     entry: path.join(__dirname, 'src', 'index.js'),
@@ -57,11 +55,11 @@ module.exports = (env, argv) => {
       }),
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({ template: path.join(__dirname, 'src', 'index.html') }),
-      new CopyPlugin( 
-        [
-          { from: 'data', to: 'data' }
-        ],
-      ),
+      // new CopyPlugin( 
+      //   [
+      //     { from: 'data', to: 'data' }
+      //   ],
+      // ),
     ],
     devtool: isDevelopment ? "eval-cheap-module-source-map" : false,
     devServer: {

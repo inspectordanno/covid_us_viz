@@ -14,8 +14,8 @@ import {
   threeDayAverage,
   percentChange
 } from "../../util/utilFunctions";
-import stateTopo from "../../../dist/data/states-10m.json";
-import countyTopo from "../../../dist/data/counties-10m.json";
+import stateTopo from "../../data/states-10m.json";
+import countyTopo from "../../data/counties-10m.json";
 import albersProjection from "../../util/albersProjection";
 
 const UsMap = ({
