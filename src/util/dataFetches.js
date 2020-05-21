@@ -48,12 +48,37 @@ const toGroupedMap = (newEntriesArray) => {
   const groupedbyDate = groups(newEntriesArray, d => d.date);
   const dateMap = new Map();
   groupedbyDate.forEach((entry, index) => {
-    const dateIndex = index;
+    const date = entry[0];
     const dataByFips = group(entry[1], d => d.fips);
-    const payload = { date: entry[0], data: dataByFips };
-    dateMap.set(dateIndex, payload);
+
+    //grouping by dateIndex
+    // const dateIndex = index;
+    // const payload = { date: entry[0], data: dataByFips };
+    // dateMap.set(dateIndex, payload);
+
+    dateMap.set(date, dataByFips);
   });
   return dateMap;
+}
+
+export const fetchCountryNyt = async () => {
+  try {
+    const url = 'https://github.com/nytimes/covid-19-data/raw/master/us.csv';
+    const countryRes = await csv(url, d => {
+      //renaming and removing old keys
+      const entry = {
+      ...d,
+      totalCases: +d.cases,
+      totalDeaths: +d.deaths
+    };
+      const { cases, deaths, ...formatted } = entry;
+      return formatted;
+    });
+    const newEntriesArray = createNewEntriesArray(countryRes);
+    return toGroupedMap(newEntriesArray);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 export const fetchStateNyt = async () => {
