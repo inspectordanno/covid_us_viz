@@ -145,6 +145,7 @@ export const fetchCountyNyt = async () => {
 
     const groupByPlace = group(coords, d => d.coordinates);
     const newEntriesArray = createNewEntriesArray(groupByPlace);
+    console.log(newEntriesArray);
 
     return toGroupedMap(newEntriesArray);
   } catch (e) {
