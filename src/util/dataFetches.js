@@ -24,10 +24,15 @@ const calculateNew = (d, i, arr, measure) => {
 }
 
 //add newCases and newDeaths and push to a new array
-const createNewEntriesArray = (oldEntriesMap) => {
-  const newEntriesArray = [];
+const createGroupedMap = (oldEntriesMap) => {
+  //creating new map which will be returned at the end
+  const groupedMap = new Map();
 
-  oldEntriesMap.forEach((municipalityData, municipalityName) => {
+  oldEntriesMap.forEach((municipalityData, municipality) => {
+
+    //data which will contain previous data, plus newCases and newDeaths
+    const newData = [];
+
     municipalityData.forEach((d, i) => {
       const newCases = calculateNew(d, i, municipalityData, 'totalCases');
       const newDeaths = calculateNew(d, i, municipalityData, 'totalDeaths');
@@ -36,34 +41,21 @@ const createNewEntriesArray = (oldEntriesMap) => {
         newCases,
         newDeaths,
       };
-      newEntriesArray.push(newEntry);
+      //push the new entry to the newData array
+      newData.push(newEntry);
     });
+
+    //set the current municipality (key) to the newData array (value)
+    groupedMap.set(municipality, newData);
   });
 
-  return newEntriesArray;
-}
-
-//returns es6 map grouped by dateIndex and fips
-const toGroupedMap = (newEntriesArray) => {
-  const groupedbyDate = groups(newEntriesArray, d => d.date);
-  const dateMap = new Map();
-  groupedbyDate.forEach((entry, index) => {
-    const date = entry[0];
-    const dataByFips = group(entry[1], d => d.fips);
-
-    //grouping by dateIndex
-    // const dateIndex = index;
-    // const payload = { date: entry[0], data: dataByFips };
-    // dateMap.set(dateIndex, payload);
-
-    dateMap.set(date, dataByFips);
-  });
-  return dateMap;
+  //return the final grouped map
+  return groupedMap;
 }
 
 export const fetchCountryNyt = async () => {
   try {
-    const url = 'https://github.com/nytimes/covid-19-data/raw/master/us.csv';
+    const url = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us.csv';
     const countryRes = await csv(url, d => {
       //renaming and removing old keys
       const entry = {
@@ -74,8 +66,19 @@ export const fetchCountryNyt = async () => {
       const { cases, deaths, ...formatted } = entry;
       return formatted;
     });
-    const newEntriesArray = createNewEntriesArray(countryRes);
-    return toGroupedMap(newEntriesArray);
+
+    const withNew = countryRes.map((d, i) => {
+      const newCases = calculateNew(d, i, countryRes, 'totalCases');
+      const newDeaths = calculateNew(d, i, countryRes, 'totalDeaths');
+      return {
+        ...d,
+        newCases,
+        newDeaths,
+      };
+    });
+
+    return withNew;
+    
   } catch (e) {
     console.error(e);
   }
@@ -94,10 +97,11 @@ export const fetchStateNyt = async () => {
       const { cases, deaths, ...formatted } = entry;
       return formatted;
     });
-    const groupByState = group(stateRes, d => d.state);
-    const newEntriesArray = createNewEntriesArray(groupByState);
 
-    return toGroupedMap(newEntriesArray);
+    const groupByState = group(stateRes, d => d.state);
+
+    return createGroupedMap(groupByState);
+
   } catch (e) {
     console.error(e);
   }
@@ -138,16 +142,11 @@ export const fetchCountyNyt = async () => {
       }
     });
 
-    //filter by cases that have coordinates (this ignores "unknown counties" - change this?)
-    const coords = countyRes.filter(d => d.coordinates); 
-    const noFips = coords.filter(d => !d.fips);
-    //console.log(noFips);
+    const haveFips = countyRes.filter(d => d.fips);
+    const groupByFips = group(haveFips, d => d.fips);
 
-    const groupByPlace = group(coords, d => d.coordinates);
-    const newEntriesArray = createNewEntriesArray(groupByPlace);
-    console.log(newEntriesArray);
+    return createGroupedMap(groupByFips);
 
-    return toGroupedMap(newEntriesArray);
   } catch (e) {
     console.error(e);
   }

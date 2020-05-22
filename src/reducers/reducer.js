@@ -1,6 +1,19 @@
+import stateFipsDict from '../data/state_fips_dict.json';
+
+const randomProperty = (obj) => {
+  const keys = Object.keys(obj);
+  return keys[keys.length * Math.random() << 0];
+};
+
+const randomState = randomProperty(stateFipsDict);
+const randomCounties = stateFipsDict[randomState];
+const randomCountyFips = randomCounties[[Math.floor(Math.random() * randomCounties.length)]].fips;
+
 export const reducerDefaultState = {
-  dateIndex: 0,
-  dateIncrement: true, //true, false
+  // dateIndex: 0,
+  // dateIncrement: true, //true, false
+  UsState: randomState,
+  countyFips: randomCountyFips,
   measure: 'totalCases' //totalCases, totalDeaths, newCases, newDeaths, percentChangeCases, percentChangeDeaths
 }
 
@@ -15,6 +28,16 @@ export default (state = reducerDefaultState, action) => {
       return {
         ...state,
         dateIncrement: action.dateIncrement
+      }
+    case 'US_STATE':
+      return {
+        ...state,
+        UsState: action.UsState
+      }
+    case 'COUNTY_FIPS':
+      return {
+        ...state,
+        countyFips: action.countyFips
       }
     case 'MEASURE': 
       return {

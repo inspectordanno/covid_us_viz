@@ -1,7 +1,7 @@
 const csv = require('csvtojson');
 const fs = require('fs');
 
-const csvPath = '../../dist/data/us_county_centroids.csv';
+const csvPath = '../data/us_county_centroids.csv';
 
 csv()
   .fromFile(csvPath)

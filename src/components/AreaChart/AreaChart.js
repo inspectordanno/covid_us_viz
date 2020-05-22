@@ -12,10 +12,6 @@ import { timeFormat, timeParse } from "d3-time-format";
 // util
 const formatDate = timeFormat("%b %d, '%y");
 const parseTime = timeParse('%Y-%m-d');
-
-// accessors
-const xStock = (d) => new Date(d.date);
-const yStock = (d) => d.close;
 const bisectDate = bisector((d) => new Date(d.date)).left;
 
 const AreaChart = ({
@@ -36,7 +32,7 @@ const AreaChart = ({
   const svgRef = useRef();
 
   const fipsData = [];
-  countyData.forEach((value, key) => data.push({ date: parseTime(key), data: value.fips[measure] }));
+  countyData.forEach((value, key) => fipsData.push({ date: parseTime(key), data: value.fips[measure] }));
 
   const handleTooltip = ({ event, data, xStock, xScale, yScale }) => {
     const { x } = localPoint(event);
@@ -46,7 +42,7 @@ const AreaChart = ({
     const d1 = data[index];
     let d = d0;
     if (d1 && d1.date) {
-      d = x0 - xStock(d0.date) < xStock(d1.date) - x0 ? d0 : d1;
+      d = x0 - d0.date < d1.date - x0 ? d0 : d1;
     }
     showTooltip({
       tooltipData: d,
@@ -105,9 +101,9 @@ const AreaChart = ({
           stroke="rgba(255,255,255,0.3)"
         />
         <AreaClosed
-          data={stock}
-          x={(d) => xScale(xStock(d))}
-          y={(d) => yScale(yStock(d))}
+          data={fipsData}
+          x={(d) => xScale(d)}
+          y={(d) => yScale(d)}
           yScale={yScale}
           strokeWidth={1}
           stroke={"url(#gradient)"}
@@ -121,32 +117,29 @@ const AreaChart = ({
           height={height}
           fill="transparent"
           rx={14}
-          data={stock}
+          data={fipsData}
           onTouchStart={(event) =>
             handleTooltip({
               event,
-              xStock,
               xScale,
               yScale,
-              data: stock,
+              data: fipsData,
             })
           }
           onTouchMove={(event) =>
             handleTooltip({
               event,
-              xStock,
               xScale,
               yScale,
-              data: stock,
+              data: fipsData,
             })
           }
           onMouseMove={(event) =>
             handleTooltip({
               event,
-              xStock,
               xScale,
               yScale,
-              data: stock,
+              data: fipsData,
             })
           }
           onMouseLeave={(event) => hideTooltip()}
@@ -194,7 +187,7 @@ const AreaChart = ({
               color: "white",
             }}
           >
-            {`$${yStock(tooltipData)}`}
+            {`${tooltipData.data} ${measure}`}
           </Tooltip>
           <Tooltip
             top={yMax - 14}
@@ -203,7 +196,7 @@ const AreaChart = ({
               transform: "translateX(-50%)",
             }}
           >
-            {formatDate(xStock(tooltipData))}
+            {formatDate(tooltipData.date)}
           </Tooltip>
         </div>
       )}

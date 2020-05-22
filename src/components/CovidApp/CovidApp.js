@@ -6,18 +6,14 @@ import styles from './covidApp.module.scss';
 
 import { fetchStateNyt, fetchCountyNyt, fetchCountryNyt } from '../../util/dataFetches';
 import { dispatchDateIndex } from '../../actions/actions';
-import UsMap from '../USMap/USMap';
-import Header from '../Header/Header';
-import AreaChart from '../AreaChart/AreaChart';
+import UsStateSelect from '../UsStateSelect/UsStateSelect';
+import CountySelect from '../CountySelect/CountySelect';
+import MeasureSelect from '../MeasureSelect/MeasureSelect';
+// import AreaChart from '../AreaChart/AreaChart';
 
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
-  const [dateMap, setDateMap] = useState();
   const dispatch = useDispatch();
-
-  const dateIndex = useSelector(state => state.dateIndex);
-  const dateIncrement = useSelector(state => state.dateIncrement)
-  const measure = useSelector(state => state.measure);
 
   //fetches data on mount
   useEffect(() => {
@@ -26,9 +22,9 @@ const CovidApp = () => {
         const countryRes = await fetchCountryNyt();
         const stateRes = await fetchStateNyt();
         const countyRes = await fetchCountyNyt();
-        // const dateMapObj = {};
-        // countyRes.forEach((value, key) => dateMapObj[value.date] = key);
-        // setDateMap(dateMapObj);
+        console.log(countryRes);
+        console.log(stateRes);
+        console.log(countyRes);
         setCovidData({ country: countryRes, state: stateRes, county: countyRes });
       } catch (e) {
         console.error(e);
@@ -37,11 +33,18 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
-  return covidData && measure
+  const UsState = useSelector(state => state.UsState);
+  const countyFips = useSelector(state => state.countyFips);
+  const measure = useSelector(state => state.measure);
+
+  return covidData && UsState && countyFips && measure
   ?
   (
-    <div className={styles.CovidApp}>
-      <AreaChart />
+    <div>
+      <UsStateSelect />
+      <CountySelect UsState={UsState} />
+      <MeasureSelect />
+      {/* <AreaChart /> */}
     </div>
   )
   :
