@@ -40,7 +40,7 @@ const CovidApp = () => {
   return covidData && UsState && countyFips && measure
   ?
   (
-    <div>
+    <div className={s}>
       <UsStateSelect />
       <CountySelect UsState={UsState} />
       <MeasureSelect />

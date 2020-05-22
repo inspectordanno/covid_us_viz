@@ -1,9 +1,6 @@
 .CovidApp {
-  background-color: darkslategray;
   display: grid;
-  grid-template-rows: 1fr 1fr;
   height: 100%;
-  justify-items: center;
-  position: relative;
+  place-content: center;
   width: 100%;
 }
