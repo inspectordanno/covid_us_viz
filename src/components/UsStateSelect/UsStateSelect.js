@@ -10,7 +10,7 @@ const UsStateSelect = () => {
 
   const dispatch = useDispatch();
 
-  const UsStates = Object.keys(stateFipsDict).map(state => ({ value: state, key: state }));
+  const UsStates = Object.keys(stateFipsDict).map(state => ({ value: state, label: state }));
 
   const handleOnChange = (option) => {
     dispatch(dispatchUsState(option.value));
