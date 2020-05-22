@@ -12,6 +12,8 @@ const UsStateSelect = () => {
 
   const UsStates = Object.keys(stateFipsDict).map(state => ({ value: state, label: state }));
 
+  const defaultValue = { value: reducerDefaultState.UsState, label: reducerDefaultState.UsState };
+
   const handleOnChange = (option) => {
     dispatch(dispatchUsState(option.value));
   }
@@ -20,7 +22,7 @@ const UsStateSelect = () => {
     <Select
       options={UsStates}
       onChange={handleOnChange}
-      defaultValue={reducerDefaultState.UsState} 
+      defaultValue={defaultValue} 
     />
   )
 } 

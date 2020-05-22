@@ -7,13 +7,13 @@ const randomProperty = (obj) => {
 
 const randomState = randomProperty(stateFipsDict);
 const randomCounties = stateFipsDict[randomState];
-const randomCountyFips = randomCounties[[Math.floor(Math.random() * randomCounties.length)]].fips;
+export const randomCounty = randomCounties[[Math.floor(Math.random() * randomCounties.length)]];
 
 export const reducerDefaultState = {
   // dateIndex: 0,
   // dateIncrement: true, //true, false
   UsState: randomState,
-  countyFips: randomCountyFips,
+  countyFips: randomCounty.fips,
   measure: 'totalCases' //totalCases, totalDeaths, newCases, newDeaths, percentChangeCases, percentChangeDeaths
 }
 
