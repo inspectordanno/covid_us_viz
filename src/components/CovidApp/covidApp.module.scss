@@ -1,6 +1,5 @@
 .CovidApp {
   display: grid;
-  height: 100%;
-  place-content: center;
-  width: 100%;
+  row-gap: 10px;
+  justify-content: center;
 }

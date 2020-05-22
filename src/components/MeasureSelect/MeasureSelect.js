@@ -24,6 +24,7 @@ const MeasureSelect = () => {
 
   return (
     <Select 
+      className={'select'}
       options={options}
       defaultValue={defaultOption}
       onChange={handleOnChange}

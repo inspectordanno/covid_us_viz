@@ -22,6 +22,7 @@ const CountySelect = ({ UsState }) => {
 
   return (
     <Select
+      className={'select'}
       options={options}
       onChange={handleOnChange}
       defaultValue={defaultValue}

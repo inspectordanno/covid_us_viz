@@ -30,7 +30,13 @@ module.exports = (env, argv) => {
                 isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader,
                 {
                   loader: "css-loader",
-                  options: { modules: true },
+                  options: { 
+                    modules: {
+                      localIdentName: '[local]__[hash:base64:5]'
+                    },
+                    modules: true,
+                    sourceMap: true
+                  },
                 },
                 "sass-loader",
               ],

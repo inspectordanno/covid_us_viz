@@ -20,6 +20,7 @@ const UsStateSelect = () => {
 
   return (
     <Select
+      className={'select'}
       options={UsStates}
       onChange={handleOnChange}
       defaultValue={defaultValue} 
