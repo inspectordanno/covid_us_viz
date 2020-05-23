@@ -1,19 +1,19 @@
 import stateFipsDict from '../data/state_fips_dict.json';
 
-const randomProperty = (obj) => {
-  const keys = Object.keys(obj);
-  return keys[keys.length * Math.random() << 0];
-};
+// const randomProperty = (obj) => {
+//   const keys = Object.keys(obj);
+//   return keys[keys.length * Math.random() << 0];
+// };
 
-const randomState = randomProperty(stateFipsDict);
-const randomCounties = stateFipsDict[randomState];
-export const randomCounty = randomCounties[[Math.floor(Math.random() * randomCounties.length)]];
+// const randomState = randomProperty(stateFipsDict);
+// const randomCounties = stateFipsDict[randomState];
+// export const randomCounty = randomCounties[[Math.floor(Math.random() * randomCounties.length)]];
 
 export const reducerDefaultState = {
   // dateIndex: 0,
   // dateIncrement: true, //true, false
-  UsState: randomState,
-  countyFips: randomCounty.fips,
+  UsState: 'New York',
+  countyFips: 'nyc',
   measure: 'totalCases' //totalCases, totalDeaths, newCases, newDeaths, percentChangeCases, percentChangeDeaths
 }
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AreaClosed, Line, Bar } from "@vx/shape";
 import { curveMonotoneX } from "@vx/curve";
 import { GridRows, GridColumns } from "@vx/grid";
@@ -6,19 +6,25 @@ import { scaleTime, scaleLinear } from "@vx/scale";
 import { useTooltip, Tooltip } from "@vx/tooltip";
 import { localPoint } from "@vx/event";
 import { bisector, max } from "d3-array";
+import { format } from "d3-format"
 import { timeFormat, timeParse } from "d3-time-format";
 import sma from 'sma';
+
+import styles from './areaChart.module.scss';
 
 // util
 const formatDate = timeFormat("%b %d, '%y");
 const parseTime = timeParse('%Y-%m-%d');
 const bisectDate = bisector((d) => new Date(d.date)).left;
+const measureDict = {
+  'totalCases': 'cumulative cases',
+  'totalDeaths': 'cumulative deaths',
+  'newCases': 'new cases',
+  'newDeaths': 'new deaths'
+};
 
 const AreaChart = ({
-  covidData,
-  countyFips,
-  measure,
-  averageWindow,
+  plotData,
   width,
   height,
   margin,
@@ -36,10 +42,10 @@ const AreaChart = ({
   const fipsData = covidData.get(countyFips);
   const dates = fipsData.map(d => parseTime(d.date));
   const measureNumbers = fipsData.map(d => d[measure]);
-  const measureAverages = sma(measureNumbers, averageWindow);
+  const measureAverages = sma(measureNumbers, averageWindow, n => Math.round(n));
 
   const plotData = measureAverages.map((d, i) => {
-    return { date: dates[i], data: +d }
+    return { date: dates[i], data: d }
   });
 
    // bounds
@@ -53,9 +59,8 @@ const AreaChart = ({
    });
  
    const yScale = scaleLinear({
-     range: [yMax, 0],
-     domain: [0, max(plotData.map(d => d.data)) + yMax / 3],
-     nice: true,
+     range: [yMax, yMax * .1],
+     domain: [0, max(plotData.map(d => d.data))]
    });
 
   const handleTooltip = (event) => {
@@ -68,17 +73,19 @@ const AreaChart = ({
     if (d1 && d1.date) {
       d = x0 - d0.date < d1.date - x0 ? d0 : d1;
     }
+    console.log(d);
+    console.log(yScale(d.data));
     showTooltip({
       tooltipData: d,
       tooltipLeft: x,
-      tooltipTop: yScale(d.close),
+      tooltipTop: yScale(d.data),
     });
   };
 
   if (width < 10) return null;
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div>
       <svg width={width} height={height}>
         <rect
           x={0}
@@ -110,8 +117,8 @@ const AreaChart = ({
         />
         <AreaClosed
           data={plotData}
-          x={(d) => xScale(d)}
-          y={(d) => yScale(d)}
+          x={(d) => xScale(d.date)}
+          y={(d) => yScale(d.data)}
           yScale={yScale}
           strokeWidth={1}
           stroke={"url(#gradient)"}
@@ -167,21 +174,29 @@ const AreaChart = ({
       {tooltipOpen && (
         <div>
           <Tooltip
-            top={tooltipTop - 12}
+            top={tooltipTop - height - 12}
             left={tooltipLeft + 12}
+            className={styles.tooltip}
             style={{
               backgroundColor: "rgba(92, 119, 235, 1.000)",
               color: "white",
+              width: '100px',
             }}
           >
-            {`${tooltipData.data} ${measure}`}
+            <div style={{ fontWeight: 600 }}>
+              {format(",d")(tooltipData.data)}
+            </div>
+            <div>{measureDict[measure]}</div>
           </Tooltip>
           <Tooltip
-            top={yMax - 14}
+            top={yMax - height - 70}
             left={tooltipLeft}
+            className={styles.tooltip}
             style={{
+              backgroundColor: 'white',
               transform: "translateX(-50%)",
-            }}
+              width: '85px',
+            }}  
           >
             {formatDate(tooltipData.date)}
           </Tooltip>

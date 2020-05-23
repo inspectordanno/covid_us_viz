@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import stateFipsDict from '../../data/state_fips_dict.json';
 import { dispatchCountyFips } from '../../actions/actions';
-import { randomCounty } from '../../reducers/reducer';
+// import { randomCounty } from '../../reducers/reducer';
 
 const CountySelect = ({ UsState }) => {
 
@@ -14,7 +14,7 @@ const CountySelect = ({ UsState }) => {
 
   const options = counties.map(county => ({ value: county.fips, label: county.countyName }));
 
-  const defaultValue = { value: randomCounty.fips, label: randomCounty.countyName };
+  // const defaultValue = { value: randomCounty.fips, label: randomCounty.countyName };
 
   const handleOnChange = (option) => {
     dispatch(dispatchCountyFips(option.value));
@@ -25,7 +25,7 @@ const CountySelect = ({ UsState }) => {
       className={'select'}
       options={options}
       onChange={handleOnChange}
-      defaultValue={defaultValue}
+      defaultValue={{value: 'nyc', label: 'New York City'}}
     />
   )
 }
