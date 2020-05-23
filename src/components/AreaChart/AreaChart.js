@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { AreaClosed, Line, Bar } from "@vx/shape";
 import { curveMonotoneX } from "@vx/curve";
 import { GridRows, GridColumns } from "@vx/grid";
@@ -7,14 +7,12 @@ import { useTooltip, Tooltip } from "@vx/tooltip";
 import { localPoint } from "@vx/event";
 import { bisector, max } from "d3-array";
 import { format } from "d3-format"
-import { timeFormat, timeParse } from "d3-time-format";
-import sma from 'sma';
+import { timeFormat } from "d3-time-format";
 
 import styles from './areaChart.module.scss';
 
 // util
 const formatDate = timeFormat("%b %d, '%y");
-const parseTime = timeParse('%Y-%m-%d');
 const bisectDate = bisector((d) => new Date(d.date)).left;
 const measureDict = {
   'totalCases': 'cumulative cases',
@@ -25,6 +23,7 @@ const measureDict = {
 
 const AreaChart = ({
   plotData,
+  measure,
   width,
   height,
   margin,
@@ -38,15 +37,6 @@ const AreaChart = ({
     showTooltip,
     hideTooltip,
   } = useTooltip();
-
-  const fipsData = covidData.get(countyFips);
-  const dates = fipsData.map(d => parseTime(d.date));
-  const measureNumbers = fipsData.map(d => d[measure]);
-  const measureAverages = sma(measureNumbers, averageWindow, n => Math.round(n));
-
-  const plotData = measureAverages.map((d, i) => {
-    return { date: dates[i], data: d }
-  });
 
    // bounds
    const xMax = width - margin.left - margin.right;

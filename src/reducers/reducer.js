@@ -12,9 +12,9 @@ import stateFipsDict from '../data/state_fips_dict.json';
 export const reducerDefaultState = {
   // dateIndex: 0,
   // dateIncrement: true, //true, false
-  UsState: 'New York',
-  countyFips: 'nyc',
-  measure: 'totalCases' //totalCases, totalDeaths, newCases, newDeaths, percentChangeCases, percentChangeDeaths
+  UsState: '',
+  countyFips: '',
+  measure: 'newCases' //totalCases, totalDeaths, newCases, newDeaths, percentChangeCases, percentChangeDeaths
 }
 
 export default (state = reducerDefaultState, action) => {

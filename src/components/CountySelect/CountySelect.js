@@ -14,8 +14,6 @@ const CountySelect = ({ UsState }) => {
 
   const options = counties.map(county => ({ value: county.fips, label: county.countyName }));
 
-  // const defaultValue = { value: randomCounty.fips, label: randomCounty.countyName };
-
   const handleOnChange = (option) => {
     dispatch(dispatchCountyFips(option.value));
   }
@@ -25,7 +23,6 @@ const CountySelect = ({ UsState }) => {
       className={'select'}
       options={options}
       onChange={handleOnChange}
-      defaultValue={{value: 'nyc', label: 'New York City'}}
     />
   )
 }
