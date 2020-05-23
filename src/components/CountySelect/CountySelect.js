@@ -6,13 +6,14 @@ import stateFipsDict from '../../data/state_fips_dict.json';
 import { dispatchCountyFips } from '../../actions/actions';
 // import { randomCounty } from '../../reducers/reducer';
 
-const CountySelect = ({ UsState }) => {
+const CountySelect = ({ countyData, UsState }) => {
 
   const dispatch = useDispatch();
 
   const counties = stateFipsDict[UsState];
+  const validCounties = counties.filter(county => countyData.has(county.fips));
 
-  const options = counties.map(county => ({ value: county.fips, label: county.countyName }));
+  const options = validCounties.map(county => ({ value: county.fips, label: county.countyName }));
 
   const handleOnChange = (option) => {
     dispatch(dispatchCountyFips(option.value));

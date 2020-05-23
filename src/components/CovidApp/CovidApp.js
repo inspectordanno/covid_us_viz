@@ -44,8 +44,8 @@ const CovidApp = () => {
       const usStates = [ ...covidData.state.keys() ];
       const randomState = getRandomElement(usStates);
       const counties = stateFipsDict[randomState];
-      console.log(counties);
-      const randomCounty = getRandomElement(counties).fips;
+      const validCounties = counties.filter(county => covidData.county.has(county.fips));
+      const randomCounty = getRandomElement(validCounties).fips;
 
       dispatch(dispatchUsState(randomState));
       dispatch(dispatchCountyFips(randomCounty));
@@ -83,7 +83,9 @@ const CovidApp = () => {
   (
     <div className={styles.CovidApp}>
       <UsStateSelect />
-      <CountySelect UsState={UsState} />
+      <CountySelect 
+        countyData={covidData.county}
+        UsState={UsState} />
       <MeasureSelect />
       <AreaChart 
         plotData={countyPlotData}
