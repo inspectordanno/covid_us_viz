@@ -35,6 +35,7 @@
     "react-spring": "^8.0.27",
     "redux": "^4.0.5",
     "regl": "^1.4.2",
+    "sma": "^0.1.1",
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {

@@ -5,11 +5,10 @@ import { timeout } from 'd3-timer';
 import styles from './covidApp.module.scss';
 
 import { fetchStateNyt, fetchCountyNyt, fetchCountryNyt } from '../../util/dataFetches';
-import { dispatchDateIndex } from '../../actions/actions';
 import UsStateSelect from '../UsStateSelect/UsStateSelect';
 import CountySelect from '../CountySelect/CountySelect';
 import MeasureSelect from '../MeasureSelect/MeasureSelect';
-// import AreaChart from '../AreaChart/AreaChart';
+import AreaChart from '../AreaChart/AreaChart';
 
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
@@ -37,6 +36,10 @@ const CovidApp = () => {
   const countyFips = useSelector(state => state.countyFips);
   const measure = useSelector(state => state.measure);
 
+  const chartMargin = { left: 0, right: 0, top: 0, bottom: 0 };
+  const chartWidth = 600;
+  const chartHeight = 400;
+
   return covidData && UsState && countyFips && measure
   ?
   (
@@ -44,7 +47,15 @@ const CovidApp = () => {
       <UsStateSelect />
       <CountySelect UsState={UsState} />
       <MeasureSelect />
-      {/* <AreaChart /> */}
+      <AreaChart 
+        covidData={covidData.county}
+        countyFips={countyFips}
+        measure={measure}
+        averageWindow={3}
+        width={chartWidth}
+        height={chartHeight}
+        margin={chartMargin}
+      />
     </div>
   )
   :

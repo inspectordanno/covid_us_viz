@@ -1,45 +1,70 @@
-import React, { useRef } from "react";
+import React from "react";
 import { AreaClosed, Line, Bar } from "@vx/shape";
-import { appleStock } from "@vx/mock-data";
 import { curveMonotoneX } from "@vx/curve";
 import { GridRows, GridColumns } from "@vx/grid";
 import { scaleTime, scaleLinear } from "@vx/scale";
-import { withTooltip, Tooltip } from "@vx/tooltip";
+import { useTooltip, Tooltip } from "@vx/tooltip";
 import { localPoint } from "@vx/event";
 import { bisector, max } from "d3-array";
 import { timeFormat, timeParse } from "d3-time-format";
+import sma from 'sma';
 
 // util
 const formatDate = timeFormat("%b %d, '%y");
-const parseTime = timeParse('%Y-%m-d');
+const parseTime = timeParse('%Y-%m-%d');
 const bisectDate = bisector((d) => new Date(d.date)).left;
 
 const AreaChart = ({
-  countyData,
-  fips,
+  covidData,
+  countyFips,
   measure,
+  averageWindow,
   width,
   height,
   margin,
-  hideTooltip,
-  tooltipData,
-  tooltipTop,
-  tooltipLeft,
-  showTooltip,
   events,
 }) => {
 
-  const svgRef = useRef();
+  const {
+    tooltipData,
+    tooltipLeft,
+    tooltipTop,
+    tooltipOpen,
+    showTooltip,
+    hideTooltip,
+  } = useTooltip();
 
-  const fipsData = [];
-  countyData.forEach((value, key) => fipsData.push({ date: parseTime(key), data: value.fips[measure] }));
+  const fipsData = covidData.get(countyFips);
+  const dates = fipsData.map(d => parseTime(d.date));
+  const measureNumbers = fipsData.map(d => d[measure]);
+  const measureAverages = sma(measureNumbers, averageWindow);
 
-  const handleTooltip = ({ event, data, xStock, xScale, yScale }) => {
-    const { x } = localPoint(event);
+   // bounds
+   const xMax = width - margin.left - margin.right;
+   const yMax = height - margin.top - margin.bottom;
+ 
+   // scales
+   const xScale = scaleTime({
+     range: [0, xMax],
+     domain: [plotData[0].date, plotData[plotData.length - 1].date],
+   });
+ 
+   const yScale = scaleLinear({
+     range: [yMax, 0],
+     domain: [0, max(plotData.map(d => d.data)) + yMax / 3],
+     nice: true,
+   });
+
+    const plotData = measureAverages.map((d, i) => {
+      return { date: dates[i], data: +d }
+    });
+
+  const handleTooltip = (event) => {
+    const { x } = localPoint(event.target.ownerSVGElement, event);
     const x0 = xScale.invert(x);
-    const index = bisectDate(data, x0, 1);
-    const d0 = data[index - 1];
-    const d1 = data[index];
+    const index = bisectDate(plotData, x0, 1);
+    const d0 = plotData[index - 1];
+    const d1 = plotData[index];
     let d = d0;
     if (d1 && d1.date) {
       d = x0 - d0.date < d1.date - x0 ? d0 : d1;
@@ -51,27 +76,11 @@ const AreaChart = ({
     });
   };
 
-  // bounds
-  const xMax = width - margin.left - margin.right;
-  const yMax = height - margin.top - margin.bottom;
-
-  // scales
-  const xScale = scaleTime({
-    range: [0, xMax],
-    domain: [fipsData[0].date, fipsData[fipsData.length - 1].date],
-  });
-
-  const yScale = scaleLinear({
-    range: [yMax, 0],
-    domain: [0, max(fipsData.map(d => d.data)) + yMax / 3],
-    nice: true,
-  });
-
   if (width < 10) return null;
 
   return (
     <div>
-      <svg ref={(s) => (this.svg = s)} width={width} height={height}>
+      <svg width={width} height={height}>
         <rect
           x={0}
           y={0}
@@ -101,7 +110,7 @@ const AreaChart = ({
           stroke="rgba(255,255,255,0.3)"
         />
         <AreaClosed
-          data={fipsData}
+          data={plotData}
           x={(d) => xScale(d)}
           y={(d) => yScale(d)}
           yScale={yScale}
@@ -117,34 +126,13 @@ const AreaChart = ({
           height={height}
           fill="transparent"
           rx={14}
-          data={fipsData}
-          onTouchStart={(event) =>
-            handleTooltip({
-              event,
-              xScale,
-              yScale,
-              data: fipsData,
-            })
-          }
-          onTouchMove={(event) =>
-            handleTooltip({
-              event,
-              xScale,
-              yScale,
-              data: fipsData,
-            })
-          }
-          onMouseMove={(event) =>
-            handleTooltip({
-              event,
-              xScale,
-              yScale,
-              data: fipsData,
-            })
-          }
-          onMouseLeave={(event) => hideTooltip()}
+          data={plotData}
+          onTouchStart={handleTooltip}
+          onTouchMove={handleTooltip}
+          onMouseMove={handleTooltip}
+          onMouseLeave={hideTooltip}
         />
-        {tooltipData && (
+        {tooltipOpen && (
           <g>
             <Line
               from={{ x: tooltipLeft, y: 0 }}
@@ -177,7 +165,7 @@ const AreaChart = ({
           </g>
         )}
       </svg>
-      {tooltipData && (
+      {tooltipOpen && (
         <div>
           <Tooltip
             top={tooltipTop - 12}
@@ -204,4 +192,4 @@ const AreaChart = ({
   );
 };
 
-export default withTooltip(Area);
+export default AreaChart;
