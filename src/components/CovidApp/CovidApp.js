@@ -82,7 +82,7 @@ const CovidApp = () => {
   ?
   (
     <div className={styles.CovidApp}>
-      <UsStateSelect />
+      <UsStateSelect UsState={UsState} />
       <CountySelect 
         countyData={covidData.county}
         UsState={UsState} />

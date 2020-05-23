@@ -9,6 +9,9 @@ csv()
     const stateFipsMap = {};
     grouped.forEach((value, key) => {
       const counties = value.map(county => { 
+        if (county.fips.length === 4) {
+          county.fips = '0' + county.fips;
+        }
         return { countyName: county.county_name, fips: county.fips }
       });
       stateFipsMap[key] = counties;
