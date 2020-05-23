@@ -22,7 +22,6 @@ const AreaChart = ({
   width,
   height,
   margin,
-  events,
 }) => {
 
   const {
@@ -39,6 +38,10 @@ const AreaChart = ({
   const measureNumbers = fipsData.map(d => d[measure]);
   const measureAverages = sma(measureNumbers, averageWindow);
 
+  const plotData = measureAverages.map((d, i) => {
+    return { date: dates[i], data: +d }
+  });
+
    // bounds
    const xMax = width - margin.left - margin.right;
    const yMax = height - margin.top - margin.bottom;
@@ -54,10 +57,6 @@ const AreaChart = ({
      domain: [0, max(plotData.map(d => d.data)) + yMax / 3],
      nice: true,
    });
-
-    const plotData = measureAverages.map((d, i) => {
-      return { date: dates[i], data: +d }
-    });
 
   const handleTooltip = (event) => {
     const { x } = localPoint(event.target.ownerSVGElement, event);
@@ -79,7 +78,7 @@ const AreaChart = ({
   if (width < 10) return null;
 
   return (
-    <div>
+    <div style={{ position: 'relative' }}>
       <svg width={width} height={height}>
         <rect
           x={0}
