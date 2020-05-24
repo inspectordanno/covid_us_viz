@@ -10,7 +10,7 @@ csv()
     grouped.forEach((value, key) => {
       const counties = value.map(county => { 
         if (county.fips.length === 4) {
-          county.fips = '0' + county.fips;
+          county.fips = '0' + county.fips; //add 0 to 4-digit fips codes
         }
         return { countyName: county.county_name, fips: county.fips }
       });
