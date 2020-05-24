@@ -17,13 +17,13 @@ csv()
       stateFipsMap[key] = counties;
     });
 
-     //exceptions
-     stateFipsMap['Puerto Rico'] = [
+    //exceptions
+    stateFipsMap['Puerto Rico'] = [
       { countyName: 'Puerto Rico', fips: 'pr' }
     ];
     stateFipsMap['New York'].push({ countyName: 'New York City', fips: 'nyc' });
     stateFipsMap['Missouri'].push({ countyName: 'Kansas City', fips: 'kc' });
-    
+
     const json = JSON.stringify(stateFipsMap);
     fs.writeFileSync('../data/state_fips_dict.json', json);
   })

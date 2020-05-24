@@ -35,14 +35,20 @@ const CovidApp = () => {
     fetchData();
   }, []);
 
+  const UsState = useSelector(state => state.UsState);
+  const countyFips = useSelector(state => state.countyFips);
+  const measure = useSelector(state => state.measure);
+
   //gets random state and county and dispatches to store
   useEffect(() => {
     const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
     if (covidData) {
-
+      //get random state
       const usStates = [ ...covidData.state.keys() ];
       const randomState = getRandomElement(usStates);
+
+      //get random county
       const counties = stateFipsDict[randomState];
       const validCounties = counties.filter(county => covidData.county.has(county.fips));
       const randomCounty = getRandomElement(validCounties).fips;
@@ -51,10 +57,6 @@ const CovidApp = () => {
       dispatch(dispatchCountyFips(randomCounty));
     }
   }, [covidData]);
-
-  const UsState = useSelector(state => state.UsState);
-  const countyFips = useSelector(state => state.countyFips);
-  const measure = useSelector(state => state.measure);
 
   const chartMargin = { left: 0, right: 0, top: 0, bottom: 0 };
   const chartWidth = 600;
@@ -85,7 +87,8 @@ const CovidApp = () => {
       <UsStateSelect UsState={UsState} />
       <CountySelect 
         countyData={covidData.county}
-        UsState={UsState} />
+        UsState={UsState}
+        countyFips={countyFips} />
       <MeasureSelect />
       <AreaChart 
         plotData={countyPlotData}
