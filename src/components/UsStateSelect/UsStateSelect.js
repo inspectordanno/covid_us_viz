@@ -10,7 +10,7 @@ const UsStateSelect = ({ UsState }) => {
 
   const dispatch = useDispatch();
 
-  const [selectValue, setSelectValue] = useState({ value: UsState, label:UsState }); //set default state
+  const [selectValue, setSelectValue] = useState({ value: UsState, label: UsState }); //set default state
 
   const UsStates = Object.keys(stateFipsDict).map(state => ({ value: state, label: state }));
 

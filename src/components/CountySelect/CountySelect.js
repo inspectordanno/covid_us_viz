@@ -3,15 +3,13 @@ import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 
 import stateFipsDict from '../../data/state_fips_dict.json';
-import { dispatchCountyFips } from '../../actions/actions';
+import { dispatchCounty } from '../../actions/actions';
 
-const CountySelect = ({ countyData, UsState, countyFips }) => {
+const CountySelect = ({ countyData, UsState }) => {
 
   const dispatch = useDispatch();
 
-  const defaultFips = stateFipsDict[UsState].find(d => d.fips === countyFips);
-
-  const [selectValue, setSelectValue] = useState(defaultFips); //default county
+  const [selectValue, setSelectValue] = useState(); //default county
 
   //when a new state is selected, set input to random county of that state and dispatch to store
   useEffect(() => {
@@ -23,7 +21,7 @@ const CountySelect = ({ countyData, UsState, countyFips }) => {
     const randomCounty = getRandomElement(validCounties)
 
     setSelectValue({ value: randomCounty.fips, label: randomCounty.countyName });
-    dispatch(dispatchCountyFips(randomCounty.fips));
+    dispatch(dispatchCounty(randomCounty));
     
   },[UsState])
 
@@ -34,7 +32,7 @@ const CountySelect = ({ countyData, UsState, countyFips }) => {
   //when select box is changed, set value and dispatch to store
   const handleOnChange = (option) => {
     setSelectValue(option);
-    dispatch(dispatchCountyFips(option.value));
+    dispatch(dispatchCounty({ countyName: option.label, fips: option.value  }));
   }
 
   return (

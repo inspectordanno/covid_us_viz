@@ -10,10 +10,10 @@ const MeasureSelect = () => {
   const dispatch = useDispatch();
 
   const options = [
-    { value: 'newCases', label: 'New cases' },
-    { value: 'newDeaths', label: 'New deaths' },
-    { value: 'totalCases', label: 'Cumulative cases' },
-    { value: 'totalDeaths', label: 'Cumulative deaths'}
+    { value: 'newCases', label: 'New cases per day' },
+    { value: 'newDeaths', label: 'New deaths per day' },
+    { value: 'totalCases', label: 'Cumulative cases per day' },
+    { value: 'totalDeaths', label: 'Cumulative deaths per day'}
   ];
 
   const defaultOption = options.find(option => option.value === reducerDefaultState.measure);

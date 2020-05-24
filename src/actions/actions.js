@@ -13,9 +13,9 @@ export const dispatchUsState = (UsState) => ({
   UsState
 });
 
-export const dispatchCountyFips = (countyFips) => ({
-  type: 'COUNTY_FIPS',
-  countyFips
+export const dispatchCounty = (county) => ({
+  type: 'COUNTY',
+  county
 });
 
 export const dispatchMeasure = (measure) => ({

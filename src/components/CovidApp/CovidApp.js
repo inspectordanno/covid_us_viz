@@ -6,7 +6,7 @@ import sma from 'sma';
 import styles from './covidApp.module.scss';
 
 import stateFipsDict from '../../data/state_fips_dict.json';
-import { dispatchUsState, dispatchCountyFips } from '../../actions/actions';
+import { dispatchUsState, dispatchCounty } from '../../actions/actions';
 import { fetchStateNyt, fetchCountyNyt, fetchCountryNyt } from '../../util/dataFetches';
 import UsStateSelect from '../UsStateSelect/UsStateSelect';
 import CountySelect from '../CountySelect/CountySelect';
@@ -24,9 +24,7 @@ const CovidApp = () => {
         const countryRes = await fetchCountryNyt();
         const stateRes = await fetchStateNyt();
         const countyRes = await fetchCountyNyt();
-        console.log(countryRes);
-        console.log(stateRes);
-        console.log(countyRes);
+  
         setCovidData({ country: countryRes, state: stateRes, county: countyRes });
       } catch (e) {
         console.error(e);
@@ -36,7 +34,7 @@ const CovidApp = () => {
   }, []);
 
   const UsState = useSelector(state => state.UsState);
-  const countyFips = useSelector(state => state.countyFips);
+  const county = useSelector(state => state.county);
   const measure = useSelector(state => state.measure);
 
   //gets random state and county and dispatches to store
@@ -51,10 +49,10 @@ const CovidApp = () => {
       //get random county
       const counties = stateFipsDict[randomState];
       const validCounties = counties.filter(county => covidData.county.has(county.fips));
-      const randomCounty = getRandomElement(validCounties).fips;
+      const randomCounty = getRandomElement(validCounties);
 
       dispatch(dispatchUsState(randomState));
-      dispatch(dispatchCountyFips(randomCounty));
+      dispatch(dispatchCounty(randomCounty));
     }
   }, [covidData]);
 
@@ -65,6 +63,8 @@ const CovidApp = () => {
   const parseTime = timeParse('%Y-%m-%d');
 
   const getPlotData = (data, dataKey) => {
+    console.log(dataKey);
+
     const fipsData = data.get(dataKey);
     const dates = fipsData.map(d => parseTime(d.date));
     const measureNumbers = fipsData.map(d => d[measure]);
@@ -75,10 +75,10 @@ const CovidApp = () => {
     });
   }
 
-  const dependencies = covidData && UsState && countyFips && measure;
+  const dependencies = covidData && UsState && county && measure;
 
   const statePlotData = (dependencies) ? getPlotData(covidData.state, UsState) : null;
-  const countyPlotData = (dependencies) ? getPlotData(covidData.county, countyFips) : null;
+  const countyPlotData = (dependencies) ? getPlotData(covidData.county, county.fips) : null;
 
   return dependencies
   ?
@@ -88,7 +88,7 @@ const CovidApp = () => {
       <CountySelect 
         countyData={covidData.county}
         UsState={UsState}
-        countyFips={countyFips} />
+        county={county} />
       <MeasureSelect />
       <AreaChart 
         plotData={countyPlotData}

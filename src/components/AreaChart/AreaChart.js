@@ -14,12 +14,20 @@ import styles from './areaChart.module.scss';
 // util
 const formatDate = timeFormat("%b %d, '%y");
 const bisectDate = bisector((d) => new Date(d.date)).left;
+
 const measureDict = {
   'totalCases': 'cumulative cases',
   'totalDeaths': 'cumulative deaths',
   'newCases': 'new cases',
   'newDeaths': 'new deaths'
 };
+
+const titleDict = {
+  'totalCases': 'cases per day, cumulative',
+  'totalDeaths': 'deaths per day, cumulative',
+  'newCases': 'new cases per day',
+  'newDeaths': 'new deaths per day'
+}
 
 const AreaChart = ({
   plotData,
@@ -63,8 +71,7 @@ const AreaChart = ({
     if (d1 && d1.date) {
       d = x0 - d0.date < d1.date - x0 ? d0 : d1;
     }
-    console.log(d);
-    console.log(yScale(d.data));
+  
     showTooltip({
       tooltipData: d,
       tooltipLeft: x,
@@ -76,6 +83,9 @@ const AreaChart = ({
 
   return (
     <div>
+      <div>
+        {`'title', ${titleDict[measure]}`}
+      </div>
       <svg width={width} height={height}>
         <rect
           x={0}
@@ -176,7 +186,7 @@ const AreaChart = ({
             <div style={{ fontWeight: 600 }}>
               {format(",d")(tooltipData.data)}
             </div>
-            <div>{measureDict[measure]}</div>
+            <div>{tooltipData.data > 1 ? measureDict[measure] : measureDict[measure].slice(0, -1)}</div>
           </Tooltip>
           <Tooltip
             top={yMax - height - 70}

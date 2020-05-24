@@ -23,6 +23,7 @@ csv()
     ];
     stateFipsMap['New York'].push({ countyName: 'New York City', fips: 'nyc' });
     stateFipsMap['Missouri'].push({ countyName: 'Kansas City', fips: 'kc' });
+    stateFipsMap['District of Columbia'].pop(); //remove duplicate from D.C.
 
     const json = JSON.stringify(stateFipsMap);
     fs.writeFileSync('../data/state_fips_dict.json', json);

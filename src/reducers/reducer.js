@@ -13,7 +13,7 @@ export const reducerDefaultState = {
   // dateIndex: 0,
   // dateIncrement: true, //true, false
   UsState: '',
-  countyFips: '',
+  county: '',
   measure: 'newCases' //totalCases, totalDeaths, newCases, newDeaths, percentChangeCases, percentChangeDeaths
 }
 
@@ -34,10 +34,10 @@ export default (state = reducerDefaultState, action) => {
         ...state,
         UsState: action.UsState
       }
-    case 'COUNTY_FIPS':
+    case 'COUNTY':
       return {
         ...state,
-        countyFips: action.countyFips
+        county: action.county
       }
     case 'MEASURE': 
       return {
