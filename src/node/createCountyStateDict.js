@@ -1,6 +1,8 @@
 const csv = require('csvtojson');
 const { group } = require('d3-array');
 const fs = require('fs');
+const alphabetize = require('alphabetize-object-keys');
+const fipsExceptions = require('../util/fipsExceptions');
 
 csv()
   .fromFile('../data/county_fips_master.csv')
@@ -17,15 +19,23 @@ csv()
       stateFipsMap[key] = counties;
     });
 
-    //exceptions
-    stateFipsMap['Puerto Rico'] = [
-      { countyName: 'Puerto Rico', fips: 'pr' }
-    ];
-    stateFipsMap['New York'].push({ countyName: 'New York City', fips: 'nyc' });
-    stateFipsMap['Missouri'].push({ countyName: 'Kansas City', fips: 'kc' });
+    const addException = (name, fips) => {
+      stateFipsMap[name] = [
+        { countyName: name, fips }
+      ];
+    }
+
+    addException('Puerto Rico', fipsExceptions.pr);
+    addException('Guam', fipsExceptions.guam);
+    addException('Virgin Islands', fipsExceptions.vi);
+    addException('Northern Mariana Islands', fipsExceptions.nmi);
+
+    stateFipsMap['New York'].push({ countyName: 'New York City', fips: fipsExceptions.nyc });
+    stateFipsMap['Missouri'].push({ countyName: 'Kansas City', fips: fipsExceptions.kc });
     stateFipsMap['District of Columbia'].pop(); //remove duplicate from D.C.
 
-    const json = JSON.stringify(stateFipsMap);
+    const sorted = alphabetize(stateFipsMap);
+    const json = JSON.stringify(sorted);
     fs.writeFileSync('../data/state_fips_dict.json', json);
   })
 

@@ -136,7 +136,13 @@ export const fetchCountyNyt = async () => {
         return returnCoordinates([-94.579, 39.100], fipsExceptions.kc)
       } else if (d.state === 'Puerto Rico') {
         return returnCoordinates([-66.430, 18.222], fipsExceptions.pr);
-      } 
+      } else if (d.state === 'Guam') {
+        return returnCoordinates([144.794, 13.444], fipsExceptions.guam);
+      } else if (d.state === 'Virgin Islands') {
+        return returnCoordinates([-64.896, 18.336], fipsExceptions.vi);
+      } else if (d.state === 'Northern Mariana Islands') {
+        return returnCoordinates([145.674, 15.098], fipsExceptions.nmi);
+      }
       else  {
         return formatted;
       }

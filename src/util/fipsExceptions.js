@@ -3,7 +3,10 @@
 const fipsExceptions = {
   nyc: 'nyc', //new york city
   kc: 'kc', //kansas city, mi
-  pr: 'pr' //puerto rico
+  pr: 'pr', //puerto rico,
+  guam: 'guam', //guam
+  vi: 'vi', //virgin islands
+  nmi: 'nmi' //northern mariana islandsoi
 }
 
-export default fipsExceptions;
+module.exports = fipsExceptions;

@@ -23,6 +23,7 @@ const CovidApp = () => {
       try {
         const countryRes = await fetchCountryNyt();
         const stateRes = await fetchStateNyt();
+        console.log(stateRes);
         const countyRes = await fetchCountyNyt();
   
         setCovidData({ country: countryRes, state: stateRes, county: countyRes });
@@ -92,6 +93,7 @@ const CovidApp = () => {
       <MeasureSelect />
       <AreaChart 
         plotData={countyPlotData}
+        level={'county'}
         measure={measure}
         width={chartWidth}
         height={chartHeight}

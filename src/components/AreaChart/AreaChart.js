@@ -186,7 +186,7 @@ const AreaChart = ({
             <div style={{ fontWeight: 600 }}>
               {format(",d")(tooltipData.data)}
             </div>
-            <div>{tooltipData.data > 1 ? measureDict[measure] : measureDict[measure].slice(0, -1)}</div>
+            <div>{tooltipData.data !== 1 ? measureDict[measure] : measureDict[measure].slice(0, -1)}</div>
           </Tooltip>
           <Tooltip
             top={yMax - height - 70}

@@ -9,17 +9,5 @@
       }
     ],
     "@babel/react"
-  ],
-  "plugins": [
-    [
-      "react-css-modules",
-      {
-        "filetypes": {
-          ".scss": {
-            "syntax": "postcss-scss"
-          }
-        }
-      }
-    ]
   ]
 }
