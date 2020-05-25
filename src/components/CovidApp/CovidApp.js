@@ -74,15 +74,38 @@ const CovidApp = () => {
     const measureNumbers = fipsData.map(d => d[measure]);
     const measureAverages = sma(measureNumbers, movingAverageWindow, n => Math.round(n));
 
-    return measureAverages.map((d, i) => {
-      return { date: dates[i], data: d }
+    return measureAverages.map((d, i) => ({ date: dates[i], data: d }));
+  }
+
+  //trims dates with 0 values from beginning of array
+  const trimBeginningEmptyValues = (plotData) => {
+    let firstDataPointHit = false;
+
+    const finalData = [];
+
+    plotData.forEach((entry) => {
+      //if entry has no data and the first data point with data hasn't been hit do nothing
+      //if it has been hit, push entry to array 
+      if (!firstDataPointHit && entry.data) {
+        firstDataPointHit = true;
+      }
+      if (firstDataPointHit) {
+        finalData.push(entry);
+      }
     });
+
+    return finalData;
+  }
+
+  const getCountyPlotData = () => {
+    const plotData = getPlotData(covidData.county, county.fips);
+    return trimBeginningEmptyValues(plotData);
   }
 
   const dependencies = covidData && UsState && county && measure;
 
   const statePlotData = (dependencies) ? getPlotData(covidData.state, UsState) : null;
-  const countyPlotData = (dependencies) ? getPlotData(covidData.county, county.fips) : null;
+  const countyPlotData = (dependencies) ? getCountyPlotData() : null;
 
   return dependencies
   ?

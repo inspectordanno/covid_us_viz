@@ -59,7 +59,7 @@ const AreaChart = ({
    });
  
    const yScale = scaleLinear({
-     range: [yMax, yMax * .1],
+     range: [yMax, yMax * .05],
      domain: [0, max(plotData.map(d => d.data))]
    });
 
