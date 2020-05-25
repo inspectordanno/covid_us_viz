@@ -84,7 +84,7 @@ const CovidApp = () => {
     const finalData = [];
 
     plotData.forEach((entry) => {
-      //if entry has no data and the first data point with data hasn't been hit do nothing
+      //if entry.data === 0 and the first data point with data hasn't been hit do nothing
       //if it has been hit, push entry to array 
       if (!firstDataPointHit && entry.data) {
         firstDataPointHit = true;
