@@ -39,18 +39,43 @@ csv()
     fs.writeFileSync('../data/state_fips_dict.json', json);
   });
 
-  const fipsPop = {
-    nyc: 8336817,
-    kc: 495327,
-    pr: 3193694,
-    guam: 167294,
-    vi: 107000,
-    nmi: 51994
+  const makePopFile = () => {
+    const fipsPop = {
+      nyc: 8336817,
+      kc: 495327,
+      pr: 3193694,
+      guam: 167294,
+      vi: 107000,
+      nmi: 51994
+    }
+
+    const file = fs.readFileSync('../data/est_pop_2019.json');
+    const json = JSON.parse(file);
+    const obj = { ...json, ...fipsPop };
+    fs.writeFileSync('../data/pop_2019.json', JSON.stringify(obj));
   }
 
-  const file = fs.readFileSync('../data/est_pop_2019.json');
-  const json = JSON.parse(file);
-  const obj = { ...json, ...fipsPop };
-  fs.writeFileSync('../data/pop_2019.json', JSON.stringify(obj));
+  makePopFile();
+
+  const combineFipsAndPop = () => {
+    const fipsDict = JSON.parse(fs.readFileSync('../data/state_fips_dict.json'));
+    const popDict = JSON.parse(fs.readFileSync('../data/pop_2019.json'));
+    const newObj = {};
+    for (const [key, value] of Object.entries(fipsDict)) {
+      const fipsArr = value.map(entry => ({ ...entry, pop_2019: popDict[entry.fips] }));
+      newObj[key] = fipsArr;
+    }
+    const json = JSON.stringify(newObj);
+    console.log(json);
+    fs.writeFileSync('../data/name_fips_pop.json', json);
+
+  }
+
+  combineFipsAndPop();
+
+
+  
+
+
 
 

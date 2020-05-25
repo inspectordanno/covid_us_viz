@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
+import { greatest } from 'd3-array';
 
-import stateFipsDict from '../../data/state_fips_dict.json';
+import stateFipsDict from '../../data/name_fips_pop.json';
 import { dispatchCounty } from '../../actions/actions';
 
 const CountySelect = ({ countyData, UsState }) => {
@@ -15,13 +16,14 @@ const CountySelect = ({ countyData, UsState }) => {
   useEffect(() => {
     const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
     
-    //get random county
+    //get random or most populous county county
     const counties = stateFipsDict[UsState];
     const validCounties = counties.filter(county => countyData.has(county.fips));
+    const mostPopCounty = greatest(validCounties, d => d.pop_2019);
     const randomCounty = getRandomElement(validCounties)
 
-    setSelectValue({ value: randomCounty.fips, label: randomCounty.countyName });
-    dispatch(dispatchCounty(randomCounty));
+    setSelectValue({ value: mostPopCounty.fips, label: mostPopCounty.countyName });
+    dispatch(dispatchCounty(mostPopCounty)); //or randomCounty
     
   },[UsState])
 

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { timeParse } from 'd3-time-format';
+import { greatest } from 'd3-array';
 import sma from 'sma';
 
 import styles from './covidApp.module.scss';
 
-import stateFipsDict from '../../data/state_fips_dict.json';
+import stateFipsDict from '../../data/name_fips_pop.json';
 import { dispatchUsState, dispatchCounty } from '../../actions/actions';
 import { fetchStateNyt, fetchCountyNyt, fetchCountryNyt } from '../../util/dataFetches';
 import UsStateSelect from '../UsStateSelect/UsStateSelect';
@@ -47,13 +48,15 @@ const CovidApp = () => {
       const usStates = [ ...covidData.state.keys() ];
       const randomState = getRandomElement(usStates);
 
-      //get random county
+      //gets random or most populous county
       const counties = stateFipsDict[randomState];
       const validCounties = counties.filter(county => covidData.county.has(county.fips));
+      const mostPopCounty = greatest(validCounties, d => d.pop_2019);
       const randomCounty = getRandomElement(validCounties);
 
+      //initialize with random state and random/most populous county
       dispatch(dispatchUsState(randomState));
-      dispatch(dispatchCounty(randomCounty));
+      dispatch(dispatchCounty(mostPopCounty)); //or randomCounty
     }
   }, [covidData]);
 

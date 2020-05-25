@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 
-import stateFipsDict from '../../data/state_fips_dict.json';
+import stateFipsDict from '../../data/name_fips_pop.json';
 import { dispatchUsState } from '../../actions/actions';
-import { reducerDefaultState } from '../../reducers/reducer';
 
 const UsStateSelect = ({ UsState }) => {
 
