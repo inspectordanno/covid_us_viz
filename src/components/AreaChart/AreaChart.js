@@ -32,6 +32,8 @@ const titleDict = {
 const AreaChart = ({
   plotData,
   measure,
+  level,
+  name,
   width,
   height,
   margin,
@@ -84,7 +86,7 @@ const AreaChart = ({
   return (
     <div>
       <div>
-        {`'title', ${titleDict[measure]}`}
+        {`${name}, ${titleDict[measure]}`}
       </div>
       <svg width={width} height={height}>
         <rect

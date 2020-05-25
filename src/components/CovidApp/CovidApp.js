@@ -94,6 +94,7 @@ const CovidApp = () => {
       <AreaChart 
         plotData={countyPlotData}
         level={'county'}
+        name={county.countyName}
         measure={measure}
         width={chartWidth}
         height={chartHeight}
