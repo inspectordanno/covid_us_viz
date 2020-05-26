@@ -64,14 +64,13 @@ const CovidApp = () => {
   const chartWidth = 600;
   const chartHeight = 400;
   const movingAverageWindow = 7; //average over 7 days
-  const parseTime = timeParse('%Y-%m-%d');
 
   const getPlotData = (data, dataKey) => {
-    console.log(dataKey);
+    const parseTime = timeParse('%Y-%m-%d');
 
-    const fipsData = data.get(dataKey);
-    const dates = fipsData.map(d => parseTime(d.date));
-    const measureNumbers = fipsData.map(d => d[measure]);
+    const muniData = dataKey ? data.get(dataKey) : data; //if dataKey exists, use it. if it does not, use original data (country-level)
+    const dates = muniData.map(d => parseTime(d.date));
+    const measureNumbers = muniData.map(d => d[measure]);
     const measureAverages = sma(measureNumbers, movingAverageWindow, n => Math.round(n));
 
     return measureAverages.map((d, i) => ({ date: dates[i], data: d }));
@@ -97,15 +96,32 @@ const CovidApp = () => {
     return finalData;
   }
 
+  const getDateIntersection = (plotDataOne, plotDataTwo) => {
+    //make a set of dates to compare with
+    const compare = new Set(plotDataTwo.map(d => d.date.getTime()));
+
+    //filter values - if set has current date, then return 
+    return plotDataOne.filter(d => compare.has(d.date.getTime()))
+  }
+
   const getCountyPlotData = () => {
     const plotData = getPlotData(covidData.county, county.fips);
     return trimBeginningEmptyValues(plotData);
   }
 
-  const dependencies = covidData && UsState && county && measure;
+  const getStatePlotData = () => {
+    const countyPlotData = getCountyPlotData();
+    const statePlotData = getPlotData(covidData.state, UsState);
+    return getDateIntersection(statePlotData, countyPlotData);
+  }
 
-  const statePlotData = (dependencies) ? getPlotData(covidData.state, UsState) : null;
-  const countyPlotData = (dependencies) ? getCountyPlotData() : null;
+  const getCountryPlotData = () => {
+    const countyPlotData = getCountyPlotData();
+    const countryPlotData = getPlotData(covidData.country, null);
+    return getDateIntersection(countryPlotData, countyPlotData);
+  }
+
+  const dependencies = covidData && UsState && county && measure;
 
   return dependencies
   ?
@@ -118,9 +134,27 @@ const CovidApp = () => {
         county={county} />
       <MeasureSelect />
       <AreaChart 
-        plotData={countyPlotData}
+        plotData={getCountyPlotData()}
         level={'county'}
         name={county.countyName}
+        measure={measure}
+        width={chartWidth}
+        height={chartHeight}
+        margin={chartMargin}
+      />
+       <AreaChart 
+        plotData={getStatePlotData()}
+        level={'state'}
+        name={UsState}
+        measure={measure}
+        width={chartWidth}
+        height={chartHeight}
+        margin={chartMargin}
+      />
+      <AreaChart 
+        plotData={getCountryPlotData()}
+        level={'country'}
+        name={'United States'}
         measure={measure}
         width={chartWidth}
         height={chartHeight}
