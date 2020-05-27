@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, forwardRef } from "react";
 import { AreaClosed, Line, Bar } from "@vx/shape";
 import { Group } from "@vx/group";
 import { curveMonotoneX } from "@vx/curve";
@@ -39,6 +39,7 @@ const AreaChart = ({
   height,
   margin,
 }) => {
+
   const {
     tooltipData,
     tooltipLeft,
@@ -90,6 +91,12 @@ const AreaChart = ({
   };
 
   if (width < 10) return null;
+
+  const tooltipPadding = { left: 10, top: 0 };
+
+  tooltipPadding.top = height - tooltipTop < 30 ? 40 : 10;
+
+  console.log(height - tooltipTop);
 
   return (
     <div>
@@ -202,8 +209,8 @@ const AreaChart = ({
       {tooltipOpen && (
         <div>
           <Tooltip
-            top={tooltipTop - height - 12}
-            left={tooltipLeft + 12}
+            top={tooltipTop - height - tooltipPadding.top}
+            left={tooltipLeft + tooltipPadding.left}
             className={styles.tooltip}
             style={{
               backgroundColor: "rgba(92, 119, 235, 1.000)",
