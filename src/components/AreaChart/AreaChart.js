@@ -1,33 +1,34 @@
 import React from "react";
 import { AreaClosed, Line, Bar } from "@vx/shape";
+import { Group } from "@vx/group";
 import { curveMonotoneX } from "@vx/curve";
 import { GridRows, GridColumns } from "@vx/grid";
-import { scaleTime, scaleLinear } from "@vx/scale";
+import { scaleTime, scaleLinear, scaleBand } from "@vx/scale";
 import { useTooltip, Tooltip } from "@vx/tooltip";
 import { localPoint } from "@vx/event";
 import { bisector, max } from "d3-array";
-import { format } from "d3-format"
+import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import styles from './areaChart.module.scss';
+import styles from "./areaChart.module.scss";
 
 // util
 const formatDate = timeFormat("%b %d, '%y");
 const bisectDate = bisector((d) => new Date(d.date)).left;
 
 const measureDict = {
-  'totalCases': 'cumulative cases',
-  'totalDeaths': 'cumulative deaths',
-  'newCases': 'new cases',
-  'newDeaths': 'new deaths'
+  totalCases: "cumulative cases",
+  totalDeaths: "cumulative deaths",
+  newCases: "new cases",
+  newDeaths: "new deaths",
 };
 
 const titleDict = {
-  'totalCases': 'cases per day, cumulative',
-  'totalDeaths': 'deaths per day, cumulative',
-  'newCases': 'new cases per day',
-  'newDeaths': 'new deaths per day'
-}
+  totalCases: "cases per day, cumulative",
+  totalDeaths: "deaths per day, cumulative",
+  newCases: "new cases per day",
+  newDeaths: "new deaths per day",
+};
 
 const AreaChart = ({
   plotData,
@@ -38,7 +39,6 @@ const AreaChart = ({
   height,
   margin,
 }) => {
-
   const {
     tooltipData,
     tooltipLeft,
@@ -48,24 +48,32 @@ const AreaChart = ({
     hideTooltip,
   } = useTooltip();
 
-   // bounds
-   const xMax = width - margin.left - margin.right;
-   const yMax = height - margin.top - margin.bottom;
- 
-   // scales
-   const xScale = scaleTime({
-     range: [0, xMax],
-     domain: [plotData[0].date, plotData[plotData.length - 1].date],
-   });
- 
-   const yScale = scaleLinear({
-     range: [yMax, yMax * .05],
-     domain: [0, max(plotData.map(d => d.data))]
-   });
+  // bounds
+  const xMax = width - margin.left - margin.right;
+  const yMax = height - margin.top - margin.bottom;
+
+  // scales
+  const xScaleCurve = scaleTime({
+    range: [0, xMax],
+    domain: [plotData[0].date, plotData[plotData.length - 1].date],
+  });
+
+  const xScaleBar = scaleBand({
+    range: [0, xMax],
+    domain: plotData.map(d => d.date),
+    padding: 0.2,
+  });
+
+  const barWidth = xScaleBar.bandwidth();
+
+  const yScale = scaleLinear({
+    range: [yMax, yMax * 0.05],
+    domain: [0, max(plotData.map((d) => d.rawNumber))],
+  });
 
   const handleTooltip = (event) => {
     const { x } = localPoint(event.target.ownerSVGElement, event);
-    const x0 = xScale.invert(x);
+    const x0 = xScaleCurve.invert(x);
     const index = bisectDate(plotData, x0, 1);
     const d0 = plotData[index - 1];
     const d1 = plotData[index];
@@ -73,11 +81,11 @@ const AreaChart = ({
     if (d1 && d1.date) {
       d = x0 - d0.date < d1.date - x0 ? d0 : d1;
     }
-  
+
     showTooltip({
       tooltipData: d,
-      tooltipLeft: x,
-      tooltipTop: yScale(d.data),
+      tooltipLeft: xScaleBar(d.date) + barWidth * .5,
+      tooltipTop: yScale(d.rawNumber),
     });
   };
 
@@ -85,9 +93,7 @@ const AreaChart = ({
 
   return (
     <div>
-      <div>
-        {`${name}, ${titleDict[measure]}`}
-      </div>
+      <div>{`${name}, ${titleDict[measure]}`}</div>
       <svg width={width} height={height}>
         <rect
           x={0}
@@ -112,15 +118,35 @@ const AreaChart = ({
         />
         <GridColumns
           lineStyle={{ pointerEvents: "none" }}
-          scale={xScale}
+          scale={xScaleCurve}
           height={yMax}
           strokeDasharray="2,2"
           stroke="rgba(255,255,255,0.3)"
         />
+        <Group>
+          {plotData.map(d => {
+            const barWidth = xScaleBar.bandwidth();
+            const barHeight = yMax - yScale(d.rawNumber);
+            const barX = xScaleBar(d.date);
+            const barY = yMax - barHeight;
+
+            return (
+              <Bar
+                key={`bar-${formatDate(d.date)}`}
+                id={`bar-${formatDate(d.date)}`}
+                x={barX}
+                y={barY}
+                width={barWidth}
+                height={barHeight}
+                fill="green"
+              />
+            );
+          })}
+        </Group>
         <AreaClosed
           data={plotData}
-          x={(d) => xScale(d.date)}
-          y={(d) => yScale(d.data)}
+          x={(d) => xScaleCurve(d.date)}
+          y={(d) => yScale(d.average)}
           yScale={yScale}
           strokeWidth={1}
           stroke={"url(#gradient)"}
@@ -143,10 +169,10 @@ const AreaChart = ({
         {tooltipOpen && (
           <g>
             <Line
-              from={{ x: tooltipLeft, y: 0 }}
-              to={{ x: tooltipLeft, y: yMax }}
+              from={{ x: tooltipLeft, y: height }}
+              to={{ x: tooltipLeft, y: tooltipTop }}
               stroke="rgba(92, 119, 235, 1.000)"
-              strokeWidth={2}
+              strokeWidth={barWidth}
               style={{ pointerEvents: "none" }}
               strokeDasharray="2,2"
             />
@@ -182,23 +208,27 @@ const AreaChart = ({
             style={{
               backgroundColor: "rgba(92, 119, 235, 1.000)",
               color: "white",
-              width: '100px',
+              width: "100px",
             }}
           >
             <div style={{ fontWeight: 600 }}>
-              {format(",d")(tooltipData.data)}
+              {format(",d")(tooltipData.rawNumber)}
             </div>
-            <div>{tooltipData.data !== 1 ? measureDict[measure] : measureDict[measure].slice(0, -1)}</div>
+            <div>
+              {tooltipData.rawNumber !== 1
+                ? measureDict[measure]
+                : measureDict[measure].slice(0, -1)}
+            </div>
           </Tooltip>
           <Tooltip
-            top={yMax - height - 70}
+            top={yMax - height * 1.1}
             left={tooltipLeft}
             className={styles.tooltip}
             style={{
-              backgroundColor: 'white',
+              backgroundColor: "white",
               transform: "translateX(-50%)",
-              width: '85px',
-            }}  
+              width: "85px",
+            }}
           >
             {formatDate(tooltipData.date)}
           </Tooltip>

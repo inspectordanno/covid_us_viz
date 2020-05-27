@@ -24,7 +24,6 @@ const CovidApp = () => {
       try {
         const countryRes = await fetchCountryNyt();
         const stateRes = await fetchStateNyt();
-        console.log(stateRes);
         const countyRes = await fetchCountyNyt();
   
         setCovidData({ country: countryRes, state: stateRes, county: countyRes });
@@ -73,28 +72,28 @@ const CovidApp = () => {
     const measureNumbers = muniData.map(d => d[measure]);
     const measureAverages = sma(measureNumbers, movingAverageWindow, n => Math.round(n));
 
-    return measureAverages.map((d, i) => ({ date: dates[i], data: d }));
+    return measureAverages.map((d, i) => ({ date: dates[i], rawNumber: measureNumbers[i], average: d }));
   }
 
   //trims dates with 0 values from beginning of array
-  const trimBeginningEmptyValues = (plotData) => {
-    let firstDataPointHit = false;
+  // const trimBeginningEmptyValues = (plotData) => {
+  //   let firstDataPointHit = false;
 
-    const finalData = [];
+  //   const finalData = [];
 
-    plotData.forEach((entry) => {
-      //if entry.data === 0 and the first data point with data hasn't been hit do nothing
-      //if it has been hit, push entry to array 
-      if (!firstDataPointHit && entry.data) {
-        firstDataPointHit = true;
-      }
-      if (firstDataPointHit) {
-        finalData.push(entry);
-      }
-    });
+  //   plotData.forEach((entry) => {
+  //     //if entry.data === 0 and the first data point with data hasn't been hit do nothing
+  //     //if it has been hit, push entry to array 
+  //     if (!firstDataPointHit && entry.data) {
+  //       firstDataPointHit = true;
+  //     }
+  //     if (firstDataPointHit) {
+  //       finalData.push(entry);
+  //     }
+  //   });
 
-    return finalData;
-  }
+  //   return finalData;
+  // }
 
   const getDateIntersection = (plotDataOne, plotDataTwo) => {
     //make a set of dates to compare with
@@ -104,21 +103,16 @@ const CovidApp = () => {
     return plotDataOne.filter(d => compare.has(d.date.getTime()))
   }
 
-  const getCountyPlotData = () => {
-    const plotData = getPlotData(covidData.county, county.fips);
-    return trimBeginningEmptyValues(plotData);
-  }
+  const getCountyPlotData = () => getPlotData(covidData.county, county.fips);
 
   const getStatePlotData = () => {
-    const countyPlotData = getCountyPlotData();
     const statePlotData = getPlotData(covidData.state, UsState);
-    return getDateIntersection(statePlotData, countyPlotData);
+    return getDateIntersection(statePlotData, getCountyPlotData());
   }
 
   const getCountryPlotData = () => {
-    const countyPlotData = getCountyPlotData();
     const countryPlotData = getPlotData(covidData.country, null);
-    return getDateIntersection(countryPlotData, countyPlotData);
+    return getDateIntersection(countryPlotData, getCountyPlotData());
   }
 
   const dependencies = covidData && UsState && county && measure;
