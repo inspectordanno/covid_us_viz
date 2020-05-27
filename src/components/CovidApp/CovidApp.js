@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { timeParse } from 'd3-time-format';
-import { greatest } from 'd3-array';
+import { greatest, mean } from 'd3-array';
 import sma from 'sma';
 
 import styles from './covidApp.module.scss';
@@ -62,7 +62,27 @@ const CovidApp = () => {
   const chartMargin = { left: 0, right: 0, top: 0, bottom: 0 };
   const chartWidth = 600;
   const chartHeight = 400;
-  const movingAverageWindow = 7; //average over 7 days
+
+  const getMovingAverage = (arr, windowLength) => {
+    const lastIndex = arr.length - 1;
+
+    let windowFirst = 0;
+    let windowLast = windowLength - 1;
+  
+    return arr.map((d,i) => {
+      
+      if (windowFirst < Math.floor(windowLength)) {
+        const windowValues = arr.slice(windowFirst, windowLast);
+        return Math.round(mean(windowValues));
+
+        windowFirst += 1;
+        windowLast -= 1;
+      }
+
+     
+
+    });
+  }
 
   const getPlotData = (data, dataKey) => {
     const parseTime = timeParse('%Y-%m-%d');
