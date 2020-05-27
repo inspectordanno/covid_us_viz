@@ -63,27 +63,6 @@ const CovidApp = () => {
   const chartWidth = 600;
   const chartHeight = 400;
 
-  const getMovingAverage = (arr, windowLength) => {
-    const lastIndex = arr.length - 1;
-
-    let windowFirst = 0;
-    let windowLast = windowLength - 1;
-  
-    return arr.map((d,i) => {
-      
-      if (windowFirst < Math.floor(windowLength)) {
-        const windowValues = arr.slice(windowFirst, windowLast);
-        return Math.round(mean(windowValues));
-
-        windowFirst += 1;
-        windowLast -= 1;
-      }
-
-     
-
-    });
-  }
-
   const getPlotData = (data, dataKey) => {
     const parseTime = timeParse('%Y-%m-%d');
 
