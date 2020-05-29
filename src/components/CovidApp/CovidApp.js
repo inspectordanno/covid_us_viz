@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { timeParse } from 'd3-time-format';
-import { greatest, mean } from 'd3-array';
+import { greatest } from 'd3-array';
 
 import styles from './covidApp.module.scss';
 
@@ -69,26 +69,6 @@ const CovidApp = () => {
 
     return measureAverages.map((d, i) => ({ date: dates[i], rawNumber: measureNumbers[i], average: d }));
   }
-
-  //trims dates with 0 values from beginning of array
-  // const trimBeginningEmptyValues = (plotData) => {
-  //   let firstDataPointHit = false;
-
-  //   const finalData = [];
-
-  //   plotData.forEach((entry) => {
-  //     //if entry.data === 0 and the first data point with data hasn't been hit do nothing
-  //     //if it has been hit, push entry to array 
-  //     if (!firstDataPointHit && entry.data) {
-  //       firstDataPointHit = true;
-  //     }
-  //     if (firstDataPointHit) {
-  //       finalData.push(entry);
-  //     }
-  //   });
-
-  //   return finalData;
-  // }
 
   const getDateIntersection = (plotDataOne, plotDataTwo) => {
     //make a set of dates to compare with
