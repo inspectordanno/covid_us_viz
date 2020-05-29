@@ -16,8 +16,8 @@ export const getMovingAverage = (arr, windowLength) => {
     const windowValues = arr.slice(windowFirst, windowLast + 1);
     const average = mean(windowValues);
     averages.push(average);
-    console.log(`windowFirst: ${windowFirst}`, `windowLast: ${windowLast}`);
-    console.log(windowValues);
+    // console.log(`windowFirst: ${windowFirst}`, `windowLast: ${windowLast}`);
+    // console.log(windowValues);
   } 
 
   arr.forEach((d, i) => {

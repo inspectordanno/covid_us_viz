@@ -11,6 +11,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@vx/axis": "0.0.196",
     "@vx/curve": "0.0.196",
     "@vx/event": "0.0.196",
     "@vx/grid": "0.0.196",

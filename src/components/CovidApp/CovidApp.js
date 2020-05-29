@@ -59,10 +59,6 @@ const CovidApp = () => {
     }
   }, [covidData]);
 
-  const chartMargin = { left: 0, right: 0, top: 0, bottom: 0 };
-  const chartWidth = 600;
-  const chartHeight = 400;
-
   const getPlotData = (data, dataKey) => {
     const parseTime = timeParse('%Y-%m-%d');
 
@@ -131,27 +127,18 @@ const CovidApp = () => {
         level={'county'}
         name={county.countyName}
         measure={measure}
-        width={chartWidth}
-        height={chartHeight}
-        margin={chartMargin}
       />
        <AreaChart 
         plotData={getStatePlotData()}
         level={'state'}
         name={UsState}
         measure={measure}
-        width={chartWidth}
-        height={chartHeight}
-        margin={chartMargin}
       />
       <AreaChart 
         plotData={getCountryPlotData()}
         level={'country'}
         name={'United States'}
         measure={measure}
-        width={chartWidth}
-        height={chartHeight}
-        margin={chartMargin}
       />
     </div>
   )

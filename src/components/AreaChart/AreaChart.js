@@ -1,8 +1,9 @@
-import React, { useRef, forwardRef } from "react";
+import React from "react";
 import { AreaClosed, Line, Bar } from "@vx/shape";
 import { Group } from "@vx/group";
 import { curveMonotoneX } from "@vx/curve";
 import { GridRows, GridColumns } from "@vx/grid";
+import { AxisLeft } from "@vx/axis";
 import { scaleTime, scaleLinear, scaleBand } from "@vx/scale";
 import { useTooltip, Tooltip } from "@vx/tooltip";
 import { localPoint } from "@vx/event";
@@ -30,16 +31,7 @@ const titleDict = {
   newDeaths: "new deaths per day",
 };
 
-const AreaChart = ({
-  plotData,
-  measure,
-  level,
-  name,
-  width,
-  height,
-  margin,
-}) => {
-
+const AreaChart = ({ plotData, measure, level, name, }) => {
   const {
     tooltipData,
     tooltipLeft,
@@ -49,9 +41,20 @@ const AreaChart = ({
     hideTooltip,
   } = useTooltip();
 
+  const width = 600;
+  const height = 400;
+  const margin = { left: 60, right: 0, top: 10, bottom: 0 };
+
   // bounds
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
+
+  // responsive utils for axis ticks
+  const numTicksForHeight = (height) => {
+    if (height <= 300) return 3;
+    if (300 < height && height <= 600) return 5;
+    return 10;
+  };
 
   // scales
   const xScaleCurve = scaleTime({
@@ -61,20 +64,21 @@ const AreaChart = ({
 
   const xScaleBar = scaleBand({
     range: [0, xMax],
-    domain: plotData.map(d => d.date),
+    domain: plotData.map((d) => d.date),
     padding: 0.2,
   });
 
   const barWidth = xScaleBar.bandwidth();
 
   const yScale = scaleLinear({
-    range: [yMax, yMax * 0.05],
+    range: [yMax, 0],
     domain: [0, max(plotData.map((d) => d.rawNumber))],
+    nice: true
   });
 
   const handleTooltip = (event) => {
     const { x } = localPoint(event.target.ownerSVGElement, event);
-    const x0 = xScaleCurve.invert(x);
+    const x0 = xScaleCurve.invert(x - margin.left);
     const index = bisectDate(plotData, x0, 1);
     const d0 = plotData[index - 1];
     const d1 = plotData[index];
@@ -85,7 +89,7 @@ const AreaChart = ({
 
     showTooltip({
       tooltipData: d,
-      tooltipLeft: xScaleBar(d.date) + barWidth * .5,
+      tooltipLeft: xScaleBar(d.date) + barWidth * 0.5,
       tooltipTop: yScale(d.rawNumber),
     });
   };
@@ -95,8 +99,6 @@ const AreaChart = ({
   const tooltipPadding = { left: 10, top: 0 };
 
   tooltipPadding.top = height - tooltipTop < 30 ? 40 : 10;
-
-  console.log(height - tooltipTop);
 
   return (
     <div>
@@ -116,95 +118,125 @@ const AreaChart = ({
             <stop offset="100%" stopColor="#FFFFFF" stopOpacity={0.2} />
           </linearGradient>
         </defs>
-        <GridRows
-          lineStyle={{ pointerEvents: "none" }}
-          scale={yScale}
-          width={xMax}
-          strokeDasharray="2,2"
-          stroke="rgba(255,255,255,0.3)"
-        />
-        <GridColumns
-          lineStyle={{ pointerEvents: "none" }}
-          scale={xScaleCurve}
-          height={yMax}
-          strokeDasharray="2,2"
-          stroke="rgba(255,255,255,0.3)"
-        />
-        <Group>
-          {plotData.map(d => {
-            const barWidth = xScaleBar.bandwidth();
-            const barHeight = yMax - yScale(d.rawNumber);
-            const barX = xScaleBar(d.date);
-            const barY = yMax - barHeight;
+        <Group left={margin.left} top={margin.top}>
+          <GridRows
+            lineStyle={{ pointerEvents: "none" }}
+            scale={yScale}
+            width={xMax}
+            strokeDasharray="2,2"
+            stroke="rgba(255,255,255,0.3)"
+          />
+          <GridColumns
+            lineStyle={{ pointerEvents: "none" }}
+            scale={xScaleCurve}
+            height={yMax}
+            strokeDasharray="2,2"
+            stroke="rgba(255,255,255,0.3)"
+          />
+          <AxisLeft
+            top={0}
+            left={0}
+            hideZero
+            scale={yScale}
+            numTicks={numTicksForHeight(height)}
+            label={titleDict[measure]}
+            labelProps={{
+              fill: "#8e205f",
+              textAnchor: "middle",
+              fontSize: 12,
+              fontFamily: "sans-serif",
+            }}
+            stroke="#1b1a1e"
+            tickStroke="#8e205f"
+            tickLabelProps={(value, index) => ({
+              fill: "#8e205f",
+              textAnchor: "end",
+              fontSize: 10,
+              fontFamily: "sans-serif",
+              dx: "-0.25em",
+              dy: "0.25em",
+            })}
+            tickFormat={(num) => format(".1s")(num)}
+            tickComponent={({ formattedValue, ...tickProps }) => (
+              <text {...tickProps}>{formattedValue}</text>
+            )}
+          />
+          <Group>
+            {plotData.map((d) => {
+              const barWidth = xScaleBar.bandwidth();
+              const barHeight = yMax - yScale(d.rawNumber);
+              const barX = xScaleBar(d.date);
+              const barY = yMax - barHeight;
 
-            return (
-              <Bar
-                key={`bar-${formatDate(d.date)}`}
-                id={`bar-${formatDate(d.date)}`}
-                x={barX}
-                y={barY}
-                width={barWidth}
-                height={barHeight}
-                fill="green"
+              return (
+                <Bar
+                  key={`bar-${formatDate(d.date)}`}
+                  id={`bar-${formatDate(d.date)}`}
+                  x={barX}
+                  y={barY}
+                  width={barWidth}
+                  height={barHeight}
+                  fill="green"
+                />
+              );
+            })}
+            <AreaClosed
+              data={plotData}
+              x={(d) => xScaleCurve(d.date)}
+              y={(d) => yScale(d.average)}
+              yScale={yScale}
+              strokeWidth={1}
+              stroke={"url(#gradient)"}
+              fill={"url(#gradient)"}
+              curve={curveMonotoneX}
+            />
+          </Group>
+          <Bar
+            x={0}
+            y={0}
+            width={width}
+            height={height}
+            fill="transparent"
+            rx={14}
+            data={plotData}
+            onTouchStart={handleTooltip}
+            onTouchMove={handleTooltip}
+            onMouseMove={handleTooltip}
+            onMouseLeave={hideTooltip}
+          />
+          {tooltipOpen && (
+            <g>
+              <Line
+                from={{ x: tooltipLeft, y: height }}
+                to={{ x: tooltipLeft, y: tooltipTop }}
+                stroke="rgba(92, 119, 235, 1.000)"
+                strokeWidth={barWidth}
+                style={{ pointerEvents: "none" }}
+                strokeDasharray="2,2"
               />
-            );
-          })}
+              <circle
+                cx={tooltipLeft}
+                cy={tooltipTop + 1}
+                r={4}
+                fill="black"
+                fillOpacity={0.1}
+                stroke="black"
+                strokeOpacity={0.1}
+                strokeWidth={2}
+                style={{ pointerEvents: "none" }}
+              />
+              <circle
+                cx={tooltipLeft}
+                cy={tooltipTop}
+                r={4}
+                fill="rgba(92, 119, 235, 1.000)"
+                stroke="white"
+                strokeWidth={2}
+                style={{ pointerEvents: "none" }}
+              />
+            </g>
+          )}
         </Group>
-        <AreaClosed
-          data={plotData}
-          x={(d) => xScaleCurve(d.date)}
-          y={(d) => yScale(d.average)}
-          yScale={yScale}
-          strokeWidth={1}
-          stroke={"url(#gradient)"}
-          fill={"url(#gradient)"}
-          curve={curveMonotoneX}
-        />
-        <Bar
-          x={0}
-          y={0}
-          width={width}
-          height={height}
-          fill="transparent"
-          rx={14}
-          data={plotData}
-          onTouchStart={handleTooltip}
-          onTouchMove={handleTooltip}
-          onMouseMove={handleTooltip}
-          onMouseLeave={hideTooltip}
-        />
-        {tooltipOpen && (
-          <g>
-            <Line
-              from={{ x: tooltipLeft, y: height }}
-              to={{ x: tooltipLeft, y: tooltipTop }}
-              stroke="rgba(92, 119, 235, 1.000)"
-              strokeWidth={barWidth}
-              style={{ pointerEvents: "none" }}
-              strokeDasharray="2,2"
-            />
-            <circle
-              cx={tooltipLeft}
-              cy={tooltipTop + 1}
-              r={4}
-              fill="black"
-              fillOpacity={0.1}
-              stroke="black"
-              strokeOpacity={0.1}
-              strokeWidth={2}
-              style={{ pointerEvents: "none" }}
-            />
-            <circle
-              cx={tooltipLeft}
-              cy={tooltipTop}
-              r={4}
-              fill="rgba(92, 119, 235, 1.000)"
-              stroke="white"
-              strokeWidth={2}
-              style={{ pointerEvents: "none" }}
-            />
-          </g>
-        )}
       </svg>
       {tooltipOpen && (
         <div>
