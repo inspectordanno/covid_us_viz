@@ -1,5 +1,6 @@
 import { mean } from 'd3-array';
 
+//centered moving average
 //windowLength must be odd
 export const getMovingAverage = (arr, windowLength) => {
   const averages = [];
@@ -10,27 +11,25 @@ export const getMovingAverage = (arr, windowLength) => {
   const windowHalf = Math.floor(windowLength / 2);  
   let windowFirst = 0;
   let windowLast = windowLength - 1;
-  const windowValues = arr.slice(windowFirst, windowLast + 1);
-
+  
   const pushAverage = () => {
-    const average = Math.round(mean(windowValues));
+    const windowValues = arr.slice(windowFirst, windowLast + 1);
+    const average = mean(windowValues);
     averages.push(average);
+    console.log(`windowFirst: ${windowFirst}`, `windowLast: ${windowLast}`);
+    console.log(windowValues);
   } 
 
-  arr.forEach(() => {
-    if (windowFirst < windowHalf) {
+  arr.forEach((d, i) => {
+    if (i < windowHalf) {
       pushAverage();
-      windowFirst += 1;
-      windowLast -= 1;
-      console.log(windowFirst, windowLast);
-    } else if (windowFirst > windowHalf && windowLast < lastIndex - windowHalf) {
+    } else if (i >= windowHalf && windowLast <= lastIndex - windowHalf) {
+      windowFirst = i - windowHalf;
+      windowLast = i + windowHalf;
       pushAverage();
-      windowFirst += 1;
-      windowLast += 1;
-      console.log(windowFirst, windowLast);
     } else if (windowLast > lastIndex - windowHalf) {
       pushAverage();
-      windowFirst -= 1;
+      windowFirst += 1;
       windowLast += 1;
     }
   });

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { timeParse } from 'd3-time-format';
 import { greatest, mean } from 'd3-array';
-import sma from 'sma';
 
 import styles from './covidApp.module.scss';
 
+import { getMovingAverage } from '../../util/utilFunctions';
 import stateFipsDict from '../../data/name_fips_pop.json';
 import { dispatchUsState, dispatchCounty } from '../../actions/actions';
 import { fetchStateNyt, fetchCountyNyt, fetchCountryNyt } from '../../util/dataFetches';
@@ -69,7 +69,7 @@ const CovidApp = () => {
     const muniData = dataKey ? data.get(dataKey) : data; //if dataKey exists, use it. if it does not, use original data (country-level)
     const dates = muniData.map(d => parseTime(d.date));
     const measureNumbers = muniData.map(d => d[measure]);
-    const measureAverages = sma(measureNumbers, movingAverageWindow, n => Math.round(n));
+    const measureAverages = getMovingAverage(measureNumbers, 7);
 
     return measureAverages.map((d, i) => ({ date: dates[i], rawNumber: measureNumbers[i], average: d }));
   }
