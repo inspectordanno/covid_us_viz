@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { timeParse } from "d3-time-format";
 import { greatest } from "d3-array";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import styles from "./covidApp.module.scss";
 
@@ -22,6 +22,7 @@ import AreaChart from "../AreaChart/AreaChart";
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   //fetches data on mount
   useEffect(() => {
@@ -108,38 +109,50 @@ const CovidApp = () => {
 
   const dependencies = covidData && UsState && county && measure;
 
+  // if (dependencies) {
+  //   history.push(`/:${UsState}/:${county.countyName}`);
+  // }
+
+  // path={`/:${UsState}/:${county.fips}`}
+
+  if (UsState && county) {
+    console.log(UsState);
+    console.log(county.fips);
+
+    const formattedState = UsState.replace(/ /g,'').toLowerCase();
+    const formattedCounty = county.countyName.replace(/ /g,'').toLowerCase();
+
+    history.push(`/${formattedState}/${formattedCounty}`);
+  }
+
   return dependencies ? (
-    <Router>
-      <Route path={`/:${UsState}/:${county.countyName}`}>
-        <div className={styles.CovidApp}>
-          <UsStateSelect UsState={UsState} />
-          <CountySelect
-            countyData={covidData.county}
-            UsState={UsState}
-            county={county}
-          />
-          <MeasureSelect />
-          <AreaChart
-            plotData={getCountyPlotData()}
-            level={"county"}
-            name={county.countyName}
-            measure={measure}
-          />
-          <AreaChart
-            plotData={getStatePlotData()}
-            level={"state"}
-            name={UsState}
-            measure={measure}
-          />
-          <AreaChart
-            plotData={getCountryPlotData()}
-            level={"country"}
-            name={"United States"}
-            measure={measure}
-          />
-        </div>
-      </Route>
-    </Router>
+    <div className={styles.CovidApp}>
+      <UsStateSelect UsState={UsState} />
+      <CountySelect
+        countyData={covidData.county}
+        UsState={UsState}
+        county={county}
+      />
+      <MeasureSelect />
+      <AreaChart
+        plotData={getCountyPlotData()}
+        level={"county"}
+        name={county.countyName}
+        measure={measure}
+      />
+      <AreaChart
+        plotData={getStatePlotData()}
+        level={"state"}
+        name={UsState}
+        measure={measure}
+      />
+      <AreaChart
+        plotData={getCountryPlotData()}
+        level={"country"}
+        name={"United States"}
+        measure={measure}
+      />
+    </div>
   ) : null;
 };
 

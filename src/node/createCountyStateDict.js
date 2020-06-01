@@ -4,58 +4,58 @@ const fs = require('fs');
 const alphabetize = require('alphabetize-object-keys');
 const fipsExceptions = require('../util/fipsExceptions');
 
-csv()
-  .fromFile('../data/county_fips_master.csv')
-  .then(jsonObj => {
-    const grouped = group(jsonObj, d => d.state_name);
-    const stateFipsMap = {};
-    grouped.forEach((value, key) => {
-      const counties = value.map(county => { 
-        if (county.fips.length === 4 && +county.fips) {
-          county.fips = '0' + county.fips; //add 0 to 4-digit fips codes
-        }
-        return { countyName: county.county_name, fips: county.fips };
-      });
-      stateFipsMap[key] = counties;
-    });
+// csv()
+//   .fromFile('../data/county_fips_master.csv')
+//   .then(jsonObj => {
+//     const grouped = group(jsonObj, d => d.state_name);
+//     const stateFipsMap = {};
+//     grouped.forEach((value, key) => {
+//       const counties = value.map(county => { 
+//         if (county.fips.length === 4 && +county.fips) {
+//           county.fips = '0' + county.fips; //add 0 to 4-digit fips codes
+//         }
+//         return { countyName: county.county_name, fips: county.fips, abbr: county.state_abbr };
+//       });
+//       stateFipsMap[key] = counties;
+//     });
 
-    const addException = (name, fips) => {
-      stateFipsMap[name] = [
-        { countyName: name, fips }
-      ];
-    }
+//     const addException = (name, fips, abbr) => {
+//       stateFipsMap[name] = [
+//         { countyName: name, fips, abbr }
+//       ];
+//     }
 
-    addException('Puerto Rico', fipsExceptions.pr);
-    addException('Guam', fipsExceptions.guam);
-    addException('Virgin Islands', fipsExceptions.vi);
-    addException('Northern Mariana Islands', fipsExceptions.nmi);
+//     addException('Puerto Rico', fipsExceptions.pr, 'pr');
+//     addException('Guam', fipsExceptions.guam, 'guam');
+//     addException('Virgin Islands', fipsExceptions.vi, 'vi');
+//     addException('Northern Mariana Islands', fipsExceptions.nmi, 'nmi');
 
-    stateFipsMap['New York'].push({ countyName: 'New York City', fips: fipsExceptions.nyc });
-    stateFipsMap['Missouri'].push({ countyName: 'Kansas City', fips: fipsExceptions.kc });
-    stateFipsMap['District of Columbia'].pop(); //remove duplicate from D.C.
+//     stateFipsMap['New York'].push({ countyName: 'New York City', fips: fipsExceptions.nyc });
+//     stateFipsMap['Missouri'].push({ countyName: 'Kansas City', fips: fipsExceptions.kc });
+//     stateFipsMap['District of Columbia'].pop(); //remove duplicate from D.C.
 
-    const sorted = alphabetize(stateFipsMap);
-    const json = JSON.stringify(sorted);
-    fs.writeFileSync('../data/state_fips_dict.json', json);
-  });
+//     const sorted = alphabetize(stateFipsMap);
+//     const json = JSON.stringify(sorted);
+//     fs.writeFileSync('../data/state_fips_dict.json', json);
+//   });
 
-  const makePopFile = () => {
-    const fipsPop = {
-      nyc: 8336817,
-      kc: 495327,
-      pr: 3193694,
-      guam: 167294,
-      vi: 107000,
-      nmi: 51994
-    }
+//   const makePopFile = () => {
+//     const fipsPop = {
+//       nyc: 8336817,
+//       kc: 495327,
+//       pr: 3193694,
+//       guam: 167294,
+//       vi: 107000,
+//       nmi: 51994
+//     }
 
-    const file = fs.readFileSync('../data/est_pop_2019.json');
-    const json = JSON.parse(file);
-    const obj = { ...json, ...fipsPop };
-    fs.writeFileSync('../data/pop_2019.json', JSON.stringify(obj));
-  }
+//     const file = fs.readFileSync('../data/est_pop_2019.json');
+//     const json = JSON.parse(file);
+//     const obj = { ...json, ...fipsPop };
+//     fs.writeFileSync('../data/pop_2019.json', JSON.stringify(obj));
+//   }
 
-  makePopFile();
+//   makePopFile();
 
   const combineFipsAndPop = () => {
     const fipsDict = JSON.parse(fs.readFileSync('../data/state_fips_dict.json'));
