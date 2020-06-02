@@ -13,15 +13,15 @@ Object.entries(json).forEach(([key, value]) => {
 
   value.forEach((county) => {
     const countyName = county.countyName.replace(/ /g,'').toLowerCase();
-    countiesLowercased[countyName] = county.fips;
+    countiesLowercased[countyName] = county;
   });
 
 
   statesLowercased[statesFormatted] = key;
 })  
 
-fs.writeFileSync('../data/statesLowerCased.json', JSON.stringify(statesLowercased));
-fs.writeFileSync('../data/countiesLowerCased.json', JSON.stringify(countiesLowercased));
+fs.writeFileSync('../data/states_lower_case.json', JSON.stringify(statesLowercased));
+fs.writeFileSync('../data/counties_lower_case.json', JSON.stringify(countiesLowercased));
 
 
 

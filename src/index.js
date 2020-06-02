@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {
   Provider
 } from 'react-redux';
-import { BrowserRouter as Router, Route, useHistory } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import 'normalize.css/normalize.css';
 import './styles/styles.scss';
 
@@ -16,9 +16,14 @@ const store = configureStore();
 const jsx = ( 
   <Provider store={store}>
     <Router>
-      <Route>
-        <CovidApp path={`/:state/:countyFips`}/>
-      </Route>
+      <Switch>
+        <Route exact path="/">
+          <CovidApp />
+        </Route>
+        <Route path="/:state/:county">
+          <CovidApp />
+        </Route>
+      </Switch>
     </Router>
   </Provider>
 );
