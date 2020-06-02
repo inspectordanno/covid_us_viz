@@ -1,19 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {
-  Provider
-} from 'react-redux';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import 'normalize.css/normalize.css';
-import './styles/styles.scss';
+import "normalize.css/normalize.css";
+import "./styles/styles.scss";
 
-import configureStore from './store/configureStore';
-import CovidApp from './components/CovidApp/CovidApp';
+import configureStore from "./store/configureStore";
+import CovidApp from "./components/CovidApp/CovidApp";
 
 const store = configureStore();
 
 //redux
-const jsx = ( 
+const jsx = (
   <Provider store={store}>
     <Router>
       <Switch>
@@ -28,4 +26,4 @@ const jsx = (
   </Provider>
 );
 
-ReactDOM.render(jsx, document.getElementById('app'));
+ReactDOM.render(jsx, document.getElementById("app"));
