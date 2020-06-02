@@ -28,10 +28,4 @@ const jsx = (
   </Provider>
 );
 
-// const jsx = (
-//   <h1>
-//     js mounted
-//   </h1>
-// );
-
 ReactDOM.render(jsx, document.getElementById('app'));
