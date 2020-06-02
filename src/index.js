@@ -13,7 +13,7 @@ const store = configureStore();
 //redux
 const jsx = (
   <Provider store={store}>
-    <Router>
+    <Router basename="/covid_us_viz">
       <Switch>
         <Route exact path="/">
           <CovidApp />
