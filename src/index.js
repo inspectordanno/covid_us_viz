@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import "normalize.css/normalize.css";
 import "./styles/styles.scss";
 
@@ -13,7 +13,7 @@ const store = configureStore();
 //redux
 const jsx = (
   <Provider store={store}>
-    <Router basename="/covid_us_viz">
+    <Router>
       <Switch>
         <Route exact path="/">
           <CovidApp />

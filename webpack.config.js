@@ -13,7 +13,7 @@ module.exports = (env, argv) => {
     output: {
       path: path.join(__dirname, "dist"),
       filename: "bundle.js",
-      publicPath: '/'
+      publicPath: isDevelopment ? '/' : '/covid_us_viz'
     },
     module: {
       rules: [
@@ -71,7 +71,7 @@ module.exports = (env, argv) => {
     devtool: isDevelopment ? "eval-cheap-module-source-map" : false,
     devServer: {
       contentBase: path.join(__dirname, "dist"),
-      historyApiFallback: true,
+      historyApiFallback: true
     },
     resolve: {
       extensions: [".js", ".scss"],
