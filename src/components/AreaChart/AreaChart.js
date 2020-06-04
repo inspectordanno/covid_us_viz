@@ -100,6 +100,8 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
 
   tooltipPadding.top = height - tooltipTop < 30 ? 40 : 10;
 
+  const dateTooltipWidth = 85;
+
   return (
     <div>
       <div>{`${name}, ${titleDict[measure]}`}</div>
@@ -248,6 +250,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
               backgroundColor: "rgba(92, 119, 235, 1.000)",
               color: "white",
               width: "100px",
+              pointerEvents: 'none'
             }}
           >
             <div style={{ fontWeight: 600 }}>
@@ -261,12 +264,13 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
           </Tooltip>
           <Tooltip
             top={yMax - height * 1.1}
-            left={tooltipLeft}
+            left={tooltipLeft + tooltipPadding.left + dateTooltipWidth * .5}
             className={styles.tooltip}
             style={{
               backgroundColor: "white",
               transform: "translateX(-50%)",
-              width: "85px",
+              width: dateTooltipWidth + 'px',
+              pointerEvents: 'none'
             }}
           >
             {formatDate(tooltipData.date)}
