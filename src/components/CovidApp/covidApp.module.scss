@@ -4,17 +4,21 @@
 }
 
 .CovidApp {
+  background: darkgrey;
+  background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
   display: grid;
   grid-template-rows: auto auto 200px 200px 200px;
   justify-content: center;
   justify-items: center;
   row-gap: 30px;
+  height: 100%;
 }
 
 .headline {
   font-family: 'Helveticrap', sans-serif;
   font-size: 3em;
   margin-bottom: -20px;
+  color: black;
 }
 
 .measureContainer {

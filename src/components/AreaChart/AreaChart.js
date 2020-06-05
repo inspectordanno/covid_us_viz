@@ -13,6 +13,8 @@ import { timeFormat } from "d3-time-format";
 
 import styles from "./areaChart.module.scss";
 
+import colors from '../../util/colors';
+
 // util
 const formatDate = timeFormat("%b %d, '%y");
 const bisectDate = bisector((d) => new Date(d.date)).left;
@@ -100,20 +102,24 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
 
   tooltipPadding.top = height - tooltipTop < 30 ? 40 : 10;
 
+  const measureTooltipWidth = 100;
   const dateTooltipWidth = 85;
 
   return (
-    <div className={styles.AreaChart}>
+    <div>
       <div className={styles.title}>
         {`${name}, ${titleDict[measure]}`}
       </div>
-      <svg width={width} height={height}>
+      <svg 
+        width={width} 
+        height={height}
+        className={styles.AreaChart}>
         <rect
           x={0}
           y={0}
           width={width}
           height={height}
-          fill="#32deaa"
+          fill={colors.lightblue}
           rx={14}
         />
         <defs>
@@ -128,14 +134,16 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
             scale={yScale}
             width={xMax}
             strokeDasharray="2,2"
-            stroke="rgba(255,255,255,0.3)"
+            stroke={colors.darkblue}
+            opacity={.25}
           />
           <GridColumns
             lineStyle={{ pointerEvents: "none" }}
             scale={xScaleCurve}
             height={yMax}
             strokeDasharray="2,2"
-            stroke="rgba(255,255,255,0.3)"
+            stroke={colors.darkblue}
+            opacity={.25}
           />
           <AxisLeft
             top={0}
@@ -145,15 +153,15 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
             numTicks={numTicksForHeight(height)}
             label={titleDict[measure]}
             labelProps={{
-              fill: "#8e205f",
+              fill: colors.darkblue,
               textAnchor: "middle",
               fontSize: 12,
               fontFamily: "sans-serif",
             }}
-            stroke="#1b1a1e"
-            tickStroke="#8e205f"
+            stroke={colors.darkblue}
+            tickStroke={colors.darkblue}
             tickLabelProps={(value, index) => ({
-              fill: "#8e205f",
+              fill: colors.darkblue,
               textAnchor: "end",
               fontSize: 10,
               fontFamily: "sans-serif",
@@ -180,7 +188,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
                   y={barY}
                   width={barWidth}
                   height={barHeight}
-                  fill="green"
+                  fill={colors.darkblue}
                 />
               );
             })}
@@ -249,7 +257,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
             left={tooltipLeft + tooltipPadding.left}
             className={styles.tooltip}
             style={{
-              backgroundColor: "rgba(92, 119, 235, 1.000)",
+              backgroundColor: colors.darkblue,
               color: "white",
               width: "100px",
             }}

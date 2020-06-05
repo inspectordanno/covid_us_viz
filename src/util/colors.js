@@ -1,9 +1,6 @@
-export const schemeTurbo = [
-  "#23171b",
-  "#3987f9",
-  "#2ee5ae",
-  "#95fb51",
-  "#feb927",
-  "#e54813",
-  "#900c00"
-];
+const colors = {
+  lightblue: "#4b6cb7",
+  darkblue: "#182848"
+}
+
+export default colors;
