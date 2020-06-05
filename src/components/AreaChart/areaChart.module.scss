@@ -7,9 +7,12 @@
 
 .title {
     font-family: base.$font-stack;
-    font-weight: 600;
-    font-size: 16px;
+    font-size: 18px;
     margin-bottom: 5px;
+}
+
+.municipality {
+    font-weight: bold;
 }
 
 .tooltip {

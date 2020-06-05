@@ -108,7 +108,10 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
   return (
     <div>
       <div className={styles.title}>
-        {`${name}, ${titleDict[measure]}`}
+        <span className={styles.municipality}>
+          {name}
+        </span>
+        {`, ${titleDict[measure]}`}
       </div>
       <svg 
         width={width} 
@@ -157,6 +160,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
               textAnchor: "middle",
               fontSize: 12,
               fontFamily: "sans-serif",
+              fontWeight: 500
             }}
             stroke={colors.darkblue}
             tickStroke={colors.darkblue}
@@ -165,6 +169,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
               textAnchor: "end",
               fontSize: 10,
               fontFamily: "sans-serif",
+              fontWeight: 600,
               dx: "-0.25em",
               dy: "0.25em",
             })}
@@ -241,7 +246,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
                 cx={tooltipLeft}
                 cy={tooltipTop}
                 r={4}
-                fill="rgba(92, 119, 235, 1.000)"
+                fill={colors.darkblue}
                 stroke="white"
                 strokeWidth={2}
                 style={{ pointerEvents: "none" }}
@@ -254,7 +259,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
         <div>
           <Tooltip
             top={tooltipTop - height - tooltipPadding.top}
-            left={tooltipLeft + tooltipPadding.left}
+            left={tooltipLeft + tooltipPadding.left + measureTooltipWidth * .6}
             className={styles.tooltip}
             style={{
               backgroundColor: colors.darkblue,
@@ -279,6 +284,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
               backgroundColor: "white",
               transform: "translateX(-50%)",
               width: dateTooltipWidth + 'px',
+              color: colors.darkblue
             }}
           >
             {formatDate(tooltipData.date)}
