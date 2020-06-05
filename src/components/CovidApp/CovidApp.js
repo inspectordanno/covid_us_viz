@@ -141,13 +141,18 @@ const CovidApp = () => {
 
   return dependencies ? (
     <div className={styles.CovidApp}>
-      <UsStateSelect UsState={UsState} />
-      <CountySelect
-        countyData={covidData.county}
-        UsState={UsState}
-        county={county}
-      />
-      <MeasureSelect />
+      <div className={styles.headline}>
+        No B.S. COVID Tracker
+      </div>
+      <div className={styles.measureContainer}>
+        <UsStateSelect UsState={UsState} />
+        <CountySelect
+          countyData={covidData.county}
+          UsState={UsState}
+          county={county}
+        />
+        <MeasureSelect />
+      </div>
       <AreaChart
         plotData={getCountyPlotData()}
         level={"county"}
@@ -165,6 +170,7 @@ const CovidApp = () => {
         level={"country"}
         name={"United States"}
         measure={measure}
+        bottomAxis={true}
       />
     </div>
   ) : null;

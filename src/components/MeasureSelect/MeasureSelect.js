@@ -2,6 +2,8 @@ import React from 'react';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 
+import styles from './measureSelect.module'
+
 import { dispatchMeasure } from '../../actions/actions';
 import { reducerDefaultState } from '../../reducers/reducer';
 
@@ -24,7 +26,7 @@ const MeasureSelect = () => {
 
   return (
     <Select 
-      className={'select'}
+      className={styles.Select}
       options={options}
       defaultValue={defaultOption}
       onChange={handleOnChange}

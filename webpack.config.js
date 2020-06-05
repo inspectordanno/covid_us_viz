@@ -1,19 +1,19 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = (env, argv) => {
   const isDevelopment = argv.mode === "development";
 
   return {
-    context: path.join(__dirname, 'src'),
-    entry: path.join(__dirname, 'src', 'index.js'),
+    context: path.join(__dirname, "src"),
+    entry: path.join(__dirname, "src", "index.js"),
     output: {
       path: path.join(__dirname, "dist"),
       filename: "bundle.js",
-      publicPath: isDevelopment ? '/' : '/covid_us_viz'
+      publicPath: isDevelopment ? "/" : "/covid_us_viz",
     },
     module: {
       rules: [
@@ -21,6 +21,18 @@ module.exports = (env, argv) => {
           loader: "babel-loader",
           test: /\.js$/,
           exclude: /node_modules/,
+        },
+        {
+          test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+          use: [
+            {
+              loader: "file-loader",
+              options: {
+                name: "[name].[ext]",
+                outputPath: "fonts/",
+              },
+            },
+          ],
         },
         {
           test: /\.s?css$/,
@@ -31,12 +43,12 @@ module.exports = (env, argv) => {
                 isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader,
                 {
                   loader: "css-loader",
-                  options: { 
+                  options: {
                     modules: {
-                      localIdentName: '[local]__[hash:base64:5]'
+                      localIdentName: "[local]__[hash:base64:5]",
                     },
                     modules: true,
-                    sourceMap: true
+                    sourceMap: true,
                   },
                 },
                 "sass-loader",
@@ -61,8 +73,10 @@ module.exports = (env, argv) => {
         chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css",
       }),
       new CleanWebpackPlugin(),
-      new HtmlWebpackPlugin({ template: path.join(__dirname, 'src', 'index.html') }),
-      // new CopyPlugin( 
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, "src", "index.html"),
+      }),
+      // new CopyPlugin(
       //   [
       //     { from: 'data', to: 'data' }
       //   ],
@@ -71,10 +85,10 @@ module.exports = (env, argv) => {
     devtool: isDevelopment ? "eval-cheap-module-source-map" : false,
     devServer: {
       contentBase: path.join(__dirname, "dist"),
-      historyApiFallback: true
+      historyApiFallback: true,
     },
     resolve: {
       extensions: [".js", ".scss"],
-    }
+    },
   };
 };

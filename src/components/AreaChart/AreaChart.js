@@ -42,7 +42,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
   } = useTooltip();
 
   const width = 600;
-  const height = 400;
+  const height = 200;
   const margin = { left: 60, right: 0, top: 10, bottom: 0 };
 
   // bounds
@@ -103,8 +103,10 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
   const dateTooltipWidth = 85;
 
   return (
-    <div>
-      <div>{`${name}, ${titleDict[measure]}`}</div>
+    <div className={styles.AreaChart}>
+      <div className={styles.title}>
+        {`${name}, ${titleDict[measure]}`}
+      </div>
       <svg width={width} height={height}>
         <rect
           x={0}
@@ -250,7 +252,6 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
               backgroundColor: "rgba(92, 119, 235, 1.000)",
               color: "white",
               width: "100px",
-              pointerEvents: 'none'
             }}
           >
             <div style={{ fontWeight: 600 }}>
@@ -263,14 +264,13 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
             </div>
           </Tooltip>
           <Tooltip
-            top={yMax - height * 1.1}
+            top={yMax - height * 1.15}
             left={tooltipLeft + tooltipPadding.left + dateTooltipWidth * .5}
             className={styles.tooltip}
             style={{
               backgroundColor: "white",
               transform: "translateX(-50%)",
               width: dateTooltipWidth + 'px',
-              pointerEvents: 'none'
             }}
           >
             {formatDate(tooltipData.date)}

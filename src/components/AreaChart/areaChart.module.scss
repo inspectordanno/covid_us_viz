@@ -1,8 +1,17 @@
+@use '../../styles/base';
+
+.title {
+    font-family: base.$font-stack;
+    font-weight: 600;
+    font-size: 16px;
+}
+
 .tooltip {
-    font-family: sans-serif;
+    font-family: base.$font-stack;
     font-weight: lighter;
     border-radius: 3px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     position: relative;
+    pointer-events: none;
 }
