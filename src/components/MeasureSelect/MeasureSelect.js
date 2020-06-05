@@ -2,7 +2,7 @@ import React from 'react';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 
-import styles from './measureSelect.module'
+import styles from '../../styles/select.module.scss';
 
 import { dispatchMeasure } from '../../actions/actions';
 import { reducerDefaultState } from '../../reducers/reducer';

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 
+import styles from '../../styles/select.module.scss';
+
 import stateFipsDict from '../../data/name_fips_pop.json';
 import { dispatchUsState } from '../../actions/actions';
 
@@ -20,7 +22,7 @@ const UsStateSelect = ({ UsState }) => {
 
   return (
     <Select
-      className={'select'}
+      className={styles.Select}
       options={UsStates}
       onChange={handleOnChange}
       value={selectValue}

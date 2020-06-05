@@ -3,6 +3,8 @@ import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 import { greatest } from 'd3-array';
 
+import styles from '../../styles/select.module.scss';
+
 import stateFipsDict from '../../data/name_fips_pop.json';
 import { dispatchCounty } from '../../actions/actions';
 
@@ -39,7 +41,7 @@ const CountySelect = ({ countyData, UsState }) => {
 
   return (
     <Select
-      className={'select'}
+      className={styles.Select}
       options={options}
       onChange={handleOnChange}
       value={selectValue}

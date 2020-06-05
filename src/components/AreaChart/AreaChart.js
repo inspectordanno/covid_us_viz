@@ -42,7 +42,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
   } = useTooltip();
 
   const width = 600;
-  const height = 200;
+  const height = 180;
   const margin = { left: 60, right: 0, top: 10, bottom: 0 };
 
   // bounds
@@ -264,7 +264,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
             </div>
           </Tooltip>
           <Tooltip
-            top={yMax - height * 1.15}
+            top={yMax - height * 1.2}
             left={tooltipLeft + tooltipPadding.left + dateTooltipWidth * .5}
             className={styles.tooltip}
             style={{
