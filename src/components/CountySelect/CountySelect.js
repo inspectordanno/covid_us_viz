@@ -5,6 +5,7 @@ import { greatest } from 'd3-array';
 
 import styles from '../../styles/select.module.scss';
 
+import { selectColorStyles } from '../../util/colors'
 import stateFipsDict from '../../data/name_fips_pop.json';
 import { dispatchCounty } from '../../actions/actions';
 
@@ -45,6 +46,7 @@ const CountySelect = ({ countyData, UsState }) => {
       options={options}
       onChange={handleOnChange}
       value={selectValue}
+      styles={selectColorStyles}
     />
   )
 }

@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import styles from '../../styles/select.module.scss';
 
+import { selectColorStyles } from '../../util/colors'
 import { dispatchMeasure } from '../../actions/actions';
 import { reducerDefaultState } from '../../reducers/reducer';
 
@@ -30,6 +31,7 @@ const MeasureSelect = () => {
       options={options}
       defaultValue={defaultOption}
       onChange={handleOnChange}
+      styles={selectColorStyles}
     />
   )
 }

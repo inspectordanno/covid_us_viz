@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import styles from '../../styles/select.module.scss';
 
-import colors from '../../util/colors'
+import { selectColorStyles } from '../../util/colors'
 import stateFipsDict from '../../data/name_fips_pop.json';
 import { dispatchUsState } from '../../actions/actions';
 
@@ -21,28 +21,13 @@ const UsStateSelect = ({ UsState }) => {
     dispatch(dispatchUsState(option.value));
   }
 
-  const colorStyles = {
-    menu: (styles) => ({
-      ...styles,
-      backgroundColor: colors.darkblue
-    }),
-    singleValue: (styles) =>({
-      ...styles,
-      color: 'white'
-    }),
-    control: (styles) => ({
-      ...styles,
-      backgroundColor: colors.darkblue
-    })
-  }
-
   return (
     <Select
       className={styles.Select}
       options={UsStates}
       onChange={handleOnChange}
       value={selectValue}
-      styles={colorStyles}
+      styles={selectColorStyles}
     />
   )
 } 
