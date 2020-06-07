@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 
-import styles from '../../styles/select.module.scss';
+import styles from '../../styles/Select.module.scss';
 
 import { selectColorStyles } from '../../util/colors'
 import stateFipsDict from '../../data/name_fips_pop.json';

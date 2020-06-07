@@ -4,7 +4,7 @@ import { timeParse } from "d3-time-format";
 import { greatest } from "d3-array";
 import { useHistory, useParams } from "react-router-dom";
 
-import styles from "./covidApp.module.scss";
+import styles from "./CovidApp.module.scss";
 
 import stateFipsDict from "../../data/name_fips_pop.json";
 import statesLowercaseDict from "../../data/states_lower_case.json";
@@ -19,6 +19,7 @@ import UsStateSelect from "../UsStateSelect/UsStateSelect";
 import CountySelect from "../CountySelect/CountySelect";
 import MeasureSelect from "../MeasureSelect/MeasureSelect";
 import AreaChart from "../AreaChart/AreaChart";
+import AxisBottom from '../AxisBottom/AxisBottom';
 
 const CovidApp = () => {
   const [covidData, setCovidData] = useState();
@@ -139,6 +140,10 @@ const CovidApp = () => {
     return getDateIntersection(countryPlotData, getCountyPlotData());
   };
 
+  const chartWidth = 1000;
+  const chartHeight = 160;
+  const chartMargin = { left: 60, right: 0, top: 10, bottom: 0 };
+
   const dependencies = covidData && UsState && county && measure;
 
   return dependencies ? (
@@ -157,22 +162,32 @@ const CovidApp = () => {
       </div>
       <AreaChart
         plotData={getCountyPlotData()}
-        level={"county"}
         name={county.countyName}
         measure={measure}
+        width={chartWidth}
+        height={chartHeight}
+        margin={chartMargin}
       />
       <AreaChart
         plotData={getStatePlotData()}
-        level={"state"}
         name={UsState}
         measure={measure}
+        width={chartWidth}
+        height={chartHeight}
+        margin={chartMargin}
       />
       <AreaChart
         plotData={getCountryPlotData()}
-        level={"country"}
         name={"United States"}
         measure={measure}
-        bottomAxis={true}
+        width={chartWidth}
+        height={chartHeight}
+        margin={chartMargin}
+      />
+      <AxisBottom 
+        dates={getCountryPlotData().map(d => d.date)}
+        width={chartWidth}
+        margin={chartMargin}
       />
     </div>
   ) : null;

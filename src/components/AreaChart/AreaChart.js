@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { AreaClosed, Line, Bar } from "@vx/shape";
 import { Group } from "@vx/group";
 import { curveMonotoneX } from "@vx/curve";
-import { GridRows, GridColumns } from "@vx/grid";
+import { Grid } from "@vx/grid";
 import { AxisLeft } from "@vx/axis";
 import { scaleTime, scaleLinear, scaleBand } from "@vx/scale";
 import { useTooltip, Tooltip } from "@vx/tooltip";
@@ -11,7 +11,7 @@ import { bisector, max } from "d3-array";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import styles from "./areaChart.module.scss";
+import styles from "./AreaChart.module.scss";
 
 import colors from "../../util/colors";
 
@@ -33,7 +33,7 @@ const titleDict = {
   newDeaths: "new deaths per day",
 };
 
-const AreaChart = ({ plotData, measure, level, name }) => {
+const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
   const {
     tooltipData,
     tooltipLeft,
@@ -42,10 +42,6 @@ const AreaChart = ({ plotData, measure, level, name }) => {
     showTooltip,
     hideTooltip,
   } = useTooltip();
-
-  const width = 1000;
-  const height = 160;
-  const margin = { left: 60, right: 0, top: 10, bottom: 0 };
 
   // bounds
   const xMax = width - margin.left - margin.right;
@@ -127,17 +123,11 @@ const AreaChart = ({ plotData, measure, level, name }) => {
           </linearGradient>
         </defs>
         <Group left={margin.left} top={margin.top}>
-          <GridRows
+          <Grid
             lineStyle={{ pointerEvents: "none" }}
-            scale={yScale}
+            xScale={xScaleCurve}
+            yScale={yScale}
             width={xMax}
-            strokeDasharray="2,2"
-            stroke={colors.darkblue}
-            opacity={0.25}
-          />
-          <GridColumns
-            lineStyle={{ pointerEvents: "none" }}
-            scale={xScaleCurve}
             height={yMax}
             strokeDasharray="2,2"
             stroke={colors.darkblue}
@@ -169,9 +159,6 @@ const AreaChart = ({ plotData, measure, level, name }) => {
               dy: "0.25em",
             })}
             tickFormat={(num) => format(".1s")(num)}
-            tickComponent={({ formattedValue, ...tickProps }) => (
-              <text {...tickProps}>{formattedValue}</text>
-            )}
           />
           <Group>
             {plotData.map((d) => {

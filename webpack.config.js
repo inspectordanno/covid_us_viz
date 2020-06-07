@@ -23,7 +23,7 @@ module.exports = (env, argv) => {
           exclude: /node_modules/,
         },
         {
-          test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+          test: /\.ttf/,
           use: [
             {
               loader: "file-loader",
@@ -76,11 +76,11 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: path.join(__dirname, "src", "index.html"),
       }),
-      // new CopyPlugin(
-      //   [
-      //     { from: 'data', to: 'data' }
-      //   ],
-      // ),
+      new CopyPlugin(
+        [
+          { from: './components/CovidApp/Helveticrap.ttf', to: 'dist/' }
+        ],
+      ),
     ],
     devtool: isDevelopment ? "eval-cheap-module-source-map" : false,
     devServer: {
