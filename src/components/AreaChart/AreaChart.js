@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { AreaClosed, Line, Bar } from "@vx/shape";
 import { Group } from "@vx/group";
 import { curveMonotoneX } from "@vx/curve";
@@ -13,7 +13,7 @@ import { timeFormat } from "d3-time-format";
 
 import styles from "./areaChart.module.scss";
 
-import colors from '../../util/colors';
+import colors from "../../util/colors";
 
 // util
 const formatDate = timeFormat("%b %d, '%y");
@@ -33,7 +33,7 @@ const titleDict = {
   newDeaths: "new deaths per day",
 };
 
-const AreaChart = ({ plotData, measure, level, name, }) => {
+const AreaChart = ({ plotData, measure, level, name }) => {
   const {
     tooltipData,
     tooltipLeft,
@@ -43,8 +43,8 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
     hideTooltip,
   } = useTooltip();
 
-  const width = 600;
-  const height = 180;
+  const width = 1000;
+  const height = 160;
   const margin = { left: 60, right: 0, top: 10, bottom: 0 };
 
   // bounds
@@ -75,7 +75,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
   const yScale = scaleLinear({
     range: [yMax, 0],
     domain: [0, max(plotData.map((d) => d.rawNumber))],
-    nice: true
+    nice: true,
   });
 
   const handleTooltip = (event) => {
@@ -108,15 +108,10 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
   return (
     <div>
       <div className={styles.title}>
-        <span className={styles.municipality}>
-          {name}
-        </span>
+        <span className={styles.municipality}>{name}</span>
         {`, ${titleDict[measure]}`}
       </div>
-      <svg 
-        width={width} 
-        height={height}
-        className={styles.AreaChart}>
+      <svg width={width} height={height} className={styles.AreaChart}>
         <rect
           x={0}
           y={0}
@@ -138,7 +133,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
             width={xMax}
             strokeDasharray="2,2"
             stroke={colors.darkblue}
-            opacity={.25}
+            opacity={0.25}
           />
           <GridColumns
             lineStyle={{ pointerEvents: "none" }}
@@ -146,7 +141,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
             height={yMax}
             strokeDasharray="2,2"
             stroke={colors.darkblue}
-            opacity={.25}
+            opacity={0.25}
           />
           <AxisLeft
             top={0}
@@ -160,7 +155,7 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
               textAnchor: "middle",
               fontSize: 12,
               fontFamily: "sans-serif",
-              fontWeight: 500
+              fontWeight: 500,
             }}
             stroke={colors.darkblue}
             tickStroke={colors.darkblue}
@@ -256,10 +251,10 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
         </Group>
       </svg>
       {tooltipOpen && (
-        <div>
+        <Fragment>
           <Tooltip
             top={tooltipTop - height - tooltipPadding.top}
-            left={tooltipLeft + tooltipPadding.left + measureTooltipWidth * .6}
+            left={tooltipLeft + tooltipPadding.left + measureTooltipWidth * 0.6}
             className={styles.tooltip}
             style={{
               backgroundColor: colors.darkblue,
@@ -278,18 +273,18 @@ const AreaChart = ({ plotData, measure, level, name, }) => {
           </Tooltip>
           <Tooltip
             top={yMax - height * 1.2}
-            left={tooltipLeft + tooltipPadding.left + dateTooltipWidth * .5}
+            left={tooltipLeft + tooltipPadding.left + dateTooltipWidth * 0.5}
             className={styles.tooltip}
             style={{
               backgroundColor: "white",
               transform: "translateX(-50%)",
-              width: dateTooltipWidth + 'px',
-              color: colors.darkblue
+              width: dateTooltipWidth + "px",
+              color: colors.darkblue,
             }}
           >
             {formatDate(tooltipData.date)}
           </Tooltip>
-        </div>
+        </Fragment>
       )}
     </div>
   );
