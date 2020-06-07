@@ -125,7 +125,9 @@ const CovidApp = () => {
     return plotDataOne.filter((d) => compare.has(d.date.getTime()));
   };
 
-  const getCountyPlotData = () => getPlotData(covidData.county, county.fips);
+  //only filtering dates that are March 1st, 2020 or later
+  const getCountyPlotData = () => getPlotData(covidData.county, county.fips)
+    .filter(data => data.date >= new Date('03/01/2020'));
 
   const getStatePlotData = () => {
     const statePlotData = getPlotData(covidData.state, UsState);
