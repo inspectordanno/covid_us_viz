@@ -1,7 +1,4 @@
-@font-face {
-  font-family: 'Helveticrap';
-  src: url(./Helveticrap.ttf) format('truetype');
-}
+@import url('https://fonts.googleapis.com/css2?family=Vesper+Libre:wght@500&display=swap');
 
 .CovidApp {
   display: grid;
@@ -12,7 +9,7 @@
 }
 
 .headline {
-  font-family: 'Helveticrap', sans-serif;
+  font-family: 'Vesper Libre', serif;
   font-size: 3em;
   margin-bottom: -10px;
   color: black;
