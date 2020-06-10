@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useRef } from "react";
 import { AreaClosed, Line, Bar } from "@vx/shape";
 import { Group } from "@vx/group";
 import { curveMonotoneX } from "@vx/curve";
@@ -14,6 +14,7 @@ import { timeFormat } from "d3-time-format";
 import styles from "./AreaChart.module.scss";
 
 import colors from "../../util/colors";
+import usePrevious from '../../hooks/usePrevious';
 
 // util
 const formatDate = timeFormat("%b %d, '%y");
@@ -43,14 +44,21 @@ const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
     hideTooltip,
   } = useTooltip();
 
+  const pathRef = useRef();
+  const previousPath = usePrevious(pathRef.current);
+
+  // if (pathRef) {
+  //   console.log(pathRef.current.getAttribute('d'));
+  //   console.log(previousPath.getAttribute('d'));
+  // }
+
   // bounds
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
 
   // responsive utils for axis ticks
-  const numTicksForHeight = (height) => {
-    if (height <= 300) return 3;
-    if (300 < height && height <= 600) return 5;
+  const numTicksForHeight = (width) => {
+    if (width <= 768) return 5;
     return 10;
   };
 
@@ -138,7 +146,7 @@ const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
             left={0}
             hideZero
             scale={yScale}
-            numTicks={numTicksForHeight(height)}
+            numTicks={numTicksForHeight(width)}
             label={titleDict[measure]}
             labelProps={{
               fill: colors.darkblue,
@@ -188,6 +196,7 @@ const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
               stroke={"url(#gradient)"}
               fill={"url(#gradient)"}
               curve={curveMonotoneX}
+              innerRef={pathRef}
             />
           </Group>
           <Bar

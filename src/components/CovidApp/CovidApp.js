@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { timeParse } from "d3-time-format";
 import { greatest } from "d3-array";
+import { withScreenSize } from "@vx/responsive";
 import { useHistory, useParams } from "react-router-dom";
 
 import styles from "./CovidApp.module.scss";
@@ -21,7 +22,7 @@ import MeasureSelect from "../MeasureSelect/MeasureSelect";
 import AreaChart from "../AreaChart/AreaChart";
 import AxisBottom from '../AxisBottom/AxisBottom';
 
-const CovidApp = () => {
+const CovidApp = ({ screenWidth, screenHeight }) => {
   const [covidData, setCovidData] = useState();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -140,8 +141,22 @@ const CovidApp = () => {
     return getDateIntersection(countryPlotData, getCountyPlotData());
   };
 
-  const chartWidth = 1000;
-  const chartHeight = 160;
+  const getDimensions = (screenWidth) => {
+    const dimensions = {};
+
+    if (screenWidth <= 480) {
+      dimensions.width = .95 * screenWidth;
+      dimensions.height = .25 * screenHeight;
+    } else {
+      dimensions.width = .8 * screenWidth;
+      dimensions.height = .2 * screenHeight;
+    }
+
+    return dimensions;
+  }
+
+  const chartWidth = getDimensions(screenWidth).width;
+  const chartHeight = getDimensions(screenWidth).height;
   const chartMargin = { left: 60, right: 0, top: 10, bottom: 0 };
 
   const dependencies = covidData && UsState && county && measure;
@@ -193,4 +208,4 @@ const CovidApp = () => {
   ) : null;
 };
 
-export default CovidApp;
+export default withScreenSize(CovidApp);
