@@ -155,6 +155,8 @@ const CovidApp = ({ screenWidth, screenHeight }) => {
     return dimensions;
   }
 
+  console.log(screenWidth)
+
   const chartWidth = getDimensions(screenWidth).width;
   const chartHeight = getDimensions(screenWidth).height;
   const chartMargin = { left: 60, right: 0, top: 10, bottom: 0 };
@@ -182,6 +184,7 @@ const CovidApp = ({ screenWidth, screenHeight }) => {
         width={chartWidth}
         height={chartHeight}
         margin={chartMargin}
+        screenWidth={screenWidth}
       />
       <AreaChart
         plotData={getStatePlotData()}
@@ -190,6 +193,7 @@ const CovidApp = ({ screenWidth, screenHeight }) => {
         width={chartWidth}
         height={chartHeight}
         margin={chartMargin}
+        screenWidth={screenWidth}
       />
       <AreaChart
         plotData={getCountryPlotData()}
@@ -198,11 +202,13 @@ const CovidApp = ({ screenWidth, screenHeight }) => {
         width={chartWidth}
         height={chartHeight}
         margin={chartMargin}
+        screenWidth={screenWidth}
       />
       <AxisBottom 
         dates={getCountryPlotData().map(d => d.date)}
         width={chartWidth}
         margin={chartMargin}
+        screenWidth={screenWidth}
       />
     </div>
   ) : null;

@@ -34,7 +34,7 @@ const titleDict = {
   newDeaths: "new deaths per day",
 };
 
-const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
+const AreaChart = ({ plotData, measure, name, width, height, margin, screenWidth }) => {
   const {
     tooltipData,
     tooltipLeft,
@@ -55,12 +55,6 @@ const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
   // bounds
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
-
-  // responsive utils for axis ticks
-  const numTicksForHeight = (width) => {
-    if (width <= 768) return 5;
-    return 10;
-  };
 
   // scales
   const xScaleCurve = scaleTime({
@@ -93,6 +87,9 @@ const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
       d = x0 - d0.date < d1.date - x0 ? d0 : d1;
     }
 
+    console.log(x);
+    console.log(screenWidth)
+
     showTooltip({
       tooltipData: d,
       tooltipLeft: xScaleBar(d.date) + barWidth * 0.5,
@@ -109,8 +106,13 @@ const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
   const measureTooltipWidth = 100;
   const dateTooltipWidth = 85;
 
+  //position tooltip
+  const positionTooltipLeft = () => {
+
+  }
+
   return (
-    <div>
+    <div className={styles.chartContainer}>
       <div className={styles.title}>
         <span className={styles.municipality}>{name}</span>
         {`, ${titleDict[measure]}`}
@@ -146,7 +148,7 @@ const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
             left={0}
             hideZero
             scale={yScale}
-            numTicks={numTicksForHeight(width)}
+            numTicks={5}
             label={titleDict[measure]}
             labelProps={{
               fill: colors.darkblue,

@@ -7,7 +7,7 @@ import styles from './AxisBottom.module.scss';
 
 import colors from '../../util/colors';
 
-const AxisBottom = ({ dates, width, margin }) => {
+const AxisBottom = ({ dates, width, margin, screenWidth }) => {
   const xMax = width - margin.left - margin.right;
   const height = 30;
 
@@ -15,6 +15,14 @@ const AxisBottom = ({ dates, width, margin }) => {
     range: [0, xMax],
     domain: [dates[0], dates[dates.length - 1]],
   })
+
+  //responsive number of ticks
+  const getNumTicks = () => {
+    if (screenWidth <= 1000) return 6;
+    return 8;
+  }
+
+  console.log(getNumTicks())
 
   return (
     <svg width={width} height={height} className={styles.AxisBottom}>
@@ -25,7 +33,7 @@ const AxisBottom = ({ dates, width, margin }) => {
         scale={scale}
         stroke={colors.darkblue}
         strokeWidth={2.5}
-        numTicks={8}
+        numTicks={getNumTicks()}
         tickStroke={colors.darkblue}
         tickLabelProps={() => ({
           fill: colors.darkblue,
