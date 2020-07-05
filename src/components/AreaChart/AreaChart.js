@@ -105,7 +105,7 @@ const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
 
   const formatAxisTickLeft = (num) => {
     if (num >= 1000) {
-      return format(".2s")(num);
+      return format('.2s')(num);
     } else if (num >= 1 && num < 1000) {
       return num;
     } else if (num < 1) {
