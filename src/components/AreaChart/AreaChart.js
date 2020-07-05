@@ -103,6 +103,16 @@ const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
     }
   };
 
+  const formatAxisTickLeft = (num) => {
+    if (num >= 1000) {
+      return format(".2s")(num);
+    } else if (num >= 1 && num < 1000) {
+      return num;
+    } else if (num < 1) {
+      return format('.1f')(num);
+    }
+  }
+
   return (
     <div className={styles.chartContainer}>
       <div className={styles.title}>
@@ -160,7 +170,7 @@ const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
               dx: "-0.25em",
               dy: "0.25em",
             })}
-            tickFormat={(num) => format(".1s")(num)}
+            tickFormat={formatAxisTickLeft}
           />
           <Group>
             {plotData.map((d) => {
