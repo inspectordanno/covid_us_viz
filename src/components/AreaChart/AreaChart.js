@@ -14,7 +14,7 @@ import { timeFormat } from "d3-time-format";
 import styles from "./AreaChart.module.scss";
 
 import colors from "../../util/colors";
-import usePrevious from '../../hooks/usePrevious';
+import usePrevious from "../../hooks/usePrevious";
 
 // util
 const formatDate = timeFormat("%b %d, '%y");
@@ -34,7 +34,7 @@ const titleDict = {
   newDeaths: "new deaths per day",
 };
 
-const AreaChart = ({ plotData, measure, name, width, height, margin, screenWidth }) => {
+const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
   const {
     tooltipData,
     tooltipLeft,
@@ -70,35 +70,6 @@ const AreaChart = ({ plotData, measure, name, width, height, margin, screenWidth
 
   const barWidth = xScaleBar.bandwidth();
 
-  const yScale = scaleLinear({
-    range: [yMax, 0],
-    domain: [0, max(plotData.map((d) => d.rawNumber))],
-    nice: true,
-  });
-
-  const handleTooltip = (event) => {
-    const { x } = localPoint(event.target.ownerSVGElement, event);
-    const x0 = xScaleCurve.invert(x - margin.left);
-    const index = bisectDate(plotData, x0, 1);
-    const d0 = plotData[index - 1];
-    const d1 = plotData[index];
-    let d = d0;
-    if (d1 && d1.date) {
-      d = x0 - d0.date < d1.date - x0 ? d0 : d1;
-    }
-
-    console.log(x);
-    console.log(screenWidth)
-
-    showTooltip({
-      tooltipData: d,
-      tooltipLeft: xScaleBar(d.date) + barWidth * 0.5,
-      tooltipTop: yScale(d.rawNumber),
-    });
-  };
-
-  if (width < 10) return null;
-
   const tooltipPadding = { left: 10, top: 0 };
 
   tooltipPadding.top = height - tooltipTop < 30 ? 40 : 10;
@@ -106,10 +77,31 @@ const AreaChart = ({ plotData, measure, name, width, height, margin, screenWidth
   const measureTooltipWidth = 100;
   const dateTooltipWidth = 85;
 
-  //position tooltip
-  const positionTooltipLeft = () => {
+  const yScale = scaleLinear({
+    range: [yMax, 0],
+    domain: [0, max(plotData.map((d) => d.rawNumber))],
+    nice: true,
+  });
 
-  }
+  const handleTooltip = (event) => {
+    if (window.innerWidth > 768) {
+      const { x } = localPoint(event.target.ownerSVGElement, event);
+      const x0 = xScaleCurve.invert(x - margin.left);
+      const index = bisectDate(plotData, x0, 1);
+      const d0 = plotData[index - 1];
+      const d1 = plotData[index];
+      let d = d0;
+      if (d1 && d1.date) {
+        d = x0 - d0.date < d1.date - x0 ? d0 : d1;
+      }
+
+      showTooltip({
+        tooltipData: d,
+        tooltipLeft: xScaleBar(d.date) + barWidth * 0.5,
+        tooltipTop: yScale(d.rawNumber),
+      });
+    }
+  };
 
   return (
     <div className={styles.chartContainer}>
