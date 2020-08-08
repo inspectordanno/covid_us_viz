@@ -2,7 +2,6 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = (env, argv) => {
   const isDevelopment = argv.mode === "development";
@@ -34,12 +33,16 @@ module.exports = (env, argv) => {
                   options: {
                     modules: {
                       localIdentName: "[local]__[hash:base64:5]",
+                      exportLocalsConvention: 'camelCaseOnly'
                     },
                     modules: true,
                     sourceMap: true,
                   },
                 },
-                "sass-loader",
+                {
+                  loader: 'sass-loader',
+                  options: { sourceMap: true }
+                }
               ],
             },
             {
@@ -54,21 +57,11 @@ module.exports = (env, argv) => {
       ],
     },
     plugins: [
-      new MiniCssExtractPlugin({
-        // Options similar to the same options in webpackOptions.output
-        // both options are optional
-        filename: isDevelopment ? "[name].css" : "[name].[hash].css",
-        chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css",
-      }),
+      new MiniCssExtractPlugin(),
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, "src", "index.html"),
-      }),
-      // new CopyPlugin(
-      //   [
-      //     { from: '...', to: 'data' }
-      //   ],
-      // ),
+      })
     ],
     devtool: isDevelopment ? "eval-cheap-module-source-map" : false,
     devServer: {
