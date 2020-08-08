@@ -1,6 +1,10 @@
 @use '../../styles/base';
 
-.AreaChart {
+.chart-container {
+    height: 25%;
+}
+
+.area-chart {
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
     border-radius: 20px 20px 0px 20px;
 }
@@ -26,10 +30,6 @@
 }
 
 @media (max-width: 768px) {
-    // .chartContainer {
-    //     margin-bottom: -50px;
-    // }
-
     .title {
         font-size: 16px;
     }

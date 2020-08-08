@@ -119,7 +119,7 @@ const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
         <span className={styles.municipality}>{name}</span>
         {`, ${titleDict[measure]}`}
       </div>
-      <svg width={width} height={height} className={styles.AreaChart}>
+      <svg width={width} height={height} className={styles.areaChart}>
         <rect
           x={0}
           y={0}

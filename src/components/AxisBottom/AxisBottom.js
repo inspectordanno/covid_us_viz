@@ -25,7 +25,7 @@ const AxisBottom = ({ dates, width, margin, screenWidth }) => {
   console.log(getNumTicks())
 
   return (
-    <svg width={width} height={height} className={styles.AxisBottom}>
+    <svg width={width} height={height} className={styles.axisBottom}>
       <Axis 
         top={0}
         left={margin.left}

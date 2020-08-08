@@ -148,7 +148,7 @@ const CovidApp = ({ screenWidth, screenHeight }) => {
       dimensions.width = .95 * screenWidth;
       dimensions.height = .25 * screenHeight;
     } else {
-      dimensions.width = .8 * screenWidth;
+      dimensions.width = .7 * screenWidth;
       dimensions.height = .2 * screenHeight;
     }
 
@@ -164,7 +164,7 @@ const CovidApp = ({ screenWidth, screenHeight }) => {
   const dependencies = covidData && UsState && county && measure;
 
   return dependencies ? (
-    <div className={styles.CovidApp}>
+    <div className={styles.app}>
       <div className={styles.headline}>
         No B.S. COVID Tracker
       </div>

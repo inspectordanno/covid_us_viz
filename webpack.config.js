@@ -33,16 +33,15 @@ module.exports = (env, argv) => {
                   options: {
                     modules: {
                       localIdentName: "[local]__[hash:base64:5]",
-                      exportLocalsConvention: 'camelCaseOnly'
+                      exportLocalsConvention: 'dashesOnly'
                     },
-                    modules: true,
                     sourceMap: true,
                   },
                 },
                 {
-                  loader: 'sass-loader',
-                  options: { sourceMap: true }
-                }
+                  loader: "sass-loader",
+                  options: { sourceMap: true },
+                },
               ],
             },
             {
@@ -61,7 +60,7 @@ module.exports = (env, argv) => {
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, "src", "index.html"),
-      })
+      }),
     ],
     devtool: isDevelopment ? "eval-cheap-module-source-map" : false,
     devServer: {

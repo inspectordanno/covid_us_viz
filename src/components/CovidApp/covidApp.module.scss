@@ -1,13 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Vesper+Libre:wght@500&display=swap');
 
 $row-length: 175px;
-// $row-length-sm: 175px;
 
-.CovidApp {
+.app {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-around;
   height: 100%;
 }
 
@@ -18,22 +17,18 @@ $row-length: 175px;
   color: black;
 }
 
-.measureContainer {
+.measure-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   column-gap: 30px;
 }
 
 @media (max-width: 768px) {
-  // .CovidApp {
-  //   grid-template-rows: auto auto $row-length-sm $row-length-sm $row-length-sm;
-  // }
-
   .headline {
     margin-bottom: -4vh;
   }
 
-  .measureContainer {
+  .measure-container {
     display: grid;
     grid-template-columns: auto;
     grid-template-rows: auto auto auto;
