@@ -34,7 +34,14 @@ const titleDict = {
   newDeaths: "new deaths per day",
 };
 
-const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
+const titleDictMobile = {
+  totalCases: "cases",
+  totalDeaths: "deaths",
+  newCases: "cases",
+  newDeaths: "deaths"
+}
+
+const AreaChart = ({ plotData, measure, name, width, height, margin, screenWidth }) => {
   const {
     tooltipData,
     tooltipLeft,
@@ -151,7 +158,7 @@ const AreaChart = ({ plotData, measure, name, width, height, margin }) => {
             hideZero
             scale={yScale}
             numTicks={5}
-            label={titleDict[measure]}
+            label={screenWidth <= 480 ? titleDictMobile[measure] : titleDict[measure]}
             labelProps={{
               fill: colors.darkblue,
               textAnchor: "middle",

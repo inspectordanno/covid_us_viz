@@ -4,3 +4,9 @@
     font-family: base.$font-stack;
     width: 200px;
 }
+
+@media screen and (max-width: 768px) {
+    .Select__2_OcF {
+        height: 120px;
+    }     
+}

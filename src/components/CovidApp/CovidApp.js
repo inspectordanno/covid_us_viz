@@ -146,7 +146,7 @@ const CovidApp = ({ screenWidth, screenHeight }) => {
 
     if (screenWidth <= 480) {
       dimensions.width = .95 * screenWidth;
-      dimensions.height = .25 * screenHeight;
+      dimensions.height = .15 * screenHeight;
     } else {
       dimensions.width = .7 * screenWidth;
       dimensions.height = .2 * screenHeight;

@@ -6,35 +6,32 @@ $row-length: 175px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-evenly;
   height: 100%;
 }
 
 .headline {
   font-family: 'Vesper Libre', serif;
   font-size: 3em;
-  margin-bottom: -1.25vh;
   color: black;
 }
 
 .measure-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  column-gap: 30px;
+  display: flex;
+  justify-content: space-between;
+  width: 650px;
 }
 
 @media (max-width: 768px) {
   .headline {
-    margin-bottom: -4vh;
+    margin-bottom: -3%;
   }
 
   .measure-container {
-    display: grid;
-    grid-template-columns: auto;
-    grid-template-rows: auto auto auto;
-    row-gap: 5px;
-    margin-top: 4vw;
-    margin-bottom: 4vw;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: 125px;
   }
 
   .headline {

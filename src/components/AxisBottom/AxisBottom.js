@@ -38,7 +38,7 @@ const AxisBottom = ({ dates, width, margin, screenWidth }) => {
         tickLabelProps={() => ({
           fill: colors.darkblue,
           textAnchor: "middle",
-          fontSize: 12,
+          fontSize: screenWidth <= 480 ? 8 : 12,
           fontFamily: "sans-serif",
           fontWeight: 600,
           dx: "-0.25em",
